@@ -50,6 +50,7 @@
     "redux-injectors": "1.3.0",
     "redux-saga": "1.1.3",
     "rimraf": "3.0.2",
+    "rsuite": "5.6.3",
     "sanitize.css": "13.0.0",
     "serve": "13.0.2",
     "shelljs": "0.8.5",
@@ -75,12 +76,9 @@
     "lint:fix": "yarn run eslint --fix src",
     "lint:css": "stylelint src/**/*.css",
     "generate": "plop --plopfile internals/generators/plopfile.ts",
-    "cleanAndSetup": "ts-node ./internals/scripts/clean.ts",
     "prettify": "prettier --write",
-    "extract-messages": "i18next-scanner --config=internals/extractMessages/i18next-scanner.config.js"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+    "extract-messages": "i18next-scanner --config=internals/extractMessages/i18next-scanner.config.js",
+    "prepare": "husky install"
   },
   "browserslist": {
     "production": [
