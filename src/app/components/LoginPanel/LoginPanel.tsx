@@ -1,8 +1,6 @@
-import { constants } from 'buffer';
 import * as React from 'react';
 import { Panel, Form, Input } from 'rsuite';
-import FormGroup from 'rsuite/esm/FormGroup';
-import { MainButton } from 'app/components/MainButton/MainButton';
+import { MainButton } from 'app/components/MainButton';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/logo.png';
 
@@ -34,12 +32,7 @@ export const LoginPanel = () => {
           <MainButton>ZALOGUJ SIĘ</MainButton>
         </Form.Group>
       </Form>
-      <div style={divstyles}>
-        Nie masz konta?
-        <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstley">
-          Zarejestruj się!
-        </a>
-      </div>
+      <div style={divstyles}>Nie masz konta? Zarejestruj się!</div>
       <div style={divstyles}>
         <a href="https://www.youtube.com/">Zapomniałeś hasła?</a>
       </div>
@@ -61,6 +54,7 @@ const styles = {
   marginLeft: 'auto',
   marginRight: 'auto',
   marginTop: '5%',
+  paddingBottom: '1%',
 };
 
 const istyles = {
@@ -92,11 +86,9 @@ const dstyles = {
 };
 
 const fstyles = {
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  display: 'flex',
-  flexDirection: 'column' as 'column',
-  justifyContent: 'center',
+  display: 'inline-block',
+  marginLeft: '8%',
+  marginRight: '8%',
 };
 
 const lstyles = {
@@ -106,7 +98,7 @@ const lstyles = {
 };
 
 const cstyles = {
-  width: '420px',
+  width: '100%',
   height: '60px',
   borderRadius: '20px',
   border: 'solid',
@@ -116,7 +108,6 @@ const cstyles = {
 
 const divstyles = {
   display: 'flex',
-  // flexDirection: 'row',
   justifyContent: 'center',
-  marginBottom: '10px',
+  marginBottom: '5px',
 };

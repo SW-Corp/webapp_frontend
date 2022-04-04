@@ -17,8 +17,6 @@ const styles = {
   fontSize: '20px',
   fontWeight: '400',
   display: 'block',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  marginTop: '40px',
-  marginBottom: '20px',
+  marginTop: '30px',
+  marginBottom: '15px',
 };

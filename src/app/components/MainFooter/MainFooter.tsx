@@ -15,4 +15,6 @@ const styles = {
   justifyContent: 'center',
   alignItems: 'center',
   display: 'flex',
+  position: 'fixed' as 'fixed',
+  bottom: '0',
 };
