@@ -1,20 +1,21 @@
 import { LoginPanel } from 'app/components/LoginPanel';
 import { MainFooter } from 'app/components/MainFooter';
 import * as React from 'react';
+import styled from 'styled-components';
 
 export const LoginPage = () => {
   return (
     <>
-      <div style={styles}>
+      <FlexedDiv>
         <LoginPanel />
         <MainFooter />
-      </div>
+      </FlexedDiv>
     </>
   );
 };
 
-const styles = {
+const FlexedDiv = styled.div`
   display: 'flex',
-  flexDirection: 'column' as 'column',
-  justifyContent: 'space-around',
-};
+  flex-direction: 'column',
+  justify-content: 'space-around'
+`;
