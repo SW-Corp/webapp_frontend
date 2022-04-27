@@ -9,7 +9,7 @@ export const MainButton = props => {
 const styles = {
   backgroundColor: colorConstants.green,
   color: colorConstants.black,
-  width: '420px',
+  width: '100%',
   height: '60px',
   borderRadius: '20px',
   border: 'none',

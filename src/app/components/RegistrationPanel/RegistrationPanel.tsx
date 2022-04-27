@@ -1,10 +1,55 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Panel, Form, Input } from 'rsuite';
 import { MainButton } from 'app/components/MainButton';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/logo.png';
 
 export const RegistrationPanel = () => {
+  const [data, setData] = useState({
+    mail: '',
+    login: '',
+    password: '',
+    repeatPassword: '',
+  });
+
+  function handleMail(event) {
+    setData(prevData => {
+      return {
+        ...prevData,
+        mail: event,
+      };
+    });
+  }
+
+  function handleLogin(event) {
+    setData(prevData => {
+      return {
+        ...prevData,
+        login: event,
+      };
+    });
+  }
+
+  function handlePassw(event) {
+    setData(prevData => {
+      return {
+        ...prevData,
+        password: event,
+      };
+    });
+  }
+
+  function handleRepeatPassw(event) {
+    setData(prevData => {
+      return {
+        ...prevData,
+        repeatPassword: event,
+      };
+    });
+  }
+
+  //TODO: secure
+
   return (
     <Panel style={styles}>
       <img src={img} style={istyles} />
@@ -13,20 +58,36 @@ export const RegistrationPanel = () => {
       <Form style={fstyles}>
         <Form.Group controlId="email">
           <Form.ControlLabel style={lstyles}>Adres e-mail</Form.ControlLabel>
-          <Form.Control name="email" type="email" style={cstyles} />
+          <Form.Control
+            type="email"
+            placeholder="E-mail"
+            name="email"
+            onChange={handleMail}
+            value={data.mail}
+            style={cstyles}
+          />
         </Form.Group>
         <Form.Group controlId="name">
           <Form.ControlLabel style={lstyles}>
             Nazwa użytkownika
           </Form.ControlLabel>
-          <Form.Control name="name" style={cstyles} />
+          <Form.Control
+            name="name"
+            placeholder="Login"
+            onChange={handleLogin}
+            value={data.login}
+            style={cstyles}
+          />
         </Form.Group>
         <Form.Group controlId="password">
           <Form.ControlLabel style={lstyles}>Hasło</Form.ControlLabel>
           <Form.Control
             name="password"
             type="password"
+            placeholder="Hasło"
             autoComplete="off"
+            onChange={handlePassw}
+            value={data.password}
             style={cstyles}
           />
         </Form.Group>
@@ -35,7 +96,10 @@ export const RegistrationPanel = () => {
           <Form.Control
             name="password"
             type="password"
+            placeholder="Powtórz hasło"
             autoComplete="off"
+            onChange={handleRepeatPassw}
+            value={data.repeatPassword}
             style={cstyles}
           />
         </Form.Group>
@@ -93,9 +157,9 @@ const dstyles = {
 };
 
 const fstyles = {
-  display: 'inline-block',
-  marginLeft: '8%',
-  marginRight: '8%',
+  width: '80%',
+  marginLeft: 'auto',
+  marginRight: 'auto',
 };
 
 const lstyles = {
@@ -112,6 +176,7 @@ const cstyles = {
   border: 'solid',
   borderColor: colorConstants.green,
   borderWidth: '2px',
+  textIndent: '10px',
 };
 
 const divstyles = {

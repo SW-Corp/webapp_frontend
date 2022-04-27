@@ -1,42 +1,76 @@
-import * as React from 'react';
-import { Panel, Form, Input } from 'rsuite';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Panel, Form } from 'rsuite';
 import { MainButton } from 'app/components/MainButton';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/logo.png';
 
-// const Textarea = React.forwardRef((props, ref) => <Input {...props} as="textarea" ref={ref} />);
-
 export const LoginPanel = () => {
+  const [data, setData] = useState({
+    login: '',
+    password: '',
+  });
+
+  function handleLogin(event) {
+    setData(prevData => {
+      return {
+        ...prevData,
+        login: event,
+      };
+    });
+  }
+
+  function handlePassword(event) {
+    setData(prevData => {
+      return {
+        ...prevData,
+        password: event,
+      };
+    });
+  }
+
   return (
-    <Panel style={styles}>
-      <img src={img} style={istyles} />
-      <div style={tstyles}>SW Corp.</div>
-      <div style={dstyles}>Logowanie</div>
-      <Form style={fstyles}>
-        <Form.Group controlId="name">
-          <Form.ControlLabel style={lstyles}>
-            Nazwa użytkownika
-          </Form.ControlLabel>
-          <Form.Control name="name" style={cstyles} />
-        </Form.Group>
-        <Form.Group controlId="password">
-          <Form.ControlLabel style={lstyles}>Hasło</Form.ControlLabel>
-          <Form.Control
-            name="password"
-            type="password"
-            autoComplete="off"
-            style={cstyles}
-          />
-        </Form.Group>
-        <Form.Group>
-          <MainButton>ZALOGUJ SIĘ</MainButton>
-        </Form.Group>
-      </Form>
-      <div style={divstyles}>Nie masz konta? Zarejestruj się!</div>
-      <div style={divstyles}>
-        <a href="https://www.youtube.com/">Zapomniałeś hasła?</a>
-      </div>
-    </Panel>
+    <Router>
+      <Panel style={styles}>
+        <img src={img} style={iconStyles} />
+        <div style={nameStyles}>SW Corp.</div>
+        <div style={titleStyles}>Logowanie</div>
+        <Form style={formStyles}>
+          <Form.Group controlId="name">
+            <Form.ControlLabel style={labelStyles}>
+              Nazwa użytkownika
+            </Form.ControlLabel>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="Login"
+              onChange={handleLogin}
+              value={data.login}
+              style={controlStyles}
+            />
+          </Form.Group>
+          <Form.Group controlId="password">
+            <Form.ControlLabel style={labelStyles}>Hasło</Form.ControlLabel>
+            <Form.Control
+              name="password"
+              type="password"
+              placeholder="Hasło"
+              autoComplete="off"
+              onChange={handlePassword}
+              value={data.login}
+              style={controlStyles}
+            />
+          </Form.Group>
+          <Form.Group>
+            <MainButton>ZALOGUJ SIĘ</MainButton>
+          </Form.Group>
+        </Form>
+        <div style={divStyles}>Nie masz konta? Zarejestruj się!</div>
+        <div style={divStyles}>
+          <a href="https://www.youtube.com/">Zapomniałeś hasła?</a>
+        </div>
+      </Panel>
+    </Router>
   );
 };
 
@@ -57,7 +91,7 @@ const styles = {
   paddingBottom: '1%',
 };
 
-const istyles = {
+const iconStyles = {
   width: '26%',
   height: '20%',
   display: 'block',
@@ -66,7 +100,7 @@ const istyles = {
   marginTop: '30px',
 };
 
-const tstyles = {
+const nameStyles = {
   font: 'Red Hat Text',
   color: colorConstants.black,
   fontSize: '30px',
@@ -75,38 +109,39 @@ const tstyles = {
   justifyContent: 'center',
 };
 
-const dstyles = {
+const titleStyles = {
   display: 'flex',
   justifyContent: 'center',
   font: 'Roboto',
   fontSize: '40px',
   fontWeight: '500',
   marginTop: '1%',
-  marginBottom: '1%',
+  marginBottom: '2%',
 };
 
-const fstyles = {
-  display: 'inline-block',
-  marginLeft: '8%',
-  marginRight: '8%',
+const formStyles = {
+  width: '80%',
+  marginLeft: 'auto',
+  marginRight: 'auto',
 };
 
-const lstyles = {
+const labelStyles = {
   font: 'Roboto !important',
   fontSize: '14px',
   paddingLeft: '15px',
 };
 
-const cstyles = {
+const controlStyles = {
   width: '100%',
   height: '60px',
   borderRadius: '20px',
   border: 'solid',
   borderColor: colorConstants.green,
   borderWidth: '2px',
+  textIndent: '10px',
 };
 
-const divstyles = {
+const divStyles = {
   display: 'flex',
   justifyContent: 'center',
   marginBottom: '5px',

@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { RegistrationPage } from 'app/pages/RegistrationPage';
+import { LoginPage } from 'app/pages/LoginPage';
 
 export const HomePage = () => {
   return (
     <>
-      <RegistrationPage />
+      <LoginPage />
     </>
   );
 };
