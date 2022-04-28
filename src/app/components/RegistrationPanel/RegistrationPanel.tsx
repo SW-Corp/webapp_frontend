@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { Panel, Form, Input } from 'rsuite';
+import { Link } from 'react-router-dom';
+import { Panel, Form } from 'rsuite';
 import { MainButton } from 'app/components/MainButton';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/logo.png';
 
+const initialState = {
+  mail: '',
+  login: '',
+  password: '',
+  repeatPassword: '',
+};
+
 export const RegistrationPanel = () => {
-  const [data, setData] = useState({
-    mail: '',
-    login: '',
-    password: '',
-    repeatPassword: '',
-  });
+  const [data, setData] = useState(initialState);
 
   function handleMail(event) {
     setData(prevData => {
@@ -48,13 +51,38 @@ export const RegistrationPanel = () => {
     });
   }
 
-  //TODO: secure
+  const clearState = () => {
+    setData({ ...initialState });
+  };
+
+  function submit(event) {
+    event.preventDefault();
+    if (
+      data.mail === '' ||
+      data.login === '' ||
+      data.password === '' ||
+      data.repeatPassword === ''
+    ) {
+      const error = document.getElementById('alert');
+      console.log('Niepełne dane');
+    } else {
+      if (data.password === data.repeatPassword) {
+        console.log('Pełne dane');
+        // Check for errors
+        // Send
+        clearState();
+      } else {
+        //Helpblock or sth
+        console.log('Passwords do not match');
+      }
+    }
+  }
 
   return (
     <Panel style={styles}>
       <img src={img} style={istyles} />
       <div style={tstyles}>SW Corp.</div>
-      <div style={dstyles}>Logowanie</div>
+      <div style={dstyles}>Rejestracja</div>
       <Form style={fstyles}>
         <Form.Group controlId="email">
           <Form.ControlLabel style={lstyles}>Adres e-mail</Form.ControlLabel>
@@ -104,10 +132,12 @@ export const RegistrationPanel = () => {
           />
         </Form.Group>
         <Form.Group>
-          <MainButton>ZAREJESTRUJ SIĘ</MainButton>
+          <MainButton onClick={submit}>ZAREJESTRUJ SIĘ</MainButton>
         </Form.Group>
       </Form>
-      <div style={divstyles}>Masz już konto? Zaloguj się!</div>
+      <div style={divstyles}>
+        <Link to="/">Masz już konto? Zaloguj się!</Link>
+      </div>
     </Panel>
   );
 };
@@ -125,7 +155,7 @@ const styles = {
   justifyContent: 'center',
   marginLeft: 'auto',
   marginRight: 'auto',
-  marginTop: '1%',
+  marginTop: '50px',
   paddingBottom: '1%',
 };
 

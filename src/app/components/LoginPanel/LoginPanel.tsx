@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Panel, Form } from 'rsuite';
 import { MainButton } from 'app/components/MainButton';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/logo.png';
 
+const initialState = {
+  login: '',
+  password: '',
+};
+
 export const LoginPanel = () => {
-  const [data, setData] = useState({
-    login: '',
-    password: '',
-  });
+  const [data, setData] = useState(initialState);
 
   function handleLogin(event) {
     setData(prevData => {
@@ -20,7 +22,7 @@ export const LoginPanel = () => {
     });
   }
 
-  function handlePassword(event) {
+  function handlePassw(event) {
     setData(prevData => {
       return {
         ...prevData,
@@ -29,48 +31,65 @@ export const LoginPanel = () => {
     });
   }
 
+  const clearState = () => {
+    setData({ ...initialState });
+  };
+
+  function submit(event) {
+    event.preventDefault();
+    if (data.login === '' || data.password === '') {
+      const error = document.getElementById('alert');
+      console.log('Niepełne dane');
+    } else {
+      console.log('Pełne dane');
+      // Check for errors
+      // Send
+      clearState();
+    }
+  }
+
   return (
-    <Router>
-      <Panel style={styles}>
-        <img src={img} style={iconStyles} />
-        <div style={nameStyles}>SW Corp.</div>
-        <div style={titleStyles}>Logowanie</div>
-        <Form style={formStyles}>
-          <Form.Group controlId="name">
-            <Form.ControlLabel style={labelStyles}>
-              Nazwa użytkownika
-            </Form.ControlLabel>
-            <Form.Control
-              type="text"
-              name="name"
-              placeholder="Login"
-              onChange={handleLogin}
-              value={data.login}
-              style={controlStyles}
-            />
-          </Form.Group>
-          <Form.Group controlId="password">
-            <Form.ControlLabel style={labelStyles}>Hasło</Form.ControlLabel>
-            <Form.Control
-              name="password"
-              type="password"
-              placeholder="Hasło"
-              autoComplete="off"
-              onChange={handlePassword}
-              value={data.login}
-              style={controlStyles}
-            />
-          </Form.Group>
-          <Form.Group>
-            <MainButton>ZALOGUJ SIĘ</MainButton>
-          </Form.Group>
-        </Form>
-        <div style={divStyles}>Nie masz konta? Zarejestruj się!</div>
-        <div style={divStyles}>
-          <a href="https://www.youtube.com/">Zapomniałeś hasła?</a>
-        </div>
-      </Panel>
-    </Router>
+    <Panel style={styles}>
+      <img src={img} style={iconStyles} />
+      <div style={nameStyles}>SW Corp.</div>
+      <div style={titleStyles}>Logowanie</div>
+      <Form style={formStyles}>
+        <Form.Group controlId="name">
+          <Form.ControlLabel style={labelStyles}>
+            Nazwa użytkownika
+          </Form.ControlLabel>
+          <Form.Control
+            type="text"
+            name="name"
+            placeholder="Login"
+            onChange={handleLogin}
+            value={data.login}
+            style={controlStyles}
+          />
+        </Form.Group>
+        <Form.Group controlId="password">
+          <Form.ControlLabel style={labelStyles}>Hasło</Form.ControlLabel>
+          <Form.Control
+            name="password"
+            type="password"
+            placeholder="Hasło"
+            autoComplete="off"
+            onChange={handlePassw}
+            value={data.password}
+            style={controlStyles}
+          />
+        </Form.Group>
+        <Form.Group>
+          <MainButton onClick={submit}>ZALOGUJ SIĘ</MainButton>
+        </Form.Group>
+      </Form>
+      <div style={divStyles}>
+        <Link to="/registration">Nie masz konta? Zarejestruj się!</Link>
+      </div>
+      <div style={divStyles}>
+        <a href="https://www.youtube.com/">Zapomniałeś hasła?</a>
+      </div>
+    </Panel>
   );
 };
 
@@ -87,7 +106,7 @@ const styles = {
   justifyContent: 'center',
   marginLeft: 'auto',
   marginRight: 'auto',
-  marginTop: '5%',
+  marginTop: '50px',
   paddingBottom: '1%',
 };
 

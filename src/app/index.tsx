@@ -14,6 +14,9 @@ import { GlobalStyle } from 'styles/global-styles';
 
 import { HomePage } from './pages/HomePage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
+
+import { RegistrationPage } from 'app/pages/RegistrationPage';
+
 import { useTranslation } from 'react-i18next';
 
 export function App() {
@@ -30,7 +33,7 @@ export function App() {
 
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route component={NotFoundPage} />
+        <Route path="/registration" component={RegistrationPage} />
       </Switch>
       <GlobalStyle />
     </BrowserRouter>

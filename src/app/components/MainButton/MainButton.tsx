@@ -3,7 +3,11 @@ import Button from 'rsuite/Button';
 import { colorConstants } from 'styles/colorConstants';
 
 export const MainButton = props => {
-  return <Button style={styles}>{props.children}</Button>;
+  return (
+    <Button style={styles} {...props}>
+      {props.children}
+    </Button>
+  );
 };
 
 const styles = {

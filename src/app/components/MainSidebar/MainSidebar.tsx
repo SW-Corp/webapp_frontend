@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/menu.png';
 
@@ -11,8 +10,6 @@ export const MainSidebar = () => {
   function handleSelect(event) {
     setChoice(event.target.value);
   }
-
-  console.log(choice);
 
   return (
     <div>
