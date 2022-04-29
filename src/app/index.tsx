@@ -13,11 +13,12 @@ import { Switch, Route, BrowserRouter } from 'react-router-dom';
 import { GlobalStyle } from 'styles/global-styles';
 
 import { HomePage } from './pages/HomePage/Loadable';
-import { NotFoundPage } from './components/NotFoundPage/Loadable';
 
 import { RegistrationPage } from 'app/pages/RegistrationPage';
 
 import { useTranslation } from 'react-i18next';
+import { ForgotPasswPage } from './pages/ForgotPasswPage';
+import { PassworsSentPanel } from './components/PasswordSentPanel';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -34,6 +35,8 @@ export function App() {
       <Switch>
         <Route exact path="/" component={HomePage} />
         <Route path="/registration" component={RegistrationPage} />
+        <Route path="/forgotPassword" component={ForgotPasswPage} />
+        <Route path="/passwordSent" component={PassworsSentPanel} />
       </Switch>
       <GlobalStyle />
     </BrowserRouter>

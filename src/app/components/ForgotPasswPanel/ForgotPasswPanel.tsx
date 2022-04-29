@@ -5,39 +5,20 @@ import { MainButton } from 'app/components/MainButton';
 import { colorConstants } from 'styles/colorConstants';
 import img from '../../../icons/logo.png';
 
-const initialState = {
-  login: '',
-  password: '',
-};
+export const ForgotPasswPanel = () => {
+  const [mail, setMail] = useState('');
 
-export const LoginPanel = () => {
-  const [data, setData] = useState(initialState);
-
-  function handleLogin(event) {
-    setData(prevData => {
-      return {
-        ...prevData,
-        login: event,
-      };
-    });
-  }
-
-  function handlePassw(event) {
-    setData(prevData => {
-      return {
-        ...prevData,
-        password: event,
-      };
-    });
+  function handleMail(event) {
+    setMail(event);
   }
 
   const clearState = () => {
-    setData({ ...initialState });
+    setMail('');
   };
 
   function submit(event) {
     event.preventDefault();
-    if (data.login === '' || data.password === '') {
+    if (mail === '') {
       const error = document.getElementById('alert');
       console.log('Niepełne dane');
     } else {
@@ -52,42 +33,27 @@ export const LoginPanel = () => {
     <Panel style={styles}>
       <img src={img} style={iconStyles} />
       <div style={nameStyles}>SW Corp.</div>
-      <div style={titleStyles}>Logowanie</div>
+      <div style={titleStyles}>Znajdź moje konto</div>
       <Form style={formStyles}>
-        <Form.Group controlId="name">
+        <Form.Group controlId="mail">
           <Form.ControlLabel style={labelStyles}>
-            Nazwa użytkownika
+            Adres e-mail
           </Form.ControlLabel>
           <Form.Control
-            type="text"
-            name="name"
-            placeholder="Login"
-            onChange={handleLogin}
-            value={data.login}
-            style={controlStyles}
-          />
-        </Form.Group>
-        <Form.Group controlId="password">
-          <Form.ControlLabel style={labelStyles}>Hasło</Form.ControlLabel>
-          <Form.Control
-            name="password"
-            type="password"
-            placeholder="Hasło"
-            autoComplete="off"
-            onChange={handlePassw}
-            value={data.password}
+            type="email"
+            name="mail"
+            placeholder="E-mail"
+            onChange={handleMail}
+            value={mail}
             style={controlStyles}
           />
         </Form.Group>
         <Form.Group>
-          <MainButton onClick={submit}>ZALOGUJ SIĘ</MainButton>
+          <MainButton onClick={submit}>PRZYPOMNIJ HASŁO</MainButton>
         </Form.Group>
       </Form>
       <div style={divStyles}>
-        <Link to="/registration">Nie masz konta? Zarejestruj się!</Link>
-      </div>
-      <div style={divStyles}>
-        <Link to="/forgotPassword">Zapomniałeś hasła?</Link>
+        <Link to="/">Powrót do logowania</Link>
       </div>
     </Panel>
   );
@@ -135,7 +101,7 @@ const titleStyles = {
   fontSize: '40px',
   fontWeight: '500',
   marginTop: '1%',
-  marginBottom: '2%',
+  marginBottom: '3%',
 };
 
 const formStyles = {
@@ -163,5 +129,5 @@ const controlStyles = {
 const divStyles = {
   display: 'flex',
   justifyContent: 'center',
-  marginBottom: '5px',
+  marginTop: '15px',
 };
