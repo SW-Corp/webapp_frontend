@@ -13,7 +13,6 @@ export const MainSidebar = () => {
 
   return (
     <div>
-      <img src={img} style={iconStyles} onClick={buttonHandler} />
       <div style={opened ? stylesOpened : styles}>
         <div style={functionStyles}>
           <label htmlFor="selectList" style={labelStyles}>
@@ -33,6 +32,7 @@ export const MainSidebar = () => {
           </select>
         </div>
       </div>
+      <img src={img} style={iconStyles} onClick={buttonHandler} />
     </div>
   );
 };
@@ -44,16 +44,18 @@ const styles = {
 const stylesOpened = {
   backgroundColor: colorConstants.lightGrey,
   color: colorConstants.black,
+  position: 'absolute',
   width: '360px',
-  height: '929px',
+  height: '90vh',
   font: 'Roboto',
   fontSize: '20px',
   fontWeight: '400',
-  display: 'block',
-};
+  marginTop: '75px',
+} as React.CSSProperties;
 
 const iconStyles = {
   position: 'absolute',
+  color: colorConstants.white,
   width: '35px',
   height: '35px',
   marginTop: '20px',
