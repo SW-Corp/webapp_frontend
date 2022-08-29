@@ -1,12 +1,12 @@
 import { MainFooter } from 'app/components/MainFooter';
-import { PassworsSentPanel } from 'app/components/PasswordSentPanel';
+import { PasswordSentPanel } from 'app/components/PasswordSentPanel';
 import * as React from 'react';
 
 export const PasswordSentPage = () => {
   return (
     <>
       <div style={styles}>
-        <PassworsSentPanel />
+        <PasswordSentPanel />
         <MainFooter />
       </div>
     </>

@@ -32,7 +32,7 @@ export const MainSidebar = () => {
           </select>
         </div>
       </div>
-      <img src={img} style={iconStyles} onClick={buttonHandler} />
+      <img title="icon" src={img} style={iconStyles} onClick={buttonHandler} />
     </div>
   );
 };

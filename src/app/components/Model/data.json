@@ -1,0 +1,32 @@
+{
+  "infoMainContainer": {
+    "id": "EllipseaskMain",
+    "title": "Main Container",
+    "text": "main"
+  },
+  "infoPump": {
+    "id": "EllipseaskPomp",
+    "title": "Pump",
+    "text": "pump"
+  },
+  "infoHelpContainer": {
+    "id": "EllipseaskHelpContainer",
+    "title": "Help Container",
+    "text": "help"
+  },
+  "infoEndContainer": {
+    "id": "EllipseaskFinalContainer",
+    "title": "End Container",
+    "text": "end"
+  },
+  "infoEndPump": {
+    "id": "EllipseaskPomp3",
+    "title": "End Pump",
+    "text": "end pump"
+  },
+  "infoEngine": {
+    "id": "EllipseaskEngine3",
+    "title": "Engine",
+    "text": "engine"
+  }
+}

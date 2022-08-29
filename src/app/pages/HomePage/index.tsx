@@ -3,17 +3,21 @@ import { LoginPage } from 'app/pages/LoginPage';
 import { MainPage } from 'app/pages/MainPage';
 
 export const HomePage = () => {
-  const [data, setData] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   function ReturnPage(props) {
     const isLoggedIn = props.isLoggedIn;
-    if (isLoggedIn) return <MainPage />;
-    else return <LoginPage />;
+    if (isLoggedIn)
+      return <MainPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
+    else
+      return (
+        <LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      );
   }
 
   return (
     <>
-      <ReturnPage isLoggedIn={data} />
+      <ReturnPage isLoggedIn={isLoggedIn} />
     </>
   );
 };

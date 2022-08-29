@@ -1,13 +1,16 @@
 import { LoginPanel } from 'app/components/LoginPanel';
 import { MainFooter } from 'app/components/MainFooter';
-import * as React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-export const LoginPage = () => {
+export const LoginPage = props => {
   return (
     <>
       <FlexedDiv>
-        <LoginPanel />
+        <LoginPanel
+          isLoggedIn={props.isLoggedIn}
+          setIsLoggedIn={props.setIsLoggedIn}
+        />
         <MainFooter />
       </FlexedDiv>
     </>
@@ -15,7 +18,8 @@ export const LoginPage = () => {
 };
 
 const FlexedDiv = styled.div`
+  height: '100%',
   display: 'flex',
   flex-direction: 'column',
-  justify-content: 'space-around'
+  justify-content: 'space-around',
 `;

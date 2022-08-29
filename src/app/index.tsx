@@ -18,7 +18,7 @@ import { RegistrationPage } from 'app/pages/RegistrationPage';
 
 import { useTranslation } from 'react-i18next';
 import { ForgotPasswPage } from './pages/ForgotPasswPage';
-import { PassworsSentPanel } from './components/PasswordSentPanel';
+import { PasswordSentPage } from './pages/PasswordSentPage';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -36,7 +36,7 @@ export function App() {
         <Route exact path="/" component={HomePage} />
         <Route path="/registration" component={RegistrationPage} />
         <Route path="/forgotPassword" component={ForgotPasswPage} />
-        <Route path="/passwordSent" component={PassworsSentPanel} />
+        <Route path="/passwordSent" component={PasswordSentPage} />
       </Switch>
       <GlobalStyle />
     </BrowserRouter>
