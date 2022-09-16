@@ -9,11 +9,11 @@ const maxHeight = 260;
 
 export const Model = () => {
   //States
-  const [startContainerHeight, setStartContainerHeight] = useState(0);
-  const [innerContainerAHeight, setInnerContainerAHeight] = useState(0);
+  const [startContainerHeight, setStartContainerHeight] = useState(50);
+  const [innerContainerAHeight, setInnerContainerAHeight] = useState(10);
   const [innerContainerBHeight, setInnerContainerBHeight] = useState(0);
   const [innerContainerCHeight, setInnerContainerCHeight] = useState(0);
-  const [endContainerHeight, setEndContainerHeight] = useState(maxHeight);
+  const [endContainerHeight, setEndContainerHeight] = useState(100);
 
   //Water
   function useWater(height: number, waterName: string, containerY: number) {
@@ -35,20 +35,46 @@ export const Model = () => {
     }, [height]);
   }
 
-  function handle1(h: number, pipesName: Array<string>) {
+  function handle1(h: number, pipesName: Array<string>, name: any) {
     let totalOpen = 0;
     let fillUp = 0;
 
     if (h === 0) {
-      pipesName.forEach(pipeName => {
-        const pipe = document.getElementById(pipeName);
+      let colorOn;
+
+      if (name === 'pompa1A') colorOn = '#848484';
+
+      if (name === 'pompa1B') colorOn = '#B8B8B8';
+
+      if (name === 'pompa1C') colorOn = '#E1E1E1';
+
+      for (let i = 0; i < 5; i++) {
+        const pipe = document.getElementById(pipesName[i]);
         pipe?.setAttribute('fill', '#E1E1E1');
-      });
+      }
+
+      for (let i = 5; i < 8; i++) {
+        const pipe = document.getElementById(pipesName[i]);
+        pipe?.setAttribute('fill', colorOn);
+      }
     } else {
-      pipesName.forEach(pipeName => {
-        const pipe = document.getElementById(pipeName);
+      let colorAfter;
+
+      if (name === 'pompa1A') colorAfter = '#0075FF';
+
+      if (name === 'pompa1B') colorAfter = '#00A3FF';
+
+      if (name === 'pompa1C') colorAfter = '#0AD3FF';
+
+      for (let i = 0; i < 5; i++) {
+        const pipe = document.getElementById(pipesName[i]);
         pipe?.setAttribute('fill', '#0AD3FF');
-      });
+      }
+
+      for (let i = 5; i < 8; i++) {
+        const pipe = document.getElementById(pipesName[i]);
+        pipe?.setAttribute('fill', colorAfter);
+      }
 
       if (
         document.getElementById('pompa1A')?.getAttribute('fill') === 'green' &&
@@ -137,88 +163,75 @@ export const Model = () => {
     const handleColorChange = useCallback(
       (event: MouseEvent) => {
         const newColor = color === 'green' ? 'red' : 'green';
+        let countOn = 0;
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
 
           if (newColor === 'green' && height > 0) {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
+            let colorAfter;
+
+            if (button.current.getAttribute('id') === 'pompa1A')
+              colorAfter = '#0075FF';
+
+            if (button.current.getAttribute('id') === 'pompa1B')
+              colorAfter = '#00A3FF';
+
+            if (button.current.getAttribute('id') === 'pompa1C')
+              colorAfter = '#0AD3FF';
+
+            for (let i = 0; i < 5; i++) {
+              const pipe = document.getElementById(pipesName[i]);
               pipe?.setAttribute('fill', '#0AD3FF');
-            });
+            }
+
+            for (let i = 5; i < 8; i++) {
+              const pipe = document.getElementById(pipesName[i]);
+              pipe?.setAttribute('fill', colorAfter);
+            }
           } else {
             if (
-              button.current.getAttribute('id') === 'pompa1A' &&
-              document.getElementById('pompa1B')?.getAttribute('fill') ===
-                'red' &&
-              document.getElementById('pompa1C')?.getAttribute('fill') === 'red'
+              document.getElementById('pompa1A')?.getAttribute('fill') ===
+              'green'
             ) {
-              pipesName.forEach(pipeName => {
-                const pipe = document.getElementById(pipeName);
+              countOn++;
+            }
+
+            if (
+              document.getElementById('pompa1B')?.getAttribute('fill') ===
+              'green'
+            ) {
+              countOn++;
+            }
+
+            if (
+              document.getElementById('pompa1C')?.getAttribute('fill') ===
+              'green'
+            ) {
+              countOn++;
+            }
+
+            let colorOn;
+
+            if (button.current.getAttribute('id') === 'pompa1A')
+              colorOn = '#848484';
+
+            if (button.current.getAttribute('id') === 'pompa1B')
+              colorOn = '#B8B8B8';
+
+            if (button.current.getAttribute('id') === 'pompa1C')
+              colorOn = '#E1E1E1';
+
+            if (countOn === 0) {
+              for (let i = 0; i < 5; i++) {
+                const pipe = document.getElementById(pipesName[i]);
                 pipe?.setAttribute('fill', '#E1E1E1');
-              });
-            } else {
-              if (
-                button.current.getAttribute('id') === 'pompa1B' &&
-                document.getElementById('pompa1A')?.getAttribute('fill') ===
-                  'red' &&
-                document.getElementById('pompa1C')?.getAttribute('fill') ===
-                  'red'
-              ) {
-                pipesName.forEach(pipeName => {
-                  const pipe = document.getElementById(pipeName);
-                  pipe?.setAttribute('fill', '#E1E1E1');
-                });
-              } else {
-                if (
-                  button.current.getAttribute('id') === 'pompa1B' &&
-                  document.getElementById('pompa1A')?.getAttribute('fill') ===
-                    'green' &&
-                  document.getElementById('pompa1C')?.getAttribute('fill') ===
-                    'red'
-                ) {
-                  const pipe = document.getElementById('pipe1_5');
-                  pipe?.setAttribute('fill', '#E1E1E1');
-                } else {
-                  if (
-                    button.current.getAttribute('id') === 'pompa1C' &&
-                    document.getElementById('pompa1A')?.getAttribute('fill') ===
-                      'red' &&
-                    document.getElementById('pompa1B')?.getAttribute('fill') ===
-                      'red'
-                  ) {
-                    pipesName.forEach(pipeName => {
-                      const pipe = document.getElementById(pipeName);
-                      pipe?.setAttribute('fill', '#E1E1E1');
-                    });
-                  } else {
-                    if (
-                      button.current.getAttribute('id') === 'pompa1C' &&
-                      document
-                        .getElementById('pompa1B')
-                        ?.getAttribute('fill') === 'green'
-                    ) {
-                      const pipe = document.getElementById('pipe1_6');
-                      pipe?.setAttribute('fill', '#E1E1E1');
-                    } else {
-                      if (
-                        button.current.getAttribute('id') === 'pompa1C' &&
-                        document
-                          .getElementById('pompa1A')
-                          ?.getAttribute('fill') === 'green' &&
-                        document
-                          .getElementById('pompa1B')
-                          ?.getAttribute('fill') === 'red'
-                      ) {
-                        let pipe = document.getElementById('pipe1_5');
-                        pipe?.setAttribute('fill', '#E1E1E1');
-                        pipe = document.getElementById('pipe1_6');
-                        pipe?.setAttribute('fill', '#E1E1E1');
-                      }
-                    }
-                  }
-                }
               }
+            }
+
+            for (let i = 5; i < 8; i++) {
+              const pipe = document.getElementById(pipesName[i]);
+              pipe?.setAttribute('fill', colorOn);
             }
           }
         }
@@ -226,7 +239,9 @@ export const Model = () => {
         if (newColor === 'green') {
           //add if output
           timer.current = window.setInterval(() => {
-            setHeight(h => handle1(h, pipesName));
+            setHeight(h =>
+              handle1(h, pipesName, button.current?.getAttribute('id')),
+            );
           }, 250);
         } else {
           if (timer.current) {
@@ -258,10 +273,14 @@ export const Model = () => {
     let pipesNameStartA: Array<string> = [];
     pipesNameStartA.push('pipe1_1');
     pipesNameStartA.push('pipe1_2');
-    pipesNameStartA.push('pipe1_3');
-    pipesNameStartA.push('pipe1_4');
+    pipesNameStartA.push('pipe1_3A');
+    pipesNameStartA.push('pipe1_3B');
+    pipesNameStartA.push('pipe1_3C');
+    pipesNameStartA.push('pipe1_4A');
+    pipesNameStartA.push('pipe1_5A');
+    pipesNameStartA.push('pipe1_6A');
 
-    useWater(startContainerHeight, 'startWater', 68.5);
+    useWater(startContainerHeight, 'startWater', 456.0);
     useOutputButton1(
       startContainerHeight,
       num => setStartContainerHeight(num),
@@ -272,9 +291,12 @@ export const Model = () => {
     let pipesNameStartB: Array<string> = [];
     pipesNameStartB.push('pipe1_1');
     pipesNameStartB.push('pipe1_2');
-    pipesNameStartB.push('pipe1_3');
-    pipesNameStartB.push('pipe1_4');
-    pipesNameStartB.push('pipe1_5');
+    pipesNameStartB.push('pipe1_3A');
+    pipesNameStartB.push('pipe1_3B');
+    pipesNameStartB.push('pipe1_3C');
+    pipesNameStartB.push('pipe1_4B');
+    pipesNameStartB.push('pipe1_5B');
+    pipesNameStartB.push('pipe1_6B');
 
     useOutputButton1(
       startContainerHeight,
@@ -286,10 +308,12 @@ export const Model = () => {
     let pipesNameStartC: Array<string> = [];
     pipesNameStartC.push('pipe1_1');
     pipesNameStartC.push('pipe1_2');
-    pipesNameStartC.push('pipe1_3');
-    pipesNameStartC.push('pipe1_4');
-    pipesNameStartC.push('pipe1_5');
-    pipesNameStartC.push('pipe1_6');
+    pipesNameStartC.push('pipe1_3A');
+    pipesNameStartC.push('pipe1_3B');
+    pipesNameStartC.push('pipe1_3C');
+    pipesNameStartC.push('pipe1_4C');
+    pipesNameStartC.push('pipe1_5C');
+    pipesNameStartC.push('pipe1_6C');
 
     useOutputButton1(
       startContainerHeight,
@@ -405,9 +429,9 @@ export const Model = () => {
   {
     //Help container A
     let pipesNameA: Array<string> = [];
-    pipesNameA.push('pipe2_1a');
+    pipesNameA.push('pipe2A');
 
-    useWater(innerContainerAHeight, 'helpWaterA', 68.5);
+    useWater(innerContainerAHeight, 'helpWaterA', 101.5);
     useOutputButton2(
       innerContainerAHeight,
       num => setInnerContainerAHeight(num),
@@ -417,10 +441,9 @@ export const Model = () => {
 
     //Help container B
     let pipesNameB: Array<string> = [];
-    pipesNameB.push('pipe2_1b');
-    pipesNameB.push('pipe2_3');
+    pipesNameB.push('pipe2B');
 
-    useWater(innerContainerBHeight, 'helpWaterB', 68.5);
+    useWater(innerContainerBHeight, 'helpWaterB', 101.5);
     useOutputButton2(
       innerContainerBHeight,
       num => setInnerContainerBHeight(num),
@@ -430,9 +453,9 @@ export const Model = () => {
 
     //Help container C
     let pipesNameC: Array<string> = [];
-    pipesNameC.push('pipe2_1c');
+    pipesNameC.push('pipe2C');
 
-    useWater(innerContainerCHeight, 'helpWaterC', 68.5);
+    useWater(innerContainerCHeight, 'helpWaterC', 101.5);
     useOutputButton2(
       innerContainerCHeight,
       num => setInnerContainerCHeight(num),
@@ -443,6 +466,7 @@ export const Model = () => {
 
   function handle3(h: number, pipesName: Array<string>) {
     if (h === 0) {
+      console.log(h);
       pipesName.forEach(pipeName => {
         const pipe = document.getElementById(pipeName);
         pipe?.setAttribute('fill', '#E1E1E1');
@@ -535,7 +559,7 @@ export const Model = () => {
     pipesNameEnd.push('pipe3_4');
     pipesNameEnd.push('pipe3_5');
 
-    useWater(endContainerHeight, 'finalWater', 523.5);
+    useWater(endContainerHeight, 'finalWater', 554.5);
     useOutputButton3(
       endContainerHeight,
       num => setEndContainerHeight(num),
@@ -614,299 +638,480 @@ export const Model = () => {
     }, [handleColorChange]);
   }
 
-  useAskButton('askMain', 'EllipseaskMain');
-  useAskButton('askPomp', 'EllipseaskPomp');
-  useAskButton('askHelpContainer', 'EllipseaskHelpContainer');
-  useAskButton('askFinalContainer', 'EllipseaskFinalContainer');
-  useAskButton('askEngine3', 'EllipseaskEngine3');
-  useAskButton('askPomp3', 'EllipseaskPomp3');
+  useAskButton('askMain', 'EllipseAskMain');
+  useAskButton('askPomp', 'EllipseAskPomp');
+  useAskButton('askHelpContainer', 'EllipseAskHelpContainer');
+  useAskButton('askFinalContainer', 'EllipseAskFinalContainer');
+  useAskButton('askEngine', 'EllipseAskEngine');
+  useAskButton('askFinalPomp', 'EllipseAskFinalPomp');
+  useAskButton('askStop', 'EllipseAskStop');
 
   return (
     <div style={styles.mainDiv}>
       <svg
-        width="743"
-        height="598"
-        viewBox="0 0 1043 898"
+        width="800"
+        height="600"
+        viewBox="0 0 1155 928"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
         <g id="Makieta">
           <rect
+            id="pipe1_5C"
+            x="708"
+            y="90"
+            width="329"
+            height="30"
+            fill="#E1E1E1"
+          />
+          <rect
             id="helpContainerC"
-            x="879.5"
-            y="68.5"
+            x="997.5"
+            y="152.5"
             width="108"
-            height="260"
+            height="209"
             fill="white"
             stroke="black"
           />
           <rect
             id="helpCointainerB"
-            x="770.5"
-            y="68.5"
+            x="888.5"
+            y="152.5"
             width="108"
-            height="260"
+            height="209"
             fill="white"
             stroke="black"
           />
           <rect
             id="finalContainer"
-            x="661.5"
-            y="523.5"
+            x="780.5"
+            y="549.5"
             width="326"
-            height="260"
+            height="265"
             fill="white"
             stroke="black"
           />
           <rect
-            id="engine"
-            x="117.5"
-            y="523.5"
-            width="422"
-            height="265"
-            fill="#A76D16"
-            stroke="black"
-          />
-          <rect
-            id="finalWater"
-            x="661.5"
-            y="631.5"
-            width="326"
-            height="157"
-            fill="#10C6EE"
-            stroke="black"
-          />
-          <rect
-            id="pipe2_1a"
-            x="696"
-            y="329"
+            id="pipe2A"
+            x="815"
+            y="362"
             width="40"
             height="194"
             fill="#E1E1E1"
           />
-          <rect id="pipe3_5" x="243" width="40" height="68" fill="#E1E1E1" />
+          <path
+            id="pipe3_5"
+            d="M239 331H254C267.807 331 279 342.193 279 356V416H239V331Z"
+            fill="#E1E1E1"
+          />
           <rect
             id="pipe1_1"
-            x="243"
-            y="329"
+            x="239"
+            y="713"
             width="40"
-            height="71"
+            height="94"
             fill="#E1E1E1"
           />
-          <rect id="pipe1_3" x="520" width="40" height="433" fill="#E1E1E1" />
-          <path id="pipe2_1b" d="M805 329H845V402H805V329Z" fill="#E1E1E1" />
-          <path id="pipe3_1" d="M804 785H844V863H804V785Z" fill="#E1E1E1" />
-          <path id="pipe3_3" d="M0 0H40V862H0V0Z" fill="#E1E1E1" />
-          <path id="pipe2_3" d="M805 402H845V523H805V402Z" fill="#E1E1E1" />
           <rect
-            id="pipe2_1c"
-            x="914"
-            y="329"
+            id="pipe1_3A"
+            x="478"
+            y="750"
             width="40"
-            height="194"
+            height="65"
+            fill="#E1E1E1"
+          />
+          <rect
+            id="pipe1_3B"
+            x="576"
+            y="750"
+            width="40"
+            height="65"
+            fill="#E1E1E1"
+          />
+          <rect
+            id="pipe1_3C"
+            x="673"
+            y="750"
+            width="40"
+            height="65"
             fill="#E1E1E1"
           />
           <rect
             id="startContainer"
-            x="106.5"
-            y="68.5"
+            x="98.5"
+            y="452.5"
             width="312"
             height="260"
             fill="white"
             stroke="black"
           />
           <rect
+            id="helpContainerA"
+            x="780.5"
+            y="152.5"
+            width="108"
+            height="209"
+            fill="white"
+            stroke="black"
+          />
+          <rect
+            id="helpWaterA"
+            x="780.5"
+            y="273.5"
+            width="108"
+            height="88"
+            fill="#0AD3FF"
+            stroke="black"
+          />
+          <path
+            id="pipe3_2"
+            d="M1 888H966V899C966 912.807 954.807 924 941 924H26C12.1929 924 1 912.807 1 899V888Z"
+            fill="#E1E1E1"
+          />
+          <path
+            id="pipe1_2"
+            d="M239 807H713V818C713 831.807 701.807 843 688 843H264C250.193 843 239 831.807 239 818V807Z"
+            fill="#E1E1E1"
+          />
+          <path
+            id="pipe1_5B"
+            d="M581 70C581 56.1929 592.193 45 606 45H929V75H581V70Z"
+            fill="#B8B8B8"
+          />
+          <path
+            id="pipe1_6B"
+            d="M929 45H934C947.807 45 959 56.1929 959 70V152H929V45Z"
+            fill="#B8B8B8"
+          />
+          <path
+            id="pipe1_6C"
+            d="M1037 90H1042C1055.81 90 1067 101.193 1067 115V152H1037V90Z"
+            fill="#E1E1E1"
+          />
+          <g id="askMain">
+            <circle
+              id="EllipseAskMain"
+              cx="441.5"
+              cy="469.5"
+              r="17.5"
+              fill="#298E33"
+            />
+            <path
+              id="?"
+              d="M442.496 472.879H439.695C439.703 472.168 439.762 471.559 439.871 471.051C439.988 470.543 440.18 470.086 440.445 469.68C440.711 469.266 441.07 468.844 441.523 468.414C441.883 468.078 442.203 467.762 442.484 467.465C442.773 467.16 443 466.844 443.164 466.516C443.328 466.18 443.41 465.801 443.41 465.379C443.41 464.902 443.332 464.504 443.176 464.184C443.027 463.863 442.805 463.621 442.508 463.457C442.219 463.285 441.855 463.199 441.418 463.199C441.059 463.199 440.719 463.273 440.398 463.422C440.078 463.57 439.82 463.801 439.625 464.113C439.43 464.418 439.324 464.816 439.309 465.309H436.203C436.227 464.285 436.469 463.434 436.93 462.754C437.391 462.066 438.012 461.555 438.793 461.219C439.574 460.875 440.449 460.703 441.418 460.703C442.488 460.703 443.402 460.883 444.16 461.242C444.926 461.594 445.508 462.109 445.906 462.789C446.312 463.469 446.516 464.289 446.516 465.25C446.516 465.938 446.383 466.555 446.117 467.102C445.852 467.641 445.5 468.145 445.062 468.613C444.625 469.082 444.152 469.555 443.645 470.031C443.199 470.43 442.898 470.855 442.742 471.309C442.586 471.762 442.504 472.285 442.496 472.879ZM439.402 476.523C439.402 476.055 439.559 475.664 439.871 475.352C440.191 475.039 440.621 474.883 441.16 474.883C441.699 474.883 442.125 475.039 442.438 475.352C442.758 475.664 442.918 476.055 442.918 476.523C442.918 476.977 442.758 477.359 442.438 477.672C442.125 477.984 441.699 478.141 441.16 478.141C440.621 478.141 440.191 477.984 439.871 477.672C439.559 477.359 439.402 476.977 439.402 476.523Z"
+              fill="white"
+            />
+          </g>
+          <g id="askFinalPomp">
+            <circle
+              id="EllipseAskFinalPomp"
+              cx="313.5"
+              cy="398.5"
+              r="17.5"
+              fill="#298E33"
+            />
+            <path
+              id="?_2"
+              d="M314.496 401.879H311.695C311.703 401.168 311.762 400.559 311.871 400.051C311.988 399.543 312.18 399.086 312.445 398.68C312.711 398.266 313.07 397.844 313.523 397.414C313.883 397.078 314.203 396.762 314.484 396.465C314.773 396.16 315 395.844 315.164 395.516C315.328 395.18 315.41 394.801 315.41 394.379C315.41 393.902 315.332 393.504 315.176 393.184C315.027 392.863 314.805 392.621 314.508 392.457C314.219 392.285 313.855 392.199 313.418 392.199C313.059 392.199 312.719 392.273 312.398 392.422C312.078 392.57 311.82 392.801 311.625 393.113C311.43 393.418 311.324 393.816 311.309 394.309H308.203C308.227 393.285 308.469 392.434 308.93 391.754C309.391 391.066 310.012 390.555 310.793 390.219C311.574 389.875 312.449 389.703 313.418 389.703C314.488 389.703 315.402 389.883 316.16 390.242C316.926 390.594 317.508 391.109 317.906 391.789C318.312 392.469 318.516 393.289 318.516 394.25C318.516 394.938 318.383 395.555 318.117 396.102C317.852 396.641 317.5 397.145 317.062 397.613C316.625 398.082 316.152 398.555 315.645 399.031C315.199 399.43 314.898 399.855 314.742 400.309C314.586 400.762 314.504 401.285 314.496 401.879ZM311.402 405.523C311.402 405.055 311.559 404.664 311.871 404.352C312.191 404.039 312.621 403.883 313.16 403.883C313.699 403.883 314.125 404.039 314.438 404.352C314.758 404.664 314.918 405.055 314.918 405.523C314.918 405.977 314.758 406.359 314.438 406.672C314.125 406.984 313.699 407.141 313.16 407.141C312.621 407.141 312.191 406.984 311.871 406.672C311.559 406.359 311.402 405.977 311.402 405.523Z"
+              fill="white"
+            />
+          </g>
+          <g id="askFinalContainer">
+            <circle
+              id="EllipseAskFinalContainer"
+              cx="1137.5"
+              cy="566.5"
+              r="17.5"
+              fill="#298E33"
+            />
+            <path
+              id="?_3"
+              d="M1138.5 569.879H1135.7C1135.7 569.168 1135.76 568.559 1135.87 568.051C1135.99 567.543 1136.18 567.086 1136.45 566.68C1136.71 566.266 1137.07 565.844 1137.52 565.414C1137.88 565.078 1138.2 564.762 1138.48 564.465C1138.77 564.16 1139 563.844 1139.16 563.516C1139.33 563.18 1139.41 562.801 1139.41 562.379C1139.41 561.902 1139.33 561.504 1139.18 561.184C1139.03 560.863 1138.8 560.621 1138.51 560.457C1138.22 560.285 1137.86 560.199 1137.42 560.199C1137.06 560.199 1136.72 560.273 1136.4 560.422C1136.08 560.57 1135.82 560.801 1135.62 561.113C1135.43 561.418 1135.32 561.816 1135.31 562.309H1132.2C1132.23 561.285 1132.47 560.434 1132.93 559.754C1133.39 559.066 1134.01 558.555 1134.79 558.219C1135.57 557.875 1136.45 557.703 1137.42 557.703C1138.49 557.703 1139.4 557.883 1140.16 558.242C1140.93 558.594 1141.51 559.109 1141.91 559.789C1142.31 560.469 1142.52 561.289 1142.52 562.25C1142.52 562.938 1142.38 563.555 1142.12 564.102C1141.85 564.641 1141.5 565.145 1141.06 565.613C1140.62 566.082 1140.15 566.555 1139.64 567.031C1139.2 567.43 1138.9 567.855 1138.74 568.309C1138.59 568.762 1138.5 569.285 1138.5 569.879ZM1135.4 573.523C1135.4 573.055 1135.56 572.664 1135.87 572.352C1136.19 572.039 1136.62 571.883 1137.16 571.883C1137.7 571.883 1138.12 572.039 1138.44 572.352C1138.76 572.664 1138.92 573.055 1138.92 573.523C1138.92 573.977 1138.76 574.359 1138.44 574.672C1138.12 574.984 1137.7 575.141 1137.16 575.141C1136.62 575.141 1136.19 574.984 1135.87 574.672C1135.56 574.359 1135.4 573.977 1135.4 573.523Z"
+              fill="white"
+            />
+          </g>
+          <path
+            id="pipe1_6A"
+            d="M820 0H825C838.807 0 850 11.1929 850 25V152H820V0Z"
+            fill="#848484"
+          />
+          <g id="Engine">
+            <rect
+              id="engine"
+              x="205"
+              y="125.5"
+              width="190.086"
+              height="90"
+              rx="9.5"
+              fill="#A76D16"
+              stroke="black"
+            />
+            <rect
+              id="switch7"
+              x="215"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+            <rect
+              id="switch6"
+              x="238"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+            <rect
+              id="switch5"
+              x="261"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+            <rect
+              id="switch4"
+              x="284"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+            <rect
+              id="switch3"
+              x="320"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+            <rect
+              id="switch2"
+              x="343"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+            <rect
+              id="switch1"
+              x="366"
+              y="148"
+              width="19"
+              height="45"
+              rx="5"
+              fill="#D9D9D9"
+            />
+          </g>
+          {/* <g id="finalWater" filter="url(#filter0_d_502_65)">
+          <rect x="780" y="657" width="327" height="158" fill="#10C6EE"/>
+          <rect x="780.5" y="657.5" width="326" height="157" stroke="black"/>
+        </g> */}
+          <rect
+            id="finalWater"
+            x="780.5"
+            y="657.5"
+            width="326"
+            height="146"
+            fill="#0AD3FF"
+            stroke="black"
+          />
+          <path id="pipe1_4A" d="M483 30H513V703H483V30Z" fill="#848484" />
+          <rect
+            id="pipe1_4B"
+            x="581"
+            y="75"
+            width="30"
+            height="642"
+            fill="#B8B8B8"
+          />
+          <path
+            id="pipe1_4C"
+            d="M678 115C678 101.193 689.193 90 703 90H708V710H678V115Z"
+            fill="#E1E1E1"
+          />
+          <path
+            id="pipe3_3"
+            d="M0 356C0 342.193 11.1929 331 25 331H40V894H0V356Z"
+            fill="#E1E1E1"
+          />
+          <path id="pipe3_1" d="M926 815H966V888H926V815Z" fill="#E1E1E1" />
+          <path id="pipe2B" d="M923 362H963V556H923V362Z" fill="#E1E1E1" />
+          <path id="pipe2C" d="M1033 361H1073V555H1033V361Z" fill="#E1E1E1" />
+          <rect
             id="startWater"
-            x="106.5"
-            y="182.5"
+            x="98.5"
+            y="566.5"
             width="312"
             height="146"
             fill="#0AD3FF"
             stroke="black"
           />
           <rect
-            id="helpContainerA"
-            x="661.5"
-            y="68.5"
-            width="108"
-            height="260"
-            fill="white"
-            stroke="black"
-          />
-          <rect
-            id="helpWaterA"
-            x="661.5"
-            y="171.5"
-            width="108"
-            height="157"
-            fill="#0AD3FF"
-            stroke="black"
-          />
-          <rect
             id="helpWaterB"
-            x="770.5"
-            y="171.5"
+            x="888.5"
+            y="273.5"
             width="108"
-            height="157"
+            height="88"
             fill="#10C6EE"
             stroke="black"
           />
           <rect
             id="helpWaterC"
-            x="879.5"
-            y="171.5"
+            x="997.5"
+            y="273.5"
             width="108"
-            height="157"
+            height="88"
             fill="#0AD3FF"
             stroke="black"
           />
-          <rect
-            id="Rectangle 42"
-            y="862"
-            width="824"
-            height="36"
-            fill="#C4C4C4"
-          />
-          <rect id="pipe3_2" y="862" width="845" height="36" fill="#E1E1E1" />
-          <rect
-            id="pipe1_2"
-            x="243"
-            y="396"
-            width="277"
-            height="36"
-            fill="#E1E1E1"
-          />
-          <rect id="pipe3_4" x="36" width="207" height="36" fill="#E1E1E1" />
-          <rect id="pipe1_4" x="560" width="176" height="36" fill="#E1E1E1" />
-          <rect id="pipe1_5" x="736" width="109" height="36" fill="#E1E1E1" />
-          <rect id="pipe1_6" x="845" width="109" height="36" fill="#E1E1E1" />
+          <path id="pipe3_4" d="M40 331H139.5H239V367H40V331Z" fill="#E1E1E1" />
           <path
-            id="pompa3"
-            d="M291.5 47.5C291.5 63.5243 278.732 76.5 263 76.5C247.268 76.5 234.5 63.5243 234.5 47.5C234.5 31.4756 247.268 18.5 263 18.5C278.732 18.5 291.5 31.4756 291.5 47.5Z"
-            fill="red"
-            stroke="black"
+            id="pipe1_5A"
+            d="M483 25C483 11.1929 494.193 0 508 0H820V30H483V25Z"
+            fill="#848484"
           />
           <path
             id="pompa2A"
-            d="M744.5 503.5C744.5 519.524 731.732 532.5 716 532.5C700.268 532.5 687.5 519.524 687.5 503.5C687.5 487.476 700.268 474.5 716 474.5C731.732 474.5 744.5 487.476 744.5 503.5Z"
+            d="M863.5 529.5C863.5 545.524 850.732 558.5 835 558.5C819.268 558.5 806.5 545.524 806.5 529.5C806.5 513.476 819.268 500.5 835 500.5C850.732 500.5 863.5 513.476 863.5 529.5Z"
             fill="red"
             stroke="black"
           />
           <path
             id="pompa2B"
-            d="M852.5 503.5C852.5 519.524 839.732 532.5 824 532.5C808.268 532.5 795.5 519.524 795.5 503.5C795.5 487.476 808.268 474.5 824 474.5C839.732 474.5 852.5 487.476 852.5 503.5Z"
+            d="M971.5 529.5C971.5 545.524 958.732 558.5 943 558.5C927.268 558.5 914.5 545.524 914.5 529.5C914.5 513.476 927.268 500.5 943 500.5C958.732 500.5 971.5 513.476 971.5 529.5Z"
             fill="red"
             stroke="black"
           />
           <path
             id="pompa2C"
-            d="M962.5 503.5C962.5 519.524 949.732 532.5 934 532.5C918.268 532.5 905.5 519.524 905.5 503.5C905.5 487.476 918.268 474.5 934 474.5C949.732 474.5 962.5 487.476 962.5 503.5Z"
+            d="M1081.5 529.5C1081.5 545.524 1068.73 558.5 1053 558.5C1037.27 558.5 1024.5 545.524 1024.5 529.5C1024.5 513.476 1037.27 500.5 1053 500.5C1068.73 500.5 1081.5 513.476 1081.5 529.5Z"
             fill="red"
             stroke="black"
           />
-          <path
-            id="pompa1C"
-            d="M962.5 47.5C962.5 63.5243 949.732 76.5 934 76.5C918.268 76.5 905.5 63.5243 905.5 47.5C905.5 31.4756 918.268 18.5 934 18.5C949.732 18.5 962.5 31.4756 962.5 47.5Z"
-            fill="red"
-            stroke="black"
-          />
-          <path
-            id="pompa1A"
-            d="M744.5 47.5C744.5 63.5243 731.732 76.5 716 76.5C700.268 76.5 687.5 63.5243 687.5 47.5C687.5 31.4756 700.268 18.5 716 18.5C731.732 18.5 744.5 31.4756 744.5 47.5Z"
-            fill="red"
-            stroke="black"
-          />
-          <path
-            id="pompa1B"
-            d="M853.5 47.5C853.5 63.5243 840.732 76.5 825 76.5C809.268 76.5 796.5 63.5243 796.5 47.5C796.5 31.4756 809.268 18.5 825 18.5C840.732 18.5 853.5 31.4756 853.5 47.5Z"
-            fill="red"
-            stroke="black"
-          />
-          <g id="askMain">
+          <g id="askEngine">
             <circle
-              id="Ellipse 1"
-              cx="451.5"
-              cy="86.5"
-              r="17.5"
-              fill="#298E33"
-            />
-            <path
-              id="?"
-              d="M452.496 89.8789H449.695C449.703 89.168 449.762 88.5586 449.871 88.0508C449.988 87.543 450.18 87.0859 450.445 86.6797C450.711 86.2656 451.07 85.8438 451.523 85.4141C451.883 85.0781 452.203 84.7617 452.484 84.4648C452.773 84.1602 453 83.8438 453.164 83.5156C453.328 83.1797 453.41 82.8008 453.41 82.3789C453.41 81.9023 453.332 81.5039 453.176 81.1836C453.027 80.8633 452.805 80.6211 452.508 80.457C452.219 80.2852 451.855 80.1992 451.418 80.1992C451.059 80.1992 450.719 80.2734 450.398 80.4219C450.078 80.5703 449.82 80.8008 449.625 81.1133C449.43 81.418 449.324 81.8164 449.309 82.3086H446.203C446.227 81.2852 446.469 80.4336 446.93 79.7539C447.391 79.0664 448.012 78.5547 448.793 78.2188C449.574 77.875 450.449 77.7031 451.418 77.7031C452.488 77.7031 453.402 77.8828 454.16 78.2422C454.926 78.5938 455.508 79.1094 455.906 79.7891C456.312 80.4688 456.516 81.2891 456.516 82.25C456.516 82.9375 456.383 83.5547 456.117 84.1016C455.852 84.6406 455.5 85.1445 455.062 85.6133C454.625 86.082 454.152 86.5547 453.645 87.0312C453.199 87.4297 452.898 87.8555 452.742 88.3086C452.586 88.7617 452.504 89.2852 452.496 89.8789ZM449.402 93.5234C449.402 93.0547 449.559 92.6641 449.871 92.3516C450.191 92.0391 450.621 91.8828 451.16 91.8828C451.699 91.8828 452.125 92.0391 452.438 92.3516C452.758 92.6641 452.918 93.0547 452.918 93.5234C452.918 93.9766 452.758 94.3594 452.438 94.6719C452.125 94.9844 451.699 95.1406 451.16 95.1406C450.621 95.1406 450.191 94.9844 449.871 94.6719C449.559 94.3594 449.402 93.9766 449.402 93.5234Z"
-              fill="white"
-            />
-          </g>
-          <g id="askPomp3">
-            <circle
-              id="Ellipse 1_2"
-              cx="881.5"
-              cy="866.5"
-              r="17.5"
-              fill="#298E33"
-            />
-            <path
-              id="?_2"
-              d="M882.496 869.879H879.695C879.703 869.168 879.762 868.559 879.871 868.051C879.988 867.543 880.18 867.086 880.445 866.68C880.711 866.266 881.07 865.844 881.523 865.414C881.883 865.078 882.203 864.762 882.484 864.465C882.773 864.16 883 863.844 883.164 863.516C883.328 863.18 883.41 862.801 883.41 862.379C883.41 861.902 883.332 861.504 883.176 861.184C883.027 860.863 882.805 860.621 882.508 860.457C882.219 860.285 881.855 860.199 881.418 860.199C881.059 860.199 880.719 860.273 880.398 860.422C880.078 860.57 879.82 860.801 879.625 861.113C879.43 861.418 879.324 861.816 879.309 862.309H876.203C876.227 861.285 876.469 860.434 876.93 859.754C877.391 859.066 878.012 858.555 878.793 858.219C879.574 857.875 880.449 857.703 881.418 857.703C882.488 857.703 883.402 857.883 884.16 858.242C884.926 858.594 885.508 859.109 885.906 859.789C886.312 860.469 886.516 861.289 886.516 862.25C886.516 862.938 886.383 863.555 886.117 864.102C885.852 864.641 885.5 865.145 885.062 865.613C884.625 866.082 884.152 866.555 883.645 867.031C883.199 867.43 882.898 867.855 882.742 868.309C882.586 868.762 882.504 869.285 882.496 869.879ZM879.402 873.523C879.402 873.055 879.559 872.664 879.871 872.352C880.191 872.039 880.621 871.883 881.16 871.883C881.699 871.883 882.125 872.039 882.438 872.352C882.758 872.664 882.918 873.055 882.918 873.523C882.918 873.977 882.758 874.359 882.438 874.672C882.125 874.984 881.699 875.141 881.16 875.141C880.621 875.141 880.191 874.984 879.871 874.672C879.559 874.359 879.402 873.977 879.402 873.523Z"
-              fill="white"
-            />
-          </g>
-          <g id="askEngine3">
-            <circle
-              id="Ellipse 1_3"
-              cx="577.5"
-              cy="540.5"
-              r="17.5"
-              fill="#298E33"
-            />
-            <path
-              id="?_3"
-              d="M578.496 543.879H575.695C575.703 543.168 575.762 542.559 575.871 542.051C575.988 541.543 576.18 541.086 576.445 540.68C576.711 540.266 577.07 539.844 577.523 539.414C577.883 539.078 578.203 538.762 578.484 538.465C578.773 538.16 579 537.844 579.164 537.516C579.328 537.18 579.41 536.801 579.41 536.379C579.41 535.902 579.332 535.504 579.176 535.184C579.027 534.863 578.805 534.621 578.508 534.457C578.219 534.285 577.855 534.199 577.418 534.199C577.059 534.199 576.719 534.273 576.398 534.422C576.078 534.57 575.82 534.801 575.625 535.113C575.43 535.418 575.324 535.816 575.309 536.309H572.203C572.227 535.285 572.469 534.434 572.93 533.754C573.391 533.066 574.012 532.555 574.793 532.219C575.574 531.875 576.449 531.703 577.418 531.703C578.488 531.703 579.402 531.883 580.16 532.242C580.926 532.594 581.508 533.109 581.906 533.789C582.312 534.469 582.516 535.289 582.516 536.25C582.516 536.938 582.383 537.555 582.117 538.102C581.852 538.641 581.5 539.145 581.062 539.613C580.625 540.082 580.152 540.555 579.645 541.031C579.199 541.43 578.898 541.855 578.742 542.309C578.586 542.762 578.504 543.285 578.496 543.879ZM575.402 547.523C575.402 547.055 575.559 546.664 575.871 546.352C576.191 546.039 576.621 545.883 577.16 545.883C577.699 545.883 578.125 546.039 578.438 546.352C578.758 546.664 578.918 547.055 578.918 547.523C578.918 547.977 578.758 548.359 578.438 548.672C578.125 548.984 577.699 549.141 577.16 549.141C576.621 549.141 576.191 548.984 575.871 548.672C575.559 548.359 575.402 547.977 575.402 547.523Z"
-              fill="white"
-            />
-          </g>
-          <g id="askFinalContainer">
-            <circle
-              id="Ellipse 1_4"
-              cx="1025.5"
-              cy="540.5"
+              id="EllipseAskEngine"
+              cx="427.5"
+              cy="143.5"
               r="17.5"
               fill="#298E33"
             />
             <path
               id="?_4"
-              d="M1026.5 543.879H1023.7C1023.7 543.168 1023.76 542.559 1023.87 542.051C1023.99 541.543 1024.18 541.086 1024.45 540.68C1024.71 540.266 1025.07 539.844 1025.52 539.414C1025.88 539.078 1026.2 538.762 1026.48 538.465C1026.77 538.16 1027 537.844 1027.16 537.516C1027.33 537.18 1027.41 536.801 1027.41 536.379C1027.41 535.902 1027.33 535.504 1027.18 535.184C1027.03 534.863 1026.8 534.621 1026.51 534.457C1026.22 534.285 1025.86 534.199 1025.42 534.199C1025.06 534.199 1024.72 534.273 1024.4 534.422C1024.08 534.57 1023.82 534.801 1023.62 535.113C1023.43 535.418 1023.32 535.816 1023.31 536.309H1020.2C1020.23 535.285 1020.47 534.434 1020.93 533.754C1021.39 533.066 1022.01 532.555 1022.79 532.219C1023.57 531.875 1024.45 531.703 1025.42 531.703C1026.49 531.703 1027.4 531.883 1028.16 532.242C1028.93 532.594 1029.51 533.109 1029.91 533.789C1030.31 534.469 1030.52 535.289 1030.52 536.25C1030.52 536.938 1030.38 537.555 1030.12 538.102C1029.85 538.641 1029.5 539.145 1029.06 539.613C1028.62 540.082 1028.15 540.555 1027.64 541.031C1027.2 541.43 1026.9 541.855 1026.74 542.309C1026.59 542.762 1026.5 543.285 1026.5 543.879ZM1023.4 547.523C1023.4 547.055 1023.56 546.664 1023.87 546.352C1024.19 546.039 1024.62 545.883 1025.16 545.883C1025.7 545.883 1026.12 546.039 1026.44 546.352C1026.76 546.664 1026.92 547.055 1026.92 547.523C1026.92 547.977 1026.76 548.359 1026.44 548.672C1026.12 548.984 1025.7 549.141 1025.16 549.141C1024.62 549.141 1024.19 548.984 1023.87 548.672C1023.56 548.359 1023.4 547.977 1023.4 547.523Z"
+              d="M428.496 145.879H425.695C425.703 145.168 425.762 144.559 425.871 144.051C425.988 143.543 426.18 143.086 426.445 142.68C426.711 142.266 427.07 141.844 427.523 141.414C427.883 141.078 428.203 140.762 428.484 140.465C428.773 140.16 429 139.844 429.164 139.516C429.328 139.18 429.41 138.801 429.41 138.379C429.41 137.902 429.332 137.504 429.176 137.184C429.027 136.863 428.805 136.621 428.508 136.457C428.219 136.285 427.855 136.199 427.418 136.199C427.059 136.199 426.719 136.273 426.398 136.422C426.078 136.57 425.82 136.801 425.625 137.113C425.43 137.418 425.324 137.816 425.309 138.309H422.203C422.227 137.285 422.469 136.434 422.93 135.754C423.391 135.066 424.012 134.555 424.793 134.219C425.574 133.875 426.449 133.703 427.418 133.703C428.488 133.703 429.402 133.883 430.16 134.242C430.926 134.594 431.508 135.109 431.906 135.789C432.312 136.469 432.516 137.289 432.516 138.25C432.516 138.938 432.383 139.555 432.117 140.102C431.852 140.641 431.5 141.145 431.062 141.613C430.625 142.082 430.152 142.555 429.645 143.031C429.199 143.43 428.898 143.855 428.742 144.309C428.586 144.762 428.504 145.285 428.496 145.879ZM425.402 149.523C425.402 149.055 425.559 148.664 425.871 148.352C426.191 148.039 426.621 147.883 427.16 147.883C427.699 147.883 428.125 148.039 428.438 148.352C428.758 148.664 428.918 149.055 428.918 149.523C428.918 149.977 428.758 150.359 428.438 150.672C428.125 150.984 427.699 151.141 427.16 151.141C426.621 151.141 426.191 150.984 425.871 150.672C425.559 150.359 425.402 149.977 425.402 149.523Z"
               fill="white"
             />
           </g>
-          <g id="askHelpContainer">
+          <g id="askStop">
             <circle
-              id="Ellipse 1_5"
-              cx="1025.5"
-              cy="101.5"
+              id="EllipseAskStop"
+              cx="122.5"
+              cy="143.5"
               r="17.5"
               fill="#298E33"
             />
             <path
               id="?_5"
-              d="M1026.5 104.879H1023.7C1023.7 104.168 1023.76 103.559 1023.87 103.051C1023.99 102.543 1024.18 102.086 1024.45 101.68C1024.71 101.266 1025.07 100.844 1025.52 100.414C1025.88 100.078 1026.2 99.7617 1026.48 99.4648C1026.77 99.1602 1027 98.8438 1027.16 98.5156C1027.33 98.1797 1027.41 97.8008 1027.41 97.3789C1027.41 96.9023 1027.33 96.5039 1027.18 96.1836C1027.03 95.8633 1026.8 95.6211 1026.51 95.457C1026.22 95.2852 1025.86 95.1992 1025.42 95.1992C1025.06 95.1992 1024.72 95.2734 1024.4 95.4219C1024.08 95.5703 1023.82 95.8008 1023.62 96.1133C1023.43 96.418 1023.32 96.8164 1023.31 97.3086H1020.2C1020.23 96.2852 1020.47 95.4336 1020.93 94.7539C1021.39 94.0664 1022.01 93.5547 1022.79 93.2188C1023.57 92.875 1024.45 92.7031 1025.42 92.7031C1026.49 92.7031 1027.4 92.8828 1028.16 93.2422C1028.93 93.5938 1029.51 94.1094 1029.91 94.7891C1030.31 95.4688 1030.52 96.2891 1030.52 97.25C1030.52 97.9375 1030.38 98.5547 1030.12 99.1016C1029.85 99.6406 1029.5 100.145 1029.06 100.613C1028.62 101.082 1028.15 101.555 1027.64 102.031C1027.2 102.43 1026.9 102.855 1026.74 103.309C1026.59 103.762 1026.5 104.285 1026.5 104.879ZM1023.4 108.523C1023.4 108.055 1023.56 107.664 1023.87 107.352C1024.19 107.039 1024.62 106.883 1025.16 106.883C1025.7 106.883 1026.12 107.039 1026.44 107.352C1026.76 107.664 1026.92 108.055 1026.92 108.523C1026.92 108.977 1026.76 109.359 1026.44 109.672C1026.12 109.984 1025.7 110.141 1025.16 110.141C1024.62 110.141 1024.19 109.984 1023.87 109.672C1023.56 109.359 1023.4 108.977 1023.4 108.523Z"
+              d="M123.496 145.879H120.695C120.703 145.168 120.762 144.559 120.871 144.051C120.988 143.543 121.18 143.086 121.445 142.68C121.711 142.266 122.07 141.844 122.523 141.414C122.883 141.078 123.203 140.762 123.484 140.465C123.773 140.16 124 139.844 124.164 139.516C124.328 139.18 124.41 138.801 124.41 138.379C124.41 137.902 124.332 137.504 124.176 137.184C124.027 136.863 123.805 136.621 123.508 136.457C123.219 136.285 122.855 136.199 122.418 136.199C122.059 136.199 121.719 136.273 121.398 136.422C121.078 136.57 120.82 136.801 120.625 137.113C120.43 137.418 120.324 137.816 120.309 138.309H117.203C117.227 137.285 117.469 136.434 117.93 135.754C118.391 135.066 119.012 134.555 119.793 134.219C120.574 133.875 121.449 133.703 122.418 133.703C123.488 133.703 124.402 133.883 125.16 134.242C125.926 134.594 126.508 135.109 126.906 135.789C127.312 136.469 127.516 137.289 127.516 138.25C127.516 138.938 127.383 139.555 127.117 140.102C126.852 140.641 126.5 141.145 126.062 141.613C125.625 142.082 125.152 142.555 124.645 143.031C124.199 143.43 123.898 143.855 123.742 144.309C123.586 144.762 123.504 145.285 123.496 145.879ZM120.402 149.523C120.402 149.055 120.559 148.664 120.871 148.352C121.191 148.039 121.621 147.883 122.16 147.883C122.699 147.883 123.125 148.039 123.438 148.352C123.758 148.664 123.918 149.055 123.918 149.523C123.918 149.977 123.758 150.359 123.438 150.672C123.125 150.984 122.699 151.141 122.16 151.141C121.621 151.141 121.191 150.984 120.871 150.672C120.559 150.359 120.402 149.977 120.402 149.523Z"
               fill="white"
             />
           </g>
-          <g id="askPomp">
+          <g id="askHelpContainer">
             <circle
-              id="Ellipse 1_6"
-              cx="995.5"
-              cy="17.5"
+              id="EllipseAskHelpContainer"
+              cx="1137.5"
+              cy="169.5"
               r="17.5"
               fill="#298E33"
             />
             <path
               id="?_6"
-              d="M996.496 20.8789H993.695C993.703 20.168 993.762 19.5586 993.871 19.0508C993.988 18.543 994.18 18.0859 994.445 17.6797C994.711 17.2656 995.07 16.8438 995.523 16.4141C995.883 16.0781 996.203 15.7617 996.484 15.4648C996.773 15.1602 997 14.8438 997.164 14.5156C997.328 14.1797 997.41 13.8008 997.41 13.3789C997.41 12.9023 997.332 12.5039 997.176 12.1836C997.027 11.8633 996.805 11.6211 996.508 11.457C996.219 11.2852 995.855 11.1992 995.418 11.1992C995.059 11.1992 994.719 11.2734 994.398 11.4219C994.078 11.5703 993.82 11.8008 993.625 12.1133C993.43 12.418 993.324 12.8164 993.309 13.3086H990.203C990.227 12.2852 990.469 11.4336 990.93 10.7539C991.391 10.0664 992.012 9.55469 992.793 9.21875C993.574 8.875 994.449 8.70312 995.418 8.70312C996.488 8.70312 997.402 8.88281 998.16 9.24219C998.926 9.59375 999.508 10.1094 999.906 10.7891C1000.31 11.4688 1000.52 12.2891 1000.52 13.25C1000.52 13.9375 1000.38 14.5547 1000.12 15.1016C999.852 15.6406 999.5 16.1445 999.062 16.6133C998.625 17.082 998.152 17.5547 997.645 18.0312C997.199 18.4297 996.898 18.8555 996.742 19.3086C996.586 19.7617 996.504 20.2852 996.496 20.8789ZM993.402 24.5234C993.402 24.0547 993.559 23.6641 993.871 23.3516C994.191 23.0391 994.621 22.8828 995.16 22.8828C995.699 22.8828 996.125 23.0391 996.438 23.3516C996.758 23.6641 996.918 24.0547 996.918 24.5234C996.918 24.9766 996.758 25.3594 996.438 25.6719C996.125 25.9844 995.699 26.1406 995.16 26.1406C994.621 26.1406 994.191 25.9844 993.871 25.6719C993.559 25.3594 993.402 24.9766 993.402 24.5234Z"
+              d="M1138.5 172.879H1135.7C1135.7 172.168 1135.76 171.559 1135.87 171.051C1135.99 170.543 1136.18 170.086 1136.45 169.68C1136.71 169.266 1137.07 168.844 1137.52 168.414C1137.88 168.078 1138.2 167.762 1138.48 167.465C1138.77 167.16 1139 166.844 1139.16 166.516C1139.33 166.18 1139.41 165.801 1139.41 165.379C1139.41 164.902 1139.33 164.504 1139.18 164.184C1139.03 163.863 1138.8 163.621 1138.51 163.457C1138.22 163.285 1137.86 163.199 1137.42 163.199C1137.06 163.199 1136.72 163.273 1136.4 163.422C1136.08 163.57 1135.82 163.801 1135.62 164.113C1135.43 164.418 1135.32 164.816 1135.31 165.309H1132.2C1132.23 164.285 1132.47 163.434 1132.93 162.754C1133.39 162.066 1134.01 161.555 1134.79 161.219C1135.57 160.875 1136.45 160.703 1137.42 160.703C1138.49 160.703 1139.4 160.883 1140.16 161.242C1140.93 161.594 1141.51 162.109 1141.91 162.789C1142.31 163.469 1142.52 164.289 1142.52 165.25C1142.52 165.938 1142.38 166.555 1142.12 167.102C1141.85 167.641 1141.5 168.145 1141.06 168.613C1140.62 169.082 1140.15 169.555 1139.64 170.031C1139.2 170.43 1138.9 170.855 1138.74 171.309C1138.59 171.762 1138.5 172.285 1138.5 172.879ZM1135.4 176.523C1135.4 176.055 1135.56 175.664 1135.87 175.352C1136.19 175.039 1136.62 174.883 1137.16 174.883C1137.7 174.883 1138.12 175.039 1138.44 175.352C1138.76 175.664 1138.92 176.055 1138.92 176.523C1138.92 176.977 1138.76 177.359 1138.44 177.672C1138.12 177.984 1137.7 178.141 1137.16 178.141C1136.62 178.141 1136.19 177.984 1135.87 177.672C1135.56 177.359 1135.4 176.977 1135.4 176.523Z"
               fill="white"
             />
           </g>
+          <g id="askPomp">
+            <circle
+              id="EllipseAskPomp"
+              cx="546.5"
+              cy="681.5"
+              r="17.5"
+              fill="#298E33"
+            />
+            <path
+              id="?_7"
+              d="M547.496 684.879H544.695C544.703 684.168 544.762 683.559 544.871 683.051C544.988 682.543 545.18 682.086 545.445 681.68C545.711 681.266 546.07 680.844 546.523 680.414C546.883 680.078 547.203 679.762 547.484 679.465C547.773 679.16 548 678.844 548.164 678.516C548.328 678.18 548.41 677.801 548.41 677.379C548.41 676.902 548.332 676.504 548.176 676.184C548.027 675.863 547.805 675.621 547.508 675.457C547.219 675.285 546.855 675.199 546.418 675.199C546.059 675.199 545.719 675.273 545.398 675.422C545.078 675.57 544.82 675.801 544.625 676.113C544.43 676.418 544.324 676.816 544.309 677.309H541.203C541.227 676.285 541.469 675.434 541.93 674.754C542.391 674.066 543.012 673.555 543.793 673.219C544.574 672.875 545.449 672.703 546.418 672.703C547.488 672.703 548.402 672.883 549.16 673.242C549.926 673.594 550.508 674.109 550.906 674.789C551.312 675.469 551.516 676.289 551.516 677.25C551.516 677.938 551.383 678.555 551.117 679.102C550.852 679.641 550.5 680.145 550.062 680.613C549.625 681.082 549.152 681.555 548.645 682.031C548.199 682.43 547.898 682.855 547.742 683.309C547.586 683.762 547.504 684.285 547.496 684.879ZM544.402 688.523C544.402 688.055 544.559 687.664 544.871 687.352C545.191 687.039 545.621 686.883 546.16 686.883C546.699 686.883 547.125 687.039 547.438 687.352C547.758 687.664 547.918 688.055 547.918 688.523C547.918 688.977 547.758 689.359 547.438 689.672C547.125 689.984 546.699 690.141 546.16 690.141C545.621 690.141 545.191 689.984 544.871 689.672C544.559 689.359 544.402 688.977 544.402 688.523Z"
+              fill="white"
+            />
+          </g>
+          <path
+            id="pompa3"
+            d="M290.5 434.5C290.5 450.524 277.732 463.5 262 463.5C246.268 463.5 233.5 450.524 233.5 434.5C233.5 418.476 246.268 405.5 262 405.5C277.732 405.5 290.5 418.476 290.5 434.5Z"
+            fill="red"
+            stroke="black"
+          />
+          <path
+            id="pompa1A"
+            d="M526.5 728.5C526.5 744.524 513.732 757.5 498 757.5C482.268 757.5 469.5 744.524 469.5 728.5C469.5 712.476 482.268 699.5 498 699.5C513.732 699.5 526.5 712.476 526.5 728.5Z"
+            fill="red"
+            stroke="black"
+          />
+          <path
+            id="pompa1B"
+            d="M624.5 730.5C624.5 746.524 611.732 759.5 596 759.5C580.268 759.5 567.5 746.524 567.5 730.5C567.5 714.476 580.268 701.5 596 701.5C611.732 701.5 624.5 714.476 624.5 730.5Z"
+            fill="red"
+            stroke="black"
+          />
+          <path
+            id="pompa1C"
+            d="M721.5 728.5C721.5 744.524 708.732 757.5 693 757.5C677.268 757.5 664.5 744.524 664.5 728.5C664.5 712.476 677.268 699.5 693 699.5C708.732 699.5 721.5 712.476 721.5 728.5Z"
+            fill="red"
+            stroke="black"
+          />
+          <g id="STOP">
+            <rect
+              id="stopBox"
+              x="1.5"
+              y="124.5"
+              width="90"
+              height="90"
+              rx="9.5"
+              fill="#F9E000"
+              stroke="black"
+            />
+            <path
+              id="stopButton"
+              d="M75.5 181.5C75.5 197.524 62.7321 210.5 47 210.5C31.2679 210.5 18.5 197.524 18.5 181.5C18.5 165.476 31.2679 152.5 47 152.5C62.7321 152.5 75.5 165.476 75.5 181.5Z"
+              fill="#AE1D2E"
+              stroke="black"
+            />
+            <path
+              id="STOP_2"
+              d="M28.043 143.57C28.043 143.242 27.9922 142.949 27.8906 142.691C27.7969 142.426 27.6211 142.188 27.3633 141.977C27.1133 141.758 26.7578 141.547 26.2969 141.344C25.8438 141.133 25.2578 140.914 24.5391 140.688C23.7422 140.438 23 140.156 22.3125 139.844C21.625 139.531 21.0195 139.168 20.4961 138.754C19.9805 138.34 19.5781 137.863 19.2891 137.324C19 136.777 18.8555 136.145 18.8555 135.426C18.8555 134.723 19.0039 134.082 19.3008 133.504C19.6055 132.926 20.0352 132.43 20.5898 132.016C21.1445 131.594 21.7969 131.27 22.5469 131.043C23.3047 130.816 24.1406 130.703 25.0547 130.703C26.3203 130.703 27.4141 130.934 28.3359 131.395C29.2656 131.855 29.9844 132.48 30.4922 133.27C31 134.059 31.2539 134.945 31.2539 135.93H28.043C28.043 135.398 27.9297 134.93 27.7031 134.523C27.4844 134.117 27.1484 133.797 26.6953 133.562C26.25 133.328 25.6875 133.211 25.0078 133.211C24.3516 133.211 23.8047 133.309 23.3672 133.504C22.9375 133.699 22.6133 133.965 22.3945 134.301C22.1836 134.637 22.0781 135.012 22.0781 135.426C22.0781 135.738 22.1523 136.02 22.3008 136.27C22.4492 136.512 22.6719 136.742 22.9688 136.961C23.2656 137.172 23.6328 137.371 24.0703 137.559C24.5156 137.738 25.0312 137.918 25.6172 138.098C26.5547 138.379 27.375 138.691 28.0781 139.035C28.7891 139.379 29.3789 139.77 29.8477 140.207C30.3242 140.645 30.6797 141.137 30.9141 141.684C31.1562 142.23 31.2773 142.852 31.2773 143.547C31.2773 144.281 31.1328 144.938 30.8438 145.516C30.5547 146.094 30.1406 146.586 29.6016 146.992C29.0625 147.398 28.4141 147.707 27.6562 147.918C26.9062 148.129 26.0664 148.234 25.1367 148.234C24.3086 148.234 23.4883 148.125 22.6758 147.906C21.8711 147.68 21.1406 147.344 20.4844 146.898C19.8281 146.445 19.3047 145.875 18.9141 145.188C18.5234 144.492 18.3281 143.68 18.3281 142.75H21.5625C21.5625 143.289 21.6484 143.75 21.8203 144.133C22 144.508 22.25 144.816 22.5703 145.059C22.8984 145.293 23.2812 145.465 23.7188 145.574C24.1562 145.684 24.6289 145.738 25.1367 145.738C25.793 145.738 26.332 145.648 26.7539 145.469C27.1836 145.281 27.5039 145.023 27.7148 144.695C27.9336 144.367 28.043 143.992 28.043 143.57ZM41.0859 130.938V148H37.875V130.938H41.0859ZM46.3828 130.938V133.48H32.6367V130.938H46.3828ZM62.0156 139.035V139.914C62.0156 141.203 61.8438 142.363 61.5 143.395C61.1562 144.418 60.668 145.289 60.0352 146.008C59.4023 146.727 58.6484 147.277 57.7734 147.66C56.8984 148.043 55.9258 148.234 54.8555 148.234C53.8008 148.234 52.832 148.043 51.9492 147.66C51.0742 147.277 50.3164 146.727 49.6758 146.008C49.0352 145.289 48.5391 144.418 48.1875 143.395C47.8359 142.363 47.6602 141.203 47.6602 139.914V139.035C47.6602 137.738 47.8359 136.578 48.1875 135.555C48.5391 134.531 49.0312 133.66 49.6641 132.941C50.2969 132.215 51.0508 131.66 51.9258 131.277C52.8086 130.895 53.7773 130.703 54.832 130.703C55.9023 130.703 56.875 130.895 57.75 131.277C58.625 131.66 59.3789 132.215 60.0117 132.941C60.6523 133.66 61.1445 134.531 61.4883 135.555C61.8398 136.578 62.0156 137.738 62.0156 139.035ZM58.7578 139.914V139.012C58.7578 138.082 58.6719 137.266 58.5 136.562C58.3281 135.852 58.0742 135.254 57.7383 134.77C57.4023 134.285 56.9883 133.922 56.4961 133.68C56.0039 133.43 55.4492 133.305 54.832 133.305C54.207 133.305 53.6523 133.43 53.168 133.68C52.6914 133.922 52.2852 134.285 51.9492 134.77C51.6133 135.254 51.3555 135.852 51.1758 136.562C51.0039 137.266 50.918 138.082 50.918 139.012V139.914C50.918 140.836 51.0039 141.652 51.1758 142.363C51.3555 143.074 51.6133 143.676 51.9492 144.168C52.293 144.652 52.707 145.02 53.1914 145.27C53.6758 145.52 54.2305 145.645 54.8555 145.645C55.4805 145.645 56.0352 145.52 56.5195 145.27C57.0039 145.02 57.4102 144.652 57.7383 144.168C58.0742 143.676 58.3281 143.074 58.5 142.363C58.6719 141.652 58.7578 140.836 58.7578 139.914ZM71.3086 141.777H66.9141V139.246H71.3086C72.0273 139.246 72.6094 139.129 73.0547 138.895C73.5078 138.652 73.8398 138.324 74.0508 137.91C74.2617 137.488 74.3672 137.008 74.3672 136.469C74.3672 135.945 74.2617 135.457 74.0508 135.004C73.8398 134.551 73.5078 134.184 73.0547 133.902C72.6094 133.621 72.0273 133.48 71.3086 133.48H67.9688V148H64.7461V130.938H71.3086C72.6367 130.938 73.7695 131.176 74.707 131.652C75.6523 132.121 76.3711 132.773 76.8633 133.609C77.3633 134.438 77.6133 135.383 77.6133 136.445C77.6133 137.547 77.3633 138.496 76.8633 139.293C76.3711 140.09 75.6523 140.703 74.707 141.133C73.7695 141.562 72.6367 141.777 71.3086 141.777Z"
+              fill="black"
+            />
+          </g>
         </g>
+        {/* <defs>
+      <filter id="filter0_d_502_65" x="776" y="657" width="335" height="166" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="4"/>
+      <feGaussianBlur stdDeviation="2"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_502_65"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_502_65" result="shape"/>
+      </filter>
+      </defs> */}
       </svg>
 
       <div style={visible ? styles.infoDiv : styles.hiddenInfoDiv}>
@@ -920,11 +1125,11 @@ export const Model = () => {
 const styles = {
   mainDiv: {
     backgroundColor: colorConstants.white,
-    width: '70%',
+    width: '75%',
     height: '80vh',
-    marginLeft: '45vh',
+    marginLeft: '40vh',
     marginRight: 'auto',
-    marginTop: '50px',
+    marginTop: '2%',
     paddingBottom: '1%',
     display: 'flex',
     flexDirection: 'row',

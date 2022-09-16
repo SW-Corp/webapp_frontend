@@ -1,32 +1,37 @@
 {
   "infoMainContainer": {
-    "id": "EllipseaskMain",
+    "id": "EllipseAskMain",
     "title": "Main Container",
     "text": "main"
   },
   "infoPump": {
-    "id": "EllipseaskPomp",
+    "id": "EllipseAskPomp",
     "title": "Pump",
     "text": "pump"
   },
   "infoHelpContainer": {
-    "id": "EllipseaskHelpContainer",
+    "id": "EllipseAskHelpContainer",
     "title": "Help Container",
     "text": "help"
   },
   "infoEndContainer": {
-    "id": "EllipseaskFinalContainer",
+    "id": "EllipseAskFinalContainer",
     "title": "End Container",
     "text": "end"
   },
   "infoEndPump": {
-    "id": "EllipseaskPomp3",
+    "id": "EllipseAskFinalPomp",
     "title": "End Pump",
     "text": "end pump"
   },
   "infoEngine": {
-    "id": "EllipseaskEngine3",
+    "id": "EllipseAskEngine",
     "title": "Engine",
     "text": "engine"
+  },
+  "infoStop": {
+    "id": "EllipseAskStop",
+    "title": "Stop",
+    "text": "stop"
   }
 }

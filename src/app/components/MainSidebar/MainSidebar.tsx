@@ -45,7 +45,7 @@ const stylesOpened = {
   backgroundColor: colorConstants.lightGrey,
   color: colorConstants.black,
   position: 'absolute',
-  width: '360px',
+  width: '340px',
   height: '90vh',
   font: 'Roboto',
   fontSize: '20px',

@@ -61,7 +61,7 @@ export const LoginPanel = props => {
         break;
 
       case 403:
-        window.alert('Musisz zakaktywować swoje konto przez maila');
+        window.alert('Musisz zaktywować swoje konto przez maila');
         break;
 
       case 404:
