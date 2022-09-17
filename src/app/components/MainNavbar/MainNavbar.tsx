@@ -34,6 +34,7 @@ export const MainNavbar = props => {
 
   async function handleLogOut() {
     const status = await logOut();
+    console.log(status);
     handleStatus(status);
   }
 

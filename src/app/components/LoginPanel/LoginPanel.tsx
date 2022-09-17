@@ -52,7 +52,7 @@ export const LoginPanel = props => {
 
   function handleStatus(status: number) {
     switch (status) {
-      case 201:
+      case 200:
         props.setIsLoggedIn(true);
         break;
 

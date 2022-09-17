@@ -1,7 +1,7 @@
 // import fetch, { RequestInit } from 'node-fetch'
 import axios from 'axios';
 
-const baseUrl = 'http://siadamgadampelenserwis.pl:8000';
+const baseUrl = 'http://localhost:8000';
 
 export const signUp = async (email: string, password: string) => {
   return await axios
@@ -33,7 +33,7 @@ export const logIn = async (email: string, password: string) => {
 
 export const logOut = async () => {
   return await axios
-    .post(`${baseUrl}/logout`, {})
+    .get(`${baseUrl}/logout`, {})
     .then(res => {
       return res.status;
     })

@@ -73,7 +73,7 @@ export const RegistrationPanel = () => {
 
   function handleStatus(status: number) {
     switch (status) {
-      case 201:
+      case 200:
         window.alert('Konto zostało poprawnie utworzone');
         break;
 
