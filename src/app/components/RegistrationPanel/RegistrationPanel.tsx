@@ -9,7 +9,6 @@ import { signUp } from '../../../services/userService';
 
 const initialState = {
   mail: '',
-  login: '',
   password: '',
   repeatPassword: '',
 };
@@ -22,15 +21,6 @@ export const RegistrationPanel = () => {
       return {
         ...prevData,
         mail: event,
-      };
-    });
-  }
-
-  function handleLogin(event) {
-    setData(prevData => {
-      return {
-        ...prevData,
-        login: event,
       };
     });
   }
@@ -52,10 +42,6 @@ export const RegistrationPanel = () => {
       };
     });
   }
-
-  const clearState = () => {
-    setData({ ...initialState });
-  };
 
   function validateEmail(email: string) {
     const pattern = new RegExp(
@@ -95,7 +81,6 @@ export const RegistrationPanel = () => {
     event.preventDefault();
     if (
       data.mail === '' ||
-      data.login === '' ||
       data.password === '' ||
       data.repeatPassword === ''
     ) {
@@ -143,18 +128,6 @@ export const RegistrationPanel = () => {
               style={styles.input}
             />
           </Form.Group>
-          <Form.Group controlId="name">
-            <Form.ControlLabel style={styles.label}>
-              Nazwa użytkownika
-            </Form.ControlLabel>
-            <Form.Control
-              name="name"
-              placeholder="Login"
-              onChange={handleLogin}
-              value={data.login}
-              style={styles.input}
-            />
-          </Form.Group>
           <Form.Group controlId="password">
             <Form.ControlLabel style={styles.label}>Hasło</Form.ControlLabel>
             <Form.Control
@@ -198,7 +171,7 @@ export const RegistrationPanel = () => {
 const styles = {
   mainDiv: {
     height: '100%',
-    paddingTop: '1em',
+    paddingTop: '2%',
     paddingBottom: '4em',
   },
 
@@ -208,7 +181,7 @@ const styles = {
     width: '40%',
     maxWidth: '28em',
     minWidth: '25em',
-    height: '46em',
+    height: '42em',
     borderRadius: '20px',
     border: 'solid',
     borderColor: colorConstants.lightGrey,

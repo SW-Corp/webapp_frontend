@@ -160,7 +160,7 @@ const styles = {
     width: '40%',
     maxWidth: '28em',
     minWidth: '25em',
-    height: '60%',
+    height: '40em',
     minHeight: '38em',
     borderRadius: '20px',
     border: 'solid',
