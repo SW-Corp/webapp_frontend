@@ -19,35 +19,63 @@ export const Model = () => {
   const mapPompNames = [
     {
       model: 'pompa1A',
-      toBackend: 'valve1',
+      toBackend: 'P1',
     },
     {
       model: 'pompa1B',
-      toBackend: 'valve2',
+      toBackend: 'P2',
     },
     {
       model: 'pompa1C',
-      toBackend: 'valve3',
+      toBackend: 'P3',
     },
     {
       model: 'pompa2A',
-      toBackend: 'valve4',
+      toBackend: 'P4',
     },
     {
       model: 'pompa2B',
-      toBackend: 'valve5',
+      toBackend: 'P5',
     },
     {
       model: 'pompa2C',
-      toBackend: 'valve6',
+      toBackend: 'P6',
     },
     {
       model: 'pompa3',
-      toBackend: 'valve7',
+      toBackend: 'P7',
     },
   ];
 
-  function formTask(color: string, name: string) {
+  function handleStatus(status: number) {
+    switch (status) {
+      case 200:
+        window.alert('git');
+        break;
+
+      case 201:
+        window.alert('git');
+        break;
+
+      case 400:
+        window.alert('Nieprawidłowe zadanie');
+        break;
+
+      case 403:
+        window.alert('Odmowa zadania');
+        break;
+
+      case 404:
+        window.alert('Nieprawidłowe zadanie');
+        break;
+
+      default:
+        window.alert('Nieznany błąd');
+        break;
+    }
+  }
+
+  async function formTask(color: string, name: string) {
     const target = mapPompNames.map(({ model, toBackend }) => {
       if (model === name) {
         return toBackend;
@@ -55,8 +83,9 @@ export const Model = () => {
     });
 
     const isOpen = color === 'green' ? 1 : 0;
+    const status = await addTask('is_open', target, isOpen);
 
-    addTask('is_open', target, isOpen);
+    handleStatus(status);
   }
 
   //Water
