@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { addTask } from 'services/stationService';
 import { colorConstants } from 'styles/colorConstants';
 import data from './data.json';
 
@@ -14,6 +15,49 @@ export const Model = () => {
   const [innerContainerBHeight, setInnerContainerBHeight] = useState(10);
   const [innerContainerCHeight, setInnerContainerCHeight] = useState(10);
   const [endContainerHeight, setEndContainerHeight] = useState(100);
+
+  const mapPompNames = [
+    {
+      model: 'pompa1A',
+      toBackend: 'valve1',
+    },
+    {
+      model: 'pompa1B',
+      toBackend: 'valve2',
+    },
+    {
+      model: 'pompa1C',
+      toBackend: 'valve3',
+    },
+    {
+      model: 'pompa2A',
+      toBackend: 'valve4',
+    },
+    {
+      model: 'pompa2B',
+      toBackend: 'valve5',
+    },
+    {
+      model: 'pompa2C',
+      toBackend: 'valve6',
+    },
+    {
+      model: 'pompa3',
+      toBackend: 'valve7',
+    },
+  ];
+
+  function formTask(color: string, name: string) {
+    const target = mapPompNames.map(({ model, toBackend }) => {
+      if (model === name) {
+        return toBackend;
+      }
+    });
+
+    const isOpen = color === 'green' ? 1 : 0;
+
+    addTask('is_open', target, isOpen);
+  }
 
   //Water
   function useWater(height: number, waterName: string, containerY: number) {
@@ -167,6 +211,11 @@ export const Model = () => {
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+
+          if (true) {
+            //todo: dla osob z roznymi uprawnieniami
+            formTask(newColor, button.current?.id);
+          }
 
           if (newColor === 'green' && height > 0) {
             let colorAfter;
@@ -383,6 +432,12 @@ export const Model = () => {
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+
+          if (true) {
+            //todo: dla osob z roznymi uprawnieniami
+            formTask(newColor, button.current?.id);
+          }
+
           if (newColor === 'green' && height > 0) {
             pipesName.forEach(pipeName => {
               const pipe = document.getElementById(pipeName);
@@ -506,6 +561,12 @@ export const Model = () => {
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+
+          if (true) {
+            //todo: dla osob z roznymi uprawnieniami
+            formTask(newColor, button.current?.id);
+          }
+
           if (newColor === 'green' && height > 0) {
             pipesName.forEach(pipeName => {
               const pipe = document.getElementById(pipeName);
@@ -1015,7 +1076,7 @@ export const Model = () => {
           <path
             id="pompa1C"
             d="M499.325 471.013C499.325 481.246 490.573 489.586 479.721 489.586C468.869 489.586 460.117 481.246 460.117 471.013C460.117 460.78 468.869 452.44 479.721 452.44C490.573 452.44 499.325 460.78 499.325 471.013Z"
-            fill="#DF3939"
+            fill="#FF0000"
             stroke="black"
           />
           <g id="STOP">
