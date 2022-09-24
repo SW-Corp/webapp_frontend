@@ -3,14 +3,113 @@ import { MainNavbar } from 'app/components/MainNavbar';
 import { MainSidebar } from 'app/components/MainSidebar';
 import { colorConstants } from 'styles/colorConstants';
 import { Model } from 'app/components/Model';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { w3cwebsocket as W3CWebSocket } from 'websocket';
+import { Notification } from 'rsuite';
+import { useToaster } from 'rsuite/toaster';
 
+const websocketBaseAddress = 'ws://127.0.0.1:8000/';
+
+function getNotification(status, header, message) {
+  console.log('error');
+  return (
+    <Notification type={status} header={header}>
+      {message}
+    </Notification>
+  );
+}
 export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
+  const toaster = useToaster();
+
+  const notificationsclient = new W3CWebSocket(
+    websocketBaseAddress + 'subscribe/notifications',
+  );
+  const stateClient = new W3CWebSocket(
+    websocketBaseAddress + 'subscribe/state',
+  );
+
+  stateClient.onerror = () => {
+    toaster.push(
+      getNotification('error', 'Error', 'Error connecting to state socket'),
+    );
+  };
+
+  notificationsclient.onerror = () => {
+    toaster.push(
+      getNotification(
+        'error',
+        'Error',
+        'Error connecting to notification socket',
+      ),
+    );
+  };
+
+  useEffect(() => {
+    stateClient.onopen = () => {
+      console.log('WebSocket Client Connected');
+      // TODO include cookie
+      stateClient.send(
+        JSON.stringify({ cookie: '', workstation: 'testworkstation' }),
+      );
+    };
+
+    stateClient.onmessage = message => {
+      console.log('Otrzymano stan stacji');
+      console.log(JSON.parse(JSON.parse(message.data)));
+    };
+
+    notificationsclient.onopen = () => {
+      console.log('WebSocket Client Connected');
+      // TODO include cookie
+      notificationsclient.send(
+        JSON.stringify({ cookie: '', workstation: 'testworkstation' }),
+      );
+    };
+
+    notificationsclient.onmessage = message => {
+      const messagejson = JSON.parse(JSON.parse(message.data));
+      console.log(messagejson);
+      if (message.type == 'connectionerror') {
+        toaster.push(getNotification('error', 'Error', messagejson.data));
+      }
+      switch (messagejson.status) {
+        case 'success':
+          toaster.push(
+            getNotification(
+              'success',
+              'Zadanie zostało wykonane',
+              JSON.stringify(messagejson.task),
+            ),
+          );
+          break;
+        case 'conditions_not_met':
+          toaster.push(
+            getNotification(
+              'error',
+              'Warunki zadania nie zostały spełnione',
+              JSON.stringify(messagejson.task),
+            ),
+          );
+          break;
+        case 'connector_error':
+          console.log('sraka');
+          toaster.push(
+            getNotification(
+              'error',
+              'Błąd podczas wykonywania zadania',
+              'Serwer nie mógł się połączyć ze stacją',
+            ),
+          );
+          break;
+      }
+    };
+  }, []);
 
   function handleClick(event) {
     if (activeTab == false && event.target.innerHTML == 'Wizualizacja')
-      setActiveTab(!activeTab);
+      console.log('zmieniam');
+    setActiveTab(!activeTab);
 
     if (activeTab == true && event.target.innerHTML == 'Dane szczegółowe')
       setActiveTab(!activeTab);
