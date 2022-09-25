@@ -11,13 +11,13 @@ import { useToaster } from 'rsuite/toaster';
 const websocketBaseAddress = 'ws://127.0.0.1:8000/';
 
 function getNotification(status, header, message) {
-  console.log('error');
   return (
     <Notification type={status} header={header}>
       {message}
     </Notification>
   );
 }
+
 export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
   const toaster = useToaster();
@@ -106,11 +106,11 @@ export const MainPage = props => {
   }, []);
 
   function handleClick(event) {
-    if (activeTab == false && event.target.innerHTML == 'Wizualizacja')
+    if (activeTab === false && event.target.innerHTML == 'Wizualizacja')
       console.log('zmieniam');
     setActiveTab(!activeTab);
 
-    if (activeTab == true && event.target.innerHTML == 'Dane szczegółowe')
+    if (activeTab === true && event.target.innerHTML == 'Dane szczegółowe')
       setActiveTab(!activeTab);
   }
 
