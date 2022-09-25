@@ -46,11 +46,6 @@ export const LoginPanel = props => {
 
   function handleStatus(status: number) {
     switch (status) {
-      case 200:
-        localStorage.setItem('islogged', '1');
-        props.setIsLoggedIn(true);
-        break;
-
       case 400:
         window.alert('Nieprawidłowy adres email lub hasło');
         break;
@@ -74,8 +69,16 @@ export const LoginPanel = props => {
     if (data.mail === '' || data.password === '') {
       window.alert('Uzupełnij wszystkie dane!');
     } else {
-      const status = await logIn(data.mail, data.password);
-      handleStatus(status);
+      const response = await logIn(data.mail, data.password);
+      if (response.status == 200) {
+        console.log('Logged in.', response);
+        localStorage.setItem('islogged', '1');
+        localStorage.setItem('current_user', response.data.email);
+        localStorage.setItem('permission', response.data.permission);
+        props.setIsLoggedIn(true);
+      } else {
+        handleStatus(response.status);
+      }
     }
   }
 

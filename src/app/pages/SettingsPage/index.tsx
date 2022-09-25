@@ -7,9 +7,9 @@ import { Button, Container, Content, SelectPicker, Stack, Table } from 'rsuite';
 const { Column, HeaderCell, Cell } = Table;
 
 const roles = [
-  { label: 'Administrator', value: 'admin' },
-  { label: 'Student', value: 'student' },
-  { label: 'Operator', value: 'operator' },
+  { label: 'Administrator', value: 'manage_users' },
+  { label: 'Student', value: 'read' },
+  { label: 'Operator', value: 'write' },
 ];
 
 export const SettingsPage = () => {
@@ -17,8 +17,26 @@ export const SettingsPage = () => {
     { id: 1, user: 'test', permissions: 'admin', gender: 'male' },
   ]);
   const [isLoading, setLoading] = useState(true);
+  const [loggedUser, setUser] = useState(localStorage.getItem('current_user'));
 
-  useEffect(() => {
+  const changePermission = (user, permission) => {
+    console.log(user, permission);
+    axios
+      .post(
+        'http://localhost:8000/permission',
+        { user, permission },
+        { withCredentials: true },
+      )
+      .then(res => {
+        console.log(res);
+        loadUsers();
+      })
+      .catch(err => {
+        console.log('error ', err);
+      });
+  };
+
+  const loadUsers = async () => {
     axios
       .get('http://localhost:8000/users', { withCredentials: true })
       .then(data => {
@@ -33,6 +51,10 @@ export const SettingsPage = () => {
         );
         setLoading(false);
       });
+  };
+
+  useEffect(() => {
+    loadUsers();
   }, []);
 
   return (
@@ -66,13 +88,16 @@ export const SettingsPage = () => {
 
           <Column flexGrow={1}>
             <StyledHeaderCell>Uprawnienia</StyledHeaderCell>
-            <Cell dataKey="permissions">
+            <Cell dataKey="permission">
               {rowData => (
                 <SelectPicker
                   cleanable={false}
                   searchable={false}
-                  value={rowData.permissions}
+                  value={rowData.permission}
                   defaultValue={'admin'}
+                  onChange={e => {
+                    changePermission(rowData.user, e);
+                  }}
                   data={roles}
                 />
               )}
@@ -81,12 +106,18 @@ export const SettingsPage = () => {
 
           <Column flexGrow={1}>
             <StyledHeaderCell>Akcje</StyledHeaderCell>
-            <Cell>
-              <Stack spacing={6}>
-                <Button color="red" appearance="subtle">
+            <Cell dataKey="user">
+              {rowData => (
+                <Button
+                  disabled={
+                    rowData.user == loggedUser || rowData.user == 'connector'
+                  }
+                  color="red"
+                  appearance="subtle"
+                >
                   Usuń
                 </Button>
-              </Stack>
+              )}
             </Cell>
           </Column>
         </Table>

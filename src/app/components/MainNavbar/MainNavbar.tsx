@@ -70,7 +70,9 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
         <Nav.Item eventKey="docs">Dokumentacja</Nav.Item>
       </Nav>
       <Nav pullRight onSelect={onSelect} activeKey={activeKey}>
-        <Nav.Item icon={<UserIcon />}>email@student.put.poznan.pl</Nav.Item>
+        <Nav.Item icon={<UserIcon />} disabled>
+          {localStorage.getItem('current_user')}
+        </Nav.Item>
         <Nav.Item icon={<CogIcon />} eventKey="settings">
           Ustawienia
         </Nav.Item>

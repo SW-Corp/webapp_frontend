@@ -28,10 +28,10 @@ export const logIn = async (email: string, password: string) => {
       { withCredentials: true },
     )
     .then(res => {
-      return res.status;
+      return res;
     })
     .catch(error => {
-      return error.response.status;
+      return error.response;
     });
 };
 
