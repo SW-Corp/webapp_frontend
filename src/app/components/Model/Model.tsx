@@ -31,19 +31,19 @@ export const Model = () => {
     },
     {
       model: 'pompa2A',
-      toBackend: 'P4',
+      toBackend: 'V1',
     },
     {
       model: 'pompa2B',
-      toBackend: 'P5',
+      toBackend: 'V2',
     },
     {
       model: 'pompa2C',
-      toBackend: 'P6',
+      toBackend: 'V3',
     },
     {
       model: 'pompa3',
-      toBackend: 'P7',
+      toBackend: 'P4',
     },
   ];
 
@@ -76,14 +76,14 @@ export const Model = () => {
   }
 
   async function formTask(color: string, name: string) {
-    const target = mapPompNames.map(({ model, toBackend }) => {
+    const target = mapPompNames.filter(({ model, toBackend }) => {
       if (model === name) {
         return toBackend;
       }
     });
 
     const isOpen = color === 'green' ? 1 : 0;
-    const status = await addTask('is_open', target, isOpen);
+    const status = await addTask('is_open', target[0].toBackend, isOpen);
 
     handleStatus(status);
   }
