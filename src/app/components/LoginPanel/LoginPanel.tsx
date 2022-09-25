@@ -44,15 +44,10 @@ export const LoginPanel = props => {
     return pattern.test(email);
   }
 
-  function validatePassword(password: string) {
-    const pattern = new RegExp(/(?=.{8,})(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])/);
-
-    return pattern.test(password);
-  }
-
   function handleStatus(status: number) {
     switch (status) {
       case 200:
+        localStorage.setItem('islogged', '1');
         props.setIsLoggedIn(true);
         break;
 
@@ -79,20 +74,8 @@ export const LoginPanel = props => {
     if (data.mail === '' || data.password === '') {
       window.alert('Uzupełnij wszystkie dane!');
     } else {
-      if (!validateEmail(data.mail)) {
-        window.alert('Niepoprawny adres e-mail!');
-        return;
-      }
-
-      if (!validatePassword(data.password)) {
-        window.alert(
-          'Hasło musi mieć co najmniej 8 znaków, jedną małą literę, jedną wielką literę i cyfrę.',
-        );
-        return;
-      } else {
-        const status = await logIn(data.mail, data.password);
-        handleStatus(status);
-      }
+      const status = await logIn(data.mail, data.password);
+      handleStatus(status);
     }
   }
 

@@ -52,6 +52,7 @@ export const MainPage = props => {
     stateClient.onopen = () => {
       console.log('WebSocket Client Connected');
       // TODO include cookie
+      // can't happen
       stateClient.send(
         JSON.stringify({ cookie: '', workstation: 'testworkstation' }),
       );
@@ -113,47 +114,16 @@ export const MainPage = props => {
     };
   }, []);
 
-  function handleClick(event) {
-    if (activeTab === false && event.target.innerHTML == 'Wizualizacja')
-      console.log('zmieniam');
-    setActiveTab(!activeTab);
-
-    if (activeTab === true && event.target.innerHTML == 'Dane szczegółowe')
-      setActiveTab(!activeTab);
-  }
-
-  function ReturnContent(props) {
-    const content = props.content;
-    if (content) return <Model />;
-    else
-      return (
-        <table id="myTable" style={tableStyles}>
-          <tr style={rowStyle}>
-            <th style={rowStyle}>Name</th>
-            <th style={rowStyle}>Country</th>
-          </tr>
-          <tr style={moreStyle}>
-            <td style={moreStyle}>Berglunds snabbkop</td>
-            <td style={moreStyle}>Sweden</td>
-          </tr>
-          <tr style={rowStyle}>
-            <td style={rowStyle}>North/South</td>
-            <td style={rowStyle}>UK</td>
-          </tr>
-          <tr style={moreStyle}>
-            <td style={moreStyle}>Alfreds Futterkiste</td>
-            <td style={moreStyle}>Germany</td>
-          </tr>
-        </table>
-      );
-  }
-
   const [activeKey, setActiveKey] = React.useState('model');
 
   return (
     <>
       <Container>
-        <MainNavbar activeKey={activeKey} onSelect={setActiveKey} />
+        <MainNavbar
+          activeKey={activeKey}
+          onSelect={setActiveKey}
+          setIsLoggedIn={props.setIsLoggedIn}
+        />
         {
           {
             model: <Model />,

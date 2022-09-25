@@ -7,6 +7,7 @@ import { Nav, Navbar } from 'rsuite';
 
 import HomeIcon from '@rsuite/icons/legacy/Home';
 import CogIcon from '@rsuite/icons/legacy/Cog';
+import UserIcon from '@rsuite/icons/legacy/User';
 import OffRound from '@rsuite/icons/OffRound';
 
 export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
@@ -69,6 +70,7 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
         <Nav.Item eventKey="docs">Dokumentacja</Nav.Item>
       </Nav>
       <Nav pullRight onSelect={onSelect} activeKey={activeKey}>
+        <Nav.Item icon={<UserIcon />}>email@student.put.poznan.pl</Nav.Item>
         <Nav.Item icon={<CogIcon />} eventKey="settings">
           Ustawienia
         </Nav.Item>

@@ -19,10 +19,14 @@ export const signUp = async (email: string, password: string) => {
 
 export const logIn = async (email: string, password: string) => {
   return await axios
-    .post(`${baseUrl}/login`, {
-      email: email,
-      password: password,
-    })
+    .post(
+      `${baseUrl}/login`,
+      {
+        email: email,
+        password: password,
+      },
+      { withCredentials: true },
+    )
     .then(res => {
       return res.status;
     })
@@ -33,8 +37,9 @@ export const logIn = async (email: string, password: string) => {
 
 export const logOut = async () => {
   return await axios
-    .get(`${baseUrl}/logout`, {})
+    .get(`${baseUrl}/logout`, { withCredentials: true })
     .then(res => {
+      localStorage.removeItem('islogged');
       return res.status;
     })
     .catch(error => {

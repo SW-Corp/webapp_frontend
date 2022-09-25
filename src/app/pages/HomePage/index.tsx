@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LoginPage } from 'app/pages/LoginPage';
 import { MainPage } from 'app/pages/MainPage';
+import Cookies from 'js-cookie';
 
 export const HomePage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  function ReturnPage(props) {
-    const isLoggedIn = props.isLoggedIn;
-    if (isLoggedIn)
-      return <MainPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
-    else
-      return (
-        <LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      );
-  }
+  useEffect(() => {
+    if (localStorage.getItem('islogged')) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   return (
     <>
-      <ReturnPage isLoggedIn={isLoggedIn} />
+      {isLoggedIn ? (
+        <MainPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      ) : (
+        <LoginPage isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      )}
     </>
   );
 };
