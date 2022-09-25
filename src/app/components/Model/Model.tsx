@@ -9,6 +9,11 @@ type askColor = '#298E33' | '#73C98E';
 const maxHeight = 240;
 
 export const Model = () => {
+  useEffect(() => {
+    const stopButton = document.getElementById('stopButton');
+    stopButton?.addEventListener('click', () => addTask('stop', 'stop', 1));
+    console.log('useeffect');
+  }, []);
   //States
   const [startContainerHeight, setStartContainerHeight] = useState(50);
   const [innerContainerAHeight, setInnerContainerAHeight] = useState(10);

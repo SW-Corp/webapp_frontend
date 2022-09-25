@@ -93,7 +93,6 @@ export const MainPage = props => {
           );
           break;
         case 'connector_error':
-          console.log('sraka');
           toaster.push(
             getNotification(
               'error',
