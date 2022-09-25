@@ -3,7 +3,11 @@ import Footer from 'rsuite/Footer';
 import { colorConstants } from 'styles/colorConstants';
 
 export const MainFooter = () => {
-  return <Footer style={styles.footer}>© SW Corp.</Footer>;
+  return (
+    <Footer style={styles.footer}>
+      © 2022 Politechnika Poznańska - Water Treatment Lab
+    </Footer>
+  );
 };
 
 const styles = {
