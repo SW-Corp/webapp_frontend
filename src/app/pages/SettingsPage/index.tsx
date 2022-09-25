@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import PlusIcon from '@rsuite/icons/Plus';
+import { useToaster } from 'rsuite/toaster';
 
-import { Button, Container, Content, SelectPicker, Stack, Table } from 'rsuite';
+import { NewUserModal } from './NewUserModal';
+
+import {
+  IconButton,
+  Button,
+  Container,
+  Content,
+  SelectPicker,
+  Stack,
+  Table,
+  Notification,
+} from 'rsuite';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -18,6 +31,8 @@ export const SettingsPage = () => {
   ]);
   const [isLoading, setLoading] = useState(true);
   const [loggedUser, setUser] = useState(localStorage.getItem('current_user'));
+  const [isModalOpen, setModalOpen] = useState(false);
+  const toaster = useToaster();
 
   const changePermission = (user, permission) => {
     console.log(user, permission);
@@ -50,6 +65,33 @@ export const SettingsPage = () => {
           }),
         );
         setLoading(false);
+      });
+  };
+
+  const deleteUser = userToDelete => {
+    axios
+      .delete('http://localhost:8000/user', {
+        data: { email: userToDelete },
+        withCredentials: true,
+      })
+      .then(res => {
+        console.log('res', res);
+        toaster.push(
+          <Notification type="success" header="Sukces!">
+            Użytkownik usunięty pomyślnie
+          </Notification>,
+          { placement: 'bottomEnd' },
+        )!;
+        loadUsers();
+      })
+      .catch(err => {
+        console.error(err);
+        toaster.push(
+          <Notification type="error" header="Błąd">
+            Wystąpił błąd podczas usuwania użytkownika.
+          </Notification>,
+          { placement: 'bottomEnd' },
+        )!;
       });
   };
 
@@ -114,6 +156,9 @@ export const SettingsPage = () => {
                   }
                   color="red"
                   appearance="subtle"
+                  onClick={() => {
+                    deleteUser(rowData.user);
+                  }}
                 >
                   Usuń
                 </Button>
@@ -121,7 +166,33 @@ export const SettingsPage = () => {
             </Cell>
           </Column>
         </Table>
+        <IconButton
+          icon={<PlusIcon />}
+          color="green"
+          appearance="primary"
+          style={{ marginTop: '20px' }}
+          onClick={() => {
+            setModalOpen(true);
+          }}
+        >
+          Dodaj nowego użytkownika
+        </IconButton>
       </StyledContent>
+      <NewUserModal
+        isOpen={isModalOpen}
+        handleClose={(isAdded: boolean) => {
+          setModalOpen(false);
+          if (isAdded) {
+            loadUsers();
+            toaster.push(
+              <Notification type="success" header="Sukces!">
+                Użytkownik utworzony pomyślnie.
+              </Notification>,
+              { placement: 'bottomEnd' },
+            );
+          }
+        }}
+      />
     </Container>
   );
 };
@@ -133,4 +204,5 @@ const StyledContent = styled(Content)`
 
 const StyledHeaderCell = styled(HeaderCell)`
   color: #000;
+  font-size: 14px;
 `;
