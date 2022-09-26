@@ -43,6 +43,7 @@ export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
   const [data, setData] = useState({});
   const [currentScenario, setCurrentScenario] = useState('');
+  const [activeKey, setActiveKey] = React.useState('model');
   const toaster = useToaster();
 
   const notificationsclient = new W3CWebSocket(
@@ -151,8 +152,6 @@ export const MainPage = props => {
     };
   }, []);
 
-  const [activeKey, setActiveKey] = React.useState('model');
-
   return (
     <>
       <Container>
@@ -163,7 +162,7 @@ export const MainPage = props => {
         />
         {
           {
-            model: <ModelPage data={data} />,
+            model: <ModelPage data={data} currentScenario={currentScenario} />,
             details: <div>Dane szczegółowe</div>,
             docs: <div>Dokumentacja</div>,
             settings: <SettingsPage />, // only for admin user

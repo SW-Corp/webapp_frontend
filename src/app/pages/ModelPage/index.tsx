@@ -4,16 +4,18 @@ import styled from 'styled-components';
 import { Model } from 'app/components/Model';
 import { IRLModel } from 'app/components/IRLModel';
 
-import { Button, Panel, Table, Whisper, Popover, Toggle } from 'rsuite';
+import { Button, Panel, Table, Whisper, Popover, Loader, Toggle } from 'rsuite';
 import { Icon } from '@rsuite/icons';
 
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 
 import axios from 'axios';
 
+import { baseUrl, workstation } from 'services/stationService';
+
 const { Column, HeaderCell, Cell } = Table;
 
-export const ModelPage = (props: any) => {
+export const ModelPage = ({ currentScenario, ...props }) => {
   const [checkedToggle, setCheckedToggle] = useState(false);
   const [isTableLoading, setTableLoading] = useState(true);
   const [scenarios, setScenarios] = useState([
@@ -42,6 +44,19 @@ export const ModelPage = (props: any) => {
     loadScenarios();
   }, []);
 
+  const playScenario = name => {
+    axios
+      .post(`${baseUrl}/scenario/${workstation}/${name}`, {
+        withCredentials: true,
+      })
+      .then(res => {
+        console.log('post scenario: ', res);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  };
+
   const PopoverCell = props => {
     const speaker = (
       <Popover title="Opis">
@@ -49,7 +64,7 @@ export const ModelPage = (props: any) => {
       </Popover>
     );
     return (
-      <Whisper placement="top" speaker={speaker}>
+      <Whisper placement="topStart" speaker={speaker}>
         <Cell {...props} dataKey={props.dataKey} className="link-group"></Cell>
       </Whisper>
     );
@@ -86,16 +101,31 @@ export const ModelPage = (props: any) => {
         <ContainerDiv>
           <StyledPanel
             header={
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <h5>Scenariusze</h5>
-                <Icon
-                  fill="green"
-                  width="30px"
-                  height="30px"
-                  as={HiQuestionMarkCircle}
-                  style={{ fontSize: '25px' }}
-                />
-              </div>
+              <Whisper
+                placement="topStart"
+                speaker={
+                  <Popover>
+                    <p>
+                      Stacja umożliwia odegranie wybranego <i>scenariusza</i>,
+                      czyli sekwencji komend sterujących stacją w celu
+                      osiągnięcia określonego stanu.
+                    </p>
+                  </Popover>
+                }
+              >
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <h5>Scenariusze</h5>
+                  <Icon
+                    fill="green"
+                    width="30px"
+                    height="30px"
+                    as={HiQuestionMarkCircle}
+                    style={{ fontSize: '25px' }}
+                  />
+                </div>
+              </Whisper>
             }
             shaded
           >
@@ -112,15 +142,28 @@ export const ModelPage = (props: any) => {
               <Column>
                 <StyledHeaderCell>Akcje</StyledHeaderCell>
                 <Cell dataKey="user">
-                  {rowData => (
-                    <Button
-                      color="green"
-                      appearance="primary"
-                      disabled={perm == 'read'}
-                    >
-                      Rozpocznij
-                    </Button>
-                  )}
+                  {rowData => {
+                    if (currentScenario == rowData.name) {
+                      return (
+                        <Loader speed="slow" vertical content="W trakcie..." />
+                      );
+                    } else {
+                      return (
+                        <Button
+                          color="green"
+                          appearance="primary"
+                          disabled={
+                            perm == 'read' || currentScenario.length > 0
+                          }
+                          onClick={() => {
+                            playScenario(rowData.name);
+                          }}
+                        >
+                          Rozpocznij
+                        </Button>
+                      );
+                    }
+                  }}
                 </Cell>
               </Column>
             </Table>

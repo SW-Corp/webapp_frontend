@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const baseUrl = 'http://localhost:8000';
-const workstation = 'testworkstation';
+export const baseUrl = 'http://localhost:8000';
+export const workstation = 'testworkstation';
 
 export const addTask = async (action: string, target: any, value: number) => {
   console.log({
