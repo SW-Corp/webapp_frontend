@@ -38,7 +38,7 @@ export const SettingsPage = () => {
     console.log(user, permission);
     axios
       .post(
-        'http://localhost:8000/permission',
+        'http://10.8.0.9:8000/permission',
         { user, permission },
         { withCredentials: true },
       )
@@ -53,7 +53,7 @@ export const SettingsPage = () => {
 
   const loadUsers = async () => {
     axios
-      .get('http://localhost:8000/users', { withCredentials: true })
+      .get('http://10.8.0.9:8000/users', { withCredentials: true })
       .then(data => {
         console.log(data);
         setData(
@@ -70,7 +70,7 @@ export const SettingsPage = () => {
 
   const deleteUser = userToDelete => {
     axios
-      .delete('http://localhost:8000/user', {
+      .delete('http://10.8.0.9:8000/user', {
         data: { email: userToDelete },
         withCredentials: true,
       })
