@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Model } from 'app/components/Model';
 import { IRLModel } from 'app/components/IRLModel';
 
-import { Button, Panel, Table, Whisper, Popover } from 'rsuite';
+import { Button, Panel, Table, Whisper, Popover, Toggle } from 'rsuite';
 import { Icon } from '@rsuite/icons';
 
 import { HiQuestionMarkCircle } from 'react-icons/hi';
@@ -14,6 +14,7 @@ import axios from 'axios';
 const { Column, HeaderCell, Cell } = Table;
 
 export const ModelPage = (props: any) => {
+  const [checkedToggle, setCheckedToggle] = useState(false);
   const [isTableLoading, setTableLoading] = useState(true);
   const [scenarios, setScenarios] = useState([
     { id: '1', name: 'Scenario #1' },
@@ -56,6 +57,23 @@ export const ModelPage = (props: any) => {
 
   return (
     <>
+      <div
+        style={{
+          width: '100%',
+          padding: '20px',
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Toggle
+          checked={checkedToggle}
+          checkedChildren="Na żywo"
+          unCheckedChildren="Symulacja"
+          size="lg"
+          onChange={() => setCheckedToggle(!checkedToggle)}
+        />
+      </div>
+
       <div
         style={{
           width: '100%',
@@ -108,11 +126,7 @@ export const ModelPage = (props: any) => {
             </Table>
           </StyledPanel>
         </ContainerDiv>
-        {localStorage.getItem('permission') === 'read' ? (
-          <Model />
-        ) : (
-          <IRLModel data={props.data} />
-        )}
+        {checkedToggle === false ? <Model /> : <IRLModel data={props.data} />}
       </div>
     </>
   );

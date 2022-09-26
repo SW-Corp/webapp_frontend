@@ -7,6 +7,7 @@ type Color = 'red' | 'green';
 type askColor = '#298E33' | '#73C98E';
 
 const maxHeight = 171;
+const maxIRLHeight = 16.5;
 
 export const IRLModel = (props: any) => {
   //States
@@ -15,11 +16,6 @@ export const IRLModel = (props: any) => {
   const [innerContainerBHeight, setInnerContainerBHeight] = useState(0);
   const [innerContainerCHeight, setInnerContainerCHeight] = useState(0);
   const [endContainerHeight, setEndContainerHeight] = useState(0);
-
-  useEffect(() => {
-    const stopButton = document.getElementById('stopButton');
-    stopButton?.addEventListener('click', () => addTask('stop', 'stop', 1));
-  }, []);
 
   const mapPompNames = [
     {
@@ -51,6 +47,101 @@ export const IRLModel = (props: any) => {
       toBackend: 'P4',
     },
   ];
+
+  useEffect(() => {
+    const stopButton = document.getElementById('stopButton');
+    stopButton?.addEventListener('click', () => addTask('stop', 'stop', 1));
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(props.data).length !== 0) {
+      document
+        .getElementById('pompa1A')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P1.is_on === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa1B')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P2.is_on === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa1C')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P3.is_on === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa3')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P4.is_on === true ? 'green' : 'red',
+        );
+
+      document
+        .getElementById('startWater')
+        ?.setAttribute(
+          'height',
+          props.data.tanks.C1.float_switch_up
+            ? '171'
+            : ((props.data.tanks.C1.water_level * 171) / 16.5).toString(),
+        );
+      document
+        .getElementById('helpWaterA')
+        ?.setAttribute(
+          'height',
+          props.data.tanks.C2.float_switch_up
+            ? '171'
+            : ((props.data.tanks.C2.water_level * 171) / 16.5).toString(),
+        );
+      document
+        .getElementById('helpWaterB')
+        ?.setAttribute(
+          'height',
+          props.data.tanks.C3.float_switch_up
+            ? '171'
+            : ((props.data.tanks.C3.water_level * 171) / 16.5).toString(),
+        );
+      document
+        .getElementById('helpWaterC')
+        ?.setAttribute(
+          'height',
+          props.data.tanks.C4.float_switch_up
+            ? '171'
+            : ((props.data.tanks.C4.water_level * 171) / 16.5).toString(),
+        );
+      document
+        .getElementById('finalWater')
+        ?.setAttribute(
+          'height',
+          props.data.tanks.C5.float_switch_up
+            ? '171'
+            : ((props.data.tanks.C5.water_level * 171) / 16.5).toString(),
+        );
+
+      document
+        .getElementById('pompa2A')
+        ?.setAttribute(
+          'fill',
+          props.data.valves.V1.is_open === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa2B')
+        ?.setAttribute(
+          'fill',
+          props.data.valves.V2.is_open === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa2C')
+        ?.setAttribute(
+          'fill',
+          props.data.valves.V3.is_open === true ? 'green' : 'red',
+        );
+    }
+    console.log('hej', props.data);
+  }, [props.data]);
 
   function handleStatus(status: number) {
     switch (status) {
@@ -321,18 +412,18 @@ export const IRLModel = (props: any) => {
           }
         }
 
-        if (newColor === 'green') {
-          timer.current = window.setInterval(() => {
-            setHeight(h =>
-              handle1(h, pipesName, button.current?.getAttribute('id')),
-            );
-          }, 250);
-        } else {
-          if (timer.current) {
-            clearInterval(timer.current);
-            timer.current = null;
-          }
-        }
+        // if (newColor === 'green') {
+        //   timer.current = window.setInterval(() => {
+        //     setHeight(h =>
+        //       handle1(h, pipesName, button.current?.getAttribute('id')),
+        //     );
+        //   }, 250);
+        // } else {
+        //   if (timer.current) {
+        //     clearInterval(timer.current);
+        //     timer.current = null;
+        //   }
+        // }
         setColor(newColor);
       },
       [color, setHeight],
@@ -353,7 +444,7 @@ export const IRLModel = (props: any) => {
   }
 
   {
-    useWater(startContainerHeight, 'startWater', 220.5);
+    // useWater(startContainerHeight, 'startWater', 220.5);
     //   //Start container
     let pipesNameStartA: Array<string> = [];
     pipesNameStartA.push('pipe1_1');
@@ -497,16 +588,16 @@ export const IRLModel = (props: any) => {
           }
         }
 
-        if (newColor === 'green') {
-          timer.current = window.setInterval(() => {
-            setHeight(h => handle2(h, pipesName, containerName));
-          }, 250);
-        } else {
-          if (timer.current) {
-            clearInterval(timer.current);
-            timer.current = null;
-          }
-        }
+        // if (newColor === 'green') {
+        //   timer.current = window.setInterval(() => {
+        //     setHeight(h => handle2(h, pipesName, containerName));
+        //   }, 250);
+        // } else {
+        //   if (timer.current) {
+        //     clearInterval(timer.current);
+        //     timer.current = null;
+        //   }
+        // }
         setColor(newColor);
       },
       [color, setHeight],
@@ -531,7 +622,7 @@ export const IRLModel = (props: any) => {
     let pipesNameA: Array<string> = [];
     pipesNameA.push('pipe2A');
 
-    useWater(innerContainerAHeight, 'helpWaterA', 98.5);
+    // useWater(innerContainerAHeight, 'helpWaterA', 98.5);
     useOutputButton2(
       innerContainerAHeight,
       num => setInnerContainerAHeight(num),
@@ -544,7 +635,7 @@ export const IRLModel = (props: any) => {
     let pipesNameB: Array<string> = [];
     pipesNameB.push('pipe2B');
 
-    useWater(innerContainerBHeight, 'helpWaterB', 98.5);
+    // useWater(innerContainerBHeight, 'helpWaterB', 98.5);
     useOutputButton2(
       innerContainerBHeight,
       num => setInnerContainerBHeight(num),
@@ -557,7 +648,7 @@ export const IRLModel = (props: any) => {
     let pipesNameC: Array<string> = [];
     pipesNameC.push('pipe2C');
 
-    useWater(innerContainerCHeight, 'helpWaterC', 98.5);
+    // useWater(innerContainerCHeight, 'helpWaterC', 98.5);
     useOutputButton2(
       innerContainerCHeight,
       num => setInnerContainerCHeight(num),
@@ -598,7 +689,12 @@ export const IRLModel = (props: any) => {
     outputPumpName: string,
     pipesName: Array<string>,
   ) {
-    const [color, setColor] = useState<Color>('red');
+    const c = document.getElementById(outputPumpName)?.getAttribute('fill');
+    if (c?.toString() === '#FF0000') console.log('AA');
+
+    const [color, setColor] = useState<Color>(
+      c?.toString() === '#FF0000' ? 'red' : 'green',
+    );
     const button = useRef<SVGSVGElement | null>(null);
     const timer = useRef<number | null>(null);
 
@@ -614,31 +710,31 @@ export const IRLModel = (props: any) => {
             localStorage.getItem('permission') === 'write'
           ) {
             formTask(newColor, button.current?.id);
-          }
 
-          if (newColor === 'green' && height > 0) {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
-              pipe?.setAttribute('fill', '#0AD3FF');
-            });
-          } else {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
-              pipe?.setAttribute('fill', '#E1E1E1');
-            });
+            if (newColor === 'green' && height > 0) {
+              pipesName.forEach(pipeName => {
+                const pipe = document.getElementById(pipeName);
+                pipe?.setAttribute('fill', '#0AD3FF');
+              });
+            } else {
+              pipesName.forEach(pipeName => {
+                const pipe = document.getElementById(pipeName);
+                pipe?.setAttribute('fill', '#E1E1E1');
+              });
+            }
           }
         }
 
-        if (newColor === 'green') {
-          timer.current = window.setInterval(() => {
-            setHeight(h => handle3(h, pipesName));
-          }, 250);
-        } else {
-          if (timer.current) {
-            clearInterval(timer.current);
-            timer.current = null;
-          }
-        }
+        // if (newColor === 'green') {
+        //   timer.current = window.setInterval(() => {
+        //     setHeight(h => handle3(h, pipesName));
+        //   }, 250);
+        // } else {
+        //   if (timer.current) {
+        //     clearInterval(timer.current);
+        //     timer.current = null;
+        //   }
+        // }
         setColor(newColor);
       },
       [color, setHeight],
