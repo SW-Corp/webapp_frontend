@@ -42,6 +42,7 @@ function getNotificationContent(notification) {
 export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
   const [currentScenario, setCurrentScenario] = useState('');
+  const [activeKey, setActiveKey] = React.useState('model');
   const toaster = useToaster();
 
   const notificationsclient = new W3CWebSocket(
@@ -149,8 +150,6 @@ export const MainPage = props => {
     };
   }, []);
 
-  const [activeKey, setActiveKey] = React.useState('model');
-
   return (
     <>
       <Container>
@@ -161,7 +160,7 @@ export const MainPage = props => {
         />
         {
           {
-            model: <ModelPage />,
+            model: <ModelPage currentScenario={currentScenario} />,
             details: <div>Dane szczegółowe</div>,
             docs: <div>Dokumentacja</div>,
             settings: <SettingsPage />, // only for admin user
