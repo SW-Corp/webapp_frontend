@@ -9,7 +9,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Notification, Container } from 'rsuite';
 import { useToaster } from 'rsuite/toaster';
 
-const websocketBaseAddress = 'ws://127.0.0.1:8000/';
+const websocketBaseAddress = 'ws://10.8.0.9:8000/';
 
 function getNotification(status, header, message) {
   return (

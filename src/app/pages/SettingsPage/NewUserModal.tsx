@@ -15,7 +15,7 @@ export const NewUserModal = ({ isOpen, handleClose, ...props }) => {
 
   const addUser = e => {
     axios
-      .post('http://localhost:8000/signup', formValue, {
+      .post('http://10.8.0.9:8000/signup', formValue, {
         withCredentials: true,
       })
       .then(res => {
