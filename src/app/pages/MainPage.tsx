@@ -19,8 +19,28 @@ function getNotification(status, header, message) {
   );
 }
 
+function getNotificationContent(notification) {
+  console.log(notification);
+  const target = notification.target;
+  const targetype = notification.target[0];
+  const value = notification.value;
+  const messages = {
+    V: {
+      1: `Otwórz zawór ${target}`,
+      0: `Zamknij zawór ${target}`,
+    },
+    P: {
+      1: `Włącz pompę ${target}`,
+      0: `Wyłącz pompę ${target}`,
+    },
+  };
+  console.log(targetype, value, messages[targetype][value]);
+  return messages[targetype][value];
+}
+
 export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
+  const [currentScenario, setCurrentScenario] = useState('');
   const toaster = useToaster();
 
   const notificationsclient = new W3CWebSocket(
@@ -60,7 +80,9 @@ export const MainPage = props => {
 
     stateClient.onmessage = message => {
       console.log('Otrzymano stan stacji');
-      console.log(JSON.parse(JSON.parse(message.data)));
+      const state = JSON.parse(JSON.parse(message.data));
+      setCurrentScenario(state.currentScenario);
+      console.log(state);
     };
 
     notificationsclient.onopen = () => {
@@ -79,13 +101,17 @@ export const MainPage = props => {
           placement: 'bottomEnd',
         });
       }
+      if (messagejson.task.action == 'end_scenario') {
+        setCurrentScenario('');
+        return;
+      }
       switch (messagejson.status) {
         case 'success':
           toaster.push(
             getNotification(
               'success',
               'Zadanie zostało wykonane',
-              JSON.stringify(messagejson.task),
+              getNotificationContent(messagejson.task),
             ),
             { placement: 'bottomEnd' },
           );
@@ -95,7 +121,7 @@ export const MainPage = props => {
             getNotification(
               'error',
               'Warunki zadania nie zostały spełnione',
-              JSON.stringify(messagejson.task),
+              getNotificationContent(messagejson.task),
             ),
             { placement: 'bottomEnd' },
           );
