@@ -81,13 +81,11 @@ export const Model = () => {
   }
 
   async function formTask(color: string, name: string) {
-    // const target = mapPompNames.map(({ model, toBackend }) => {
-    //   if (model === name) {
-    //     return toBackend;
-    //   }
-    // });
-    // const isOpen = color === 'green' ? 1 : 0;
-    // const status = await addTask('is_open', target, isOpen);
+    const target = mapPompNames.filter(({ model, toBackend }) => {
+      return model === name;
+    });
+    const isOpen = color === 'green' ? 1 : 0;
+    const status = await addTask('is_open', target[0].toBackend, isOpen);
     // handleStatus(status);
   }
 
