@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Model } from 'app/components/Model';
+import { IRLModel } from 'app/components/IRLModel';
 
 import { Button, Panel, Table, Whisper, Popover } from 'rsuite';
 import { Icon } from '@rsuite/icons';
@@ -12,7 +13,7 @@ import axios from 'axios';
 
 const { Column, HeaderCell, Cell } = Table;
 
-export const ModelPage = () => {
+export const ModelPage = (props: any) => {
   const [isTableLoading, setTableLoading] = useState(true);
   const [scenarios, setScenarios] = useState([
     { id: '1', name: 'Scenario #1' },
@@ -57,9 +58,11 @@ export const ModelPage = () => {
     <>
       <div
         style={{
+          width: '100%',
           display: 'flex',
+          flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'space-evenly',
         }}
       >
         <ContainerDiv>
@@ -105,7 +108,11 @@ export const ModelPage = () => {
             </Table>
           </StyledPanel>
         </ContainerDiv>
-        <Model />
+        {localStorage.getItem('permission') === 'read' ? (
+          <Model />
+        ) : (
+          <IRLModel data={props.data} />
+        )}
       </div>
     </>
   );

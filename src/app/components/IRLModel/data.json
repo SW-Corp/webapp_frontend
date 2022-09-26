@@ -1,0 +1,42 @@
+{
+  "infoMainContainer": {
+    "id": "EllipseAskMain",
+    "title": "Zbiornik reakcji",
+    "text": "Zbiornik początkowy zawierający 'brudną' wodę."
+  },
+  "infoPump": {
+    "id": "EllipseAskPomp",
+    "title": "Pompy",
+    "text": "Pompy to urządzenia, które służą do manipulowania parametrami przepływu wody, dzięki miejscowemu podnoszeniu ciśnienia."
+  },
+  "infoHelpContainer": {
+    "id": "EllipseAskHelpContainer",
+    "title": "Zbiorniki filtracyjne",
+    "text": "Zbiorniki, które symulują pracę filtrów."
+  },
+  "infoValve": {
+    "id": "EllipseAskValve",
+    "title": "Zawory spustowe",
+    "text": "Zawory spustowe to urządzeniami służące do odcinania lub otwarcia przepływu cieczy opierająca się na oddziaływaniu pola magnetycznego."
+  },
+  "infoEndContainer": {
+    "id": "EllipseAskFinalContainer",
+    "title": "Zbiornik wody czystej",
+    "text": "Zbiornik z przefiltrowaną wodą."
+  },
+  "infoEndPump": {
+    "id": "EllipseAskFinalPomp",
+    "title": "Pompa obiegowa",
+    "text": "Pompa, która przepuszcza wodę do pierwszego zbiornika w celu zresetowania układu."
+  },
+  "infoEngine": {
+    "id": "EllipseAskEngine",
+    "title": "Panel przełącznikowy",
+    "text": "Panel przełącznikowy pozwala na sterowanie każdym z komponentów. Dzięki przełącznikom możliwe jest wybranie stanu 'włączony', 'wyłączony' lub 'automatyczny'. Ostatni stan odblokowuje możliwość sterowania wybranym komponentem z poziomu komputera. Pozostałe dwa tryby to ręczne sterowanie zasilaniem."
+  },
+  "infoStop": {
+    "id": "EllipseAskStop",
+    "title": "Przycisk STOP",
+    "text": "Wyłącznik główny odcinający dopływ prądu do całego stanowiska."
+  }
+}

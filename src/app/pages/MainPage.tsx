@@ -21,6 +21,7 @@ function getNotification(status, header, message) {
 
 export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
+  const [data, setData] = useState({});
   const toaster = useToaster();
 
   const notificationsclient = new W3CWebSocket(
@@ -61,6 +62,7 @@ export const MainPage = props => {
     stateClient.onmessage = message => {
       console.log('Otrzymano stan stacji');
       console.log(JSON.parse(JSON.parse(message.data)));
+      setData(JSON.parse(JSON.parse(message.data)));
     };
 
     notificationsclient.onopen = () => {
@@ -74,7 +76,7 @@ export const MainPage = props => {
     notificationsclient.onmessage = message => {
       const messagejson = JSON.parse(JSON.parse(message.data));
       console.log(messagejson);
-      if (message.type == 'connectionerror') {
+      if (message.type === 'connectionerror') {
         toaster.push(getNotification('error', 'Error', messagejson.data), {
           placement: 'bottomEnd',
         });
@@ -126,7 +128,7 @@ export const MainPage = props => {
         />
         {
           {
-            model: <ModelPage />,
+            model: <ModelPage data={data} />,
             details: <div>Dane szczegółowe</div>,
             docs: <div>Dokumentacja</div>,
             settings: <SettingsPage />, // only for admin user

@@ -8,7 +8,7 @@ type askColor = '#298E33' | '#73C98E';
 
 const maxHeight = 171;
 
-export const Model = props => {
+export const IRLModel = (props: any) => {
   //States
   const [startContainerHeight, setStartContainerHeight] = useState(maxHeight);
   const [innerContainerAHeight, setInnerContainerAHeight] = useState(0);
@@ -78,6 +78,17 @@ export const Model = props => {
         window.alert('Nieznany błąd');
         break;
     }
+  }
+
+  async function formTask(color: string, name: string) {
+    // const target = mapPompNames.map(({ model, toBackend }) => {
+    //   if (model === name) {
+    //     return toBackend;
+    //   }
+    // });
+    // const isOpen = color === 'green' ? 1 : 0;
+    // const status = await addTask('is_open', target, isOpen);
+    // handleStatus(status);
   }
 
   //Water
@@ -234,6 +245,13 @@ export const Model = props => {
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+
+          if (
+            localStorage.getItem('permission') === 'manage_users' ||
+            localStorage.getItem('permission') === 'write'
+          ) {
+            formTask(newColor, button.current?.id);
+          }
 
           if (newColor === 'green' && height > 0) {
             let colorAfter;
@@ -459,6 +477,13 @@ export const Model = props => {
         if (button.current) {
           button.current.setAttribute('fill', newColor);
 
+          if (
+            localStorage.getItem('permission') === 'manage_users' ||
+            localStorage.getItem('permission') === 'write'
+          ) {
+            formTask(newColor, button.current?.id);
+          }
+
           if (newColor === 'green' && height > 0) {
             pipesName.forEach(pipeName => {
               const pipe = document.getElementById(pipeName);
@@ -583,6 +608,13 @@ export const Model = props => {
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+
+          if (
+            localStorage.getItem('permission') === 'manage_users' ||
+            localStorage.getItem('permission') === 'write'
+          ) {
+            formTask(newColor, button.current?.id);
+          }
 
           if (newColor === 'green' && height > 0) {
             pipesName.forEach(pipeName => {
@@ -714,7 +746,6 @@ export const Model = props => {
       };
     }, [handleColorChange]);
   }
-
   useAskButton('askMain', 'EllipseAskMain');
   useAskButton('askPomp', 'EllipseAskPomp');
   useAskButton('askHelpContainer', 'EllipseAskHelpContainer');
