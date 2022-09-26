@@ -33,6 +33,7 @@ function getNotificationContent(notification) {
       1: `Włącz pompę ${target}`,
       0: `Wyłącz pompę ${target}`,
     },
+    s: { 1: `Wszystkie komponenty wyłączono, kolejka zadań wyczyszczona` },
   };
   console.log(targetype, value, messages[targetype][value]);
   return messages[targetype][value];
@@ -103,6 +104,14 @@ export const MainPage = props => {
       }
       if (messagejson.task.action == 'end_scenario') {
         setCurrentScenario('');
+        toaster.push(
+          getNotification(
+            'success',
+            'Zakończono scenariusz',
+            `Scenariusz: ${messagejson.task.target}`,
+          ),
+          { placement: 'bottomEnd' },
+        );
         return;
       }
       switch (messagejson.status) {
