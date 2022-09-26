@@ -80,6 +80,15 @@ export const Model = props => {
     }
   }
 
+  async function formTask(color: string, name: string) {
+    const target = mapPompNames.filter(({ model, toBackend }) => {
+      return model === name;
+    });
+    const isOpen = color === 'green' ? 1 : 0;
+    const status = await addTask('is_open', target[0].toBackend, isOpen);
+    // handleStatus(status);
+  }
+
   //Water
   function useWater(height: number, waterName: string, containerY: number) {
     const water = useRef<SVGSVGElement | null>(null);
