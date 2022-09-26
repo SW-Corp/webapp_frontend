@@ -73,9 +73,12 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
         <Nav.Item icon={<UserIcon />} disabled>
           {localStorage.getItem('current_user')}
         </Nav.Item>
-        <Nav.Item icon={<CogIcon />} eventKey="settings">
-          Ustawienia
-        </Nav.Item>
+        {localStorage.getItem('permission') === 'manage_users' && (
+          <Nav.Item icon={<CogIcon />} eventKey="settings">
+            Ustawienia
+          </Nav.Item>
+        )}
+
         <Nav.Item icon={<OffRound />} onClick={handleLogOut}>
           Wyloguj się
         </Nav.Item>

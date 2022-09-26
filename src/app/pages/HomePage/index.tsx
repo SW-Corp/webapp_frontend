@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { LoginPage } from 'app/pages/LoginPage';
 import { MainPage } from 'app/pages/MainPage';
-import Cookies from 'js-cookie';
 
 export const HomePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

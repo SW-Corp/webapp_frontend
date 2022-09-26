@@ -1261,7 +1261,7 @@ const styles = {
     backgroundColor: colorConstants.white,
     width: '75%',
     height: '80vh',
-    marginLeft: '22%',
+    marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: '2%',
     paddingBottom: '1%',

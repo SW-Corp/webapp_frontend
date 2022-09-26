@@ -2,7 +2,7 @@ import { MainFooter } from 'app/components/MainFooter';
 import { MainNavbar } from 'app/components/MainNavbar';
 import { MainSidebar } from 'app/components/MainSidebar';
 import { colorConstants } from 'styles/colorConstants';
-import { Model } from 'app/components/Model';
+import { ModelPage } from 'app/pages/ModelPage';
 import { SettingsPage } from 'app/pages/SettingsPage';
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
@@ -126,7 +126,7 @@ export const MainPage = props => {
         />
         {
           {
-            model: <Model />,
+            model: <ModelPage />,
             details: <div>Dane szczegółowe</div>,
             docs: <div>Dokumentacja</div>,
             settings: <SettingsPage />, // only for admin user
