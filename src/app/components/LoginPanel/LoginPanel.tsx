@@ -89,9 +89,9 @@ export const LoginPanel = props => {
         <div style={styles.name}>SW Corp.</div>
         <div style={styles.title}>Logowanie</div>
         <Form style={styles.form}>
-          <Form.Group controlId="name">
+          <Form.Group controlId="name" style={styles.group}>
             <Form.ControlLabel style={styles.label}>
-              Nazwa użytkownika
+              Adres e-mail
             </Form.ControlLabel>
             <Form.Control
               type="text"
@@ -102,7 +102,7 @@ export const LoginPanel = props => {
               style={styles.input}
             />
           </Form.Group>
-          <Form.Group controlId="password">
+          <Form.Group controlId="password" style={styles.group}>
             <Form.ControlLabel style={styles.label}>Hasło</Form.ControlLabel>
             <Form.Control
               name="password"
@@ -146,8 +146,8 @@ const styles = {
     width: '40%',
     maxWidth: '28em',
     minWidth: '25em',
-    height: '40em',
-    minHeight: '38em',
+    height: '42em',
+    minHeight: '42em',
     borderRadius: '20px',
     border: 'solid',
     borderColor: colorConstants.lightGrey,
@@ -158,7 +158,7 @@ const styles = {
     alignItems: 'center',
     marginLeft: 'auto',
     marginRight: 'auto',
-    padding: 0,
+    paddingBottom: '10px',
   },
 
   icon: {
@@ -195,6 +195,14 @@ const styles = {
     marginRight: 'auto',
   },
 
+  group: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+  } as React.CSSProperties,
+
   label: {
     font: 'Roboto !important',
     fontSize: '14px',
@@ -202,7 +210,7 @@ const styles = {
   },
 
   input: {
-    width: '100%',
+    width: '157.5%',
     height: '60px',
     marginBottom: '5px',
     borderRadius: '20px',

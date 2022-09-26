@@ -128,7 +128,7 @@ const styles = {
   },
 
   input: {
-    width: '100%',
+    width: '157.5%',
     height: '60px',
     marginBottom: '5px',
     borderRadius: '20px',
