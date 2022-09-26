@@ -58,7 +58,6 @@ export const ModelPage = () => {
       <div
         style={{
           display: 'flex',
-          flex: '1',
           alignItems: 'center',
           justifyContent: 'center',
         }}

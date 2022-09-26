@@ -1261,8 +1261,8 @@ const styles = {
     backgroundColor: colorConstants.white,
     width: '75%',
     height: '80vh',
-    marginLeft: 'auto',
-    marginRight: 'auto',
+    marginLeft: '20%',
+    // marginRight: 'auto',
     marginTop: '2%',
     paddingBottom: '1%',
     display: 'flex',
@@ -1298,6 +1298,7 @@ const styles = {
     flexDirection: 'column',
     alignItems: 'center',
     marginLeft: '10px',
+    userSelect: 'none',
   } as React.CSSProperties,
 
   title: {

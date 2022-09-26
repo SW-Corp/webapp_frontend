@@ -62,24 +62,51 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
   }
 
   return (
-    <Navbar {...props}>
-      <Navbar.Brand>Water Treatment Lab</Navbar.Brand>
+    <Navbar {...props} style={styles.nav}>
+      <Navbar.Brand style={styles.title}>Water Treatment Lab</Navbar.Brand>
       <Nav onSelect={onSelect} activeKey={activeKey}>
-        <Nav.Item eventKey="model">Wizualizacja</Nav.Item>
-        <Nav.Item eventKey="details">Dane szczegółowe</Nav.Item>
-        <Nav.Item eventKey="docs">Dokumentacja</Nav.Item>
+        <Nav.Item
+          eventKey="model"
+          style={activeKey === 'model' ? styles.navItemActive : styles.navItem}
+        >
+          Wizualizacja
+        </Nav.Item>
+        <Nav.Item
+          eventKey="details"
+          style={
+            activeKey === 'details' ? styles.navItemActive : styles.navItem
+          }
+        >
+          Dane szczegółowe
+        </Nav.Item>
+        <Nav.Item
+          eventKey="docs"
+          style={activeKey === 'docs' ? styles.navItemActive : styles.navItem}
+        >
+          Dokumentacja
+        </Nav.Item>
       </Nav>
       <Nav pullRight onSelect={onSelect} activeKey={activeKey}>
-        <Nav.Item icon={<UserIcon />} disabled>
+        <Nav.Item icon={<UserIcon />} disabled style={styles.navItem}>
           {localStorage.getItem('current_user')}
         </Nav.Item>
         {localStorage.getItem('permission') === 'manage_users' && (
-          <Nav.Item icon={<CogIcon />} eventKey="settings">
+          <Nav.Item
+            icon={<CogIcon />}
+            eventKey="settings"
+            style={
+              activeKey === 'settings' ? styles.navItemActive : styles.navItem
+            }
+          >
             Ustawienia
           </Nav.Item>
         )}
 
-        <Nav.Item icon={<OffRound />} onClick={handleLogOut}>
+        <Nav.Item
+          icon={<OffRound />}
+          onClick={handleLogOut}
+          style={styles.navItem}
+        >
           Wyloguj się
         </Nav.Item>
       </Nav>
@@ -87,67 +114,40 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
   );
 };
 
-const nav = {
-  height: '75px',
-  width: '100%',
-  backgroundColor: colorConstants.green,
-  boxShadow: '0 2px 2px 2px rgba(9, 9, 9, 0.23)',
-  display: 'flex',
-  justifyContent: 'flex-end',
-  userSelect: 'none' /* Standard */,
-} as React.CSSProperties;
+const styles = {
+  nav: {
+    height: '75px',
+    width: '100%',
+    backgroundColor: colorConstants.green,
+    boxShadow: '0 2px 2px 2px rgba(9, 9, 9, 0.23)',
+    justifyContent: 'space-between',
+    userSelect: 'none' /* Standard */,
+    margin: 0,
+  } as React.CSSProperties,
 
-const navigation = {
-  height: '75px',
-  width: '100%',
-  display: 'flex',
-  justifyContent: 'start',
-  paddingLeft: '75px',
-  paddingRight: '0px',
-} as React.CSSProperties;
+  title: {
+    height: '75px',
+    fontSize: '35px',
+    lineHeight: '35px',
+    color: colorConstants.white,
+    fontWeight: 'bold',
+  },
 
-const itemStyles = {
-  float: 'left',
-  width: '34%',
-} as React.CSSProperties;
+  navItem: {
+    height: '75px',
+    fontSize: '25px',
+    lineHeight: '25px',
+    color: colorConstants.white,
+    fontWeight: '500',
+  },
 
-const itemStylesActive = {
-  float: 'left',
-  width: '34%',
-  boxShadow: `inset 0 -5px ${colorConstants.accentGreen}`,
-} as React.CSSProperties;
-
-const linkStyles = {
-  display: 'block',
-  color: colorConstants.grey,
-  fontSize: '33px',
-  textAlign: 'center',
-  paddingTop: '12px',
-  textDecoration: 'none',
-} as React.CSSProperties;
-
-const linkDocsStyles = {
-  display: 'block',
-  color: colorConstants.white,
-  fontSize: '33px',
-  textAlign: 'center',
-  paddingTop: '12px',
-  textDecoration: 'none',
-} as React.CSSProperties;
-
-const linkStylesActive = {
-  display: 'block',
-  color: colorConstants.white,
-  fontSize: '30px',
-  textAlign: 'center',
-  paddingTop: '12px',
-  textDecoration: 'none',
-} as React.CSSProperties;
-
-const iconStyles = {
-  color: colorConstants.white,
-  width: '35px',
-  height: '35px',
-  marginTop: '20px',
-  marginRight: '20px',
-} as React.CSSProperties;
+  navItemActive: {
+    height: '75px',
+    fontSize: '25px',
+    lineHeight: '25px',
+    color: colorConstants.white,
+    fontWeight: '600',
+    borderBottom: '5px solid',
+    borderBottomColor: colorConstants.accentGreen,
+  },
+};
