@@ -26,4 +26,8 @@ export const GlobalStyle = createGlobalStyle`
     font-family: inherit;
     font-size: inherit;
   }
+
+  .rs-navbar-item:hover {
+    background-color: #57ab6d !important;
+  }
 `;

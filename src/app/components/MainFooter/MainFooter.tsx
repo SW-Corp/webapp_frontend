@@ -1,27 +1,33 @@
 import * as React from 'react';
 import Footer from 'rsuite/Footer';
 import { colorConstants } from 'styles/colorConstants';
+import styled from 'styled-components';
 
 export const MainFooter = () => {
   return (
-    <Footer style={styles.footer}>
-      © 2022 Politechnika Poznańska - Water Treatment Lab
-    </Footer>
+    <StyledFooter>
+      © Water Treatment Lab - Wydział Inżynierii Środowiska i Energetyki -
+      Politechnika Poznańska 2022
+    </StyledFooter>
   );
 };
 
-const styles = {
-  footer: {
-    width: '100%',
-    height: '50px',
-    backgroundColor: colorConstants.white,
-    backgroundOpacity: '0.3',
-    color: colorConstants.darkGrey,
-    justifyContent: 'center',
-    alignItems: 'center',
-    display: 'flex',
-    position: 'fixed' as 'fixed',
-    bottom: '0',
-    userSelect: 'none' /* Standard */,
-  } as React.CSSProperties,
-};
+const StyledFooter = styled(Footer)`
+  width: 100%;
+  height: 50px;
+  background-color: ${colorConstants.white};
+  background-opacity: 0.3;
+  color: ${colorConstants.darkGrey};
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  position: fixed;
+  bottom: 0;
+  userselect: none;
+  transition: 0.8s ease;
+
+  &:hover {
+    color: #000;
+    text-shadow: 2px 2px 8px #ccc;
+  }
+`;

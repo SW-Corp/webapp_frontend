@@ -1,9 +1,10 @@
 import { MainFooter } from 'app/components/MainFooter';
 import { MainNavbar } from 'app/components/MainNavbar';
-import { MainSidebar } from 'app/components/MainSidebar';
 import { colorConstants } from 'styles/colorConstants';
 import { ModelPage } from 'app/pages/ModelPage';
 import { SettingsPage } from 'app/pages/SettingsPage';
+import { Documentation } from 'app/pages/Documentation';
+import { DetailsPage } from 'app/pages/DetailsPage';
 import React, { useState, useEffect } from 'react';
 import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Notification, Container } from 'rsuite';
@@ -163,8 +164,8 @@ export const MainPage = props => {
         {
           {
             model: <ModelPage data={data} currentScenario={currentScenario} />,
-            details: <div>Dane szczegółowe</div>,
-            docs: <div>Dokumentacja</div>,
+            details: <DetailsPage />,
+            docs: <Documentation />,
             settings: <SettingsPage />, // only for admin user
           }[activeKey]
         }
