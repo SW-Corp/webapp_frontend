@@ -84,9 +84,13 @@ export const ModelPage = ({ currentScenario, ...props }) => {
 
   const playScenario = name => {
     axios
-      .post(`${baseUrl}/scenario/${workstation}/${name}`, {
-        withCredentials: true,
-      })
+      .post(
+        `${baseUrl}/scenario/${workstation}/${name}`,
+        {},
+        {
+          withCredentials: true,
+        },
+      )
       .then(res => {
         console.log('post scenario: ', res);
       })
