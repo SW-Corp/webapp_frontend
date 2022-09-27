@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import axios from 'axios';
 import PlusIcon from '@rsuite/icons/Plus';
 import { useToaster } from 'rsuite/toaster';
-
+import { baseUrl } from 'services/stationService';
 import { NewUserModal } from './NewUserModal';
 
 import {
@@ -38,7 +38,7 @@ export const SettingsPage = () => {
     console.log(user, permission);
     axios
       .post(
-        'http://10.8.0.9:8000/permission',
+        `${baseUrl}/permission`,
         { user, permission },
         { withCredentials: true },
       )
@@ -52,25 +52,23 @@ export const SettingsPage = () => {
   };
 
   const loadUsers = async () => {
-    axios
-      .get('http://10.8.0.9:8000/users', { withCredentials: true })
-      .then(data => {
-        console.log(data);
-        setData(
-          data.data.users.map((el, idx, arr) => {
-            return {
-              id: idx,
-              ...el,
-            };
-          }),
-        );
-        setLoading(false);
-      });
+    axios.get(`${baseUrl}/users`, { withCredentials: true }).then(data => {
+      console.log(data);
+      setData(
+        data.data.users.map((el, idx, arr) => {
+          return {
+            id: idx,
+            ...el,
+          };
+        }),
+      );
+      setLoading(false);
+    });
   };
 
   const deleteUser = userToDelete => {
     axios
-      .delete('http://10.8.0.9:8000/user', {
+      .delete(`${baseUrl}:8000/user`, {
         data: { email: userToDelete },
         withCredentials: true,
       })
