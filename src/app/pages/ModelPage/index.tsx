@@ -4,7 +4,16 @@ import styled from 'styled-components';
 import { Model } from 'app/components/Model';
 import { IRLModel } from 'app/components/IRLModel';
 
-import { Button, Panel, Table, Whisper, Popover, Loader, Toggle } from 'rsuite';
+import {
+  Button,
+  Panel,
+  Table,
+  Whisper,
+  Popover,
+  Loader,
+  Toggle,
+  Notification,
+} from 'rsuite';
 import { Icon } from '@rsuite/icons';
 
 import { HiQuestionMarkCircle } from 'react-icons/hi';
@@ -14,8 +23,15 @@ import axios from 'axios';
 import { baseUrl, workstation } from 'services/stationService';
 
 const { Column, HeaderCell, Cell } = Table;
+function getNotification(status, header, message) {
+  return (
+    <Notification type={status} header={header}>
+      {message}
+    </Notification>
+  );
+}
 
-export const ModelPage = ({ currentScenario, ...props }) => {
+export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const [checkedToggle, setCheckedToggle] = useState(false);
   const [isTableLoading, setTableLoading] = useState(true);
   const [scenarios, setScenarios] = useState([
@@ -37,6 +53,25 @@ export const ModelPage = ({ currentScenario, ...props }) => {
       })
       .catch(err => {
         console.error(err);
+        if (err.response.status == 400) {
+          toaster.push(
+            getNotification(
+              'error',
+              'Błąd podczas wykonywania scenariusza',
+              'Warunki początkowe scenariusza nie zostały spełnione',
+            ),
+            { placement: 'bottomEnd' },
+          );
+        } else {
+          toaster.push(
+            getNotification(
+              'error',
+              'Błąd podczas wykonywania scenariusza',
+              err.response.data,
+            ),
+            { placement: 'bottomEnd' },
+          );
+        }
       });
   };
 

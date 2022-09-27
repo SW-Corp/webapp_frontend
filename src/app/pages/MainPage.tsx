@@ -163,7 +163,14 @@ export const MainPage = props => {
         />
         {
           {
-            model: <ModelPage data={data} currentScenario={currentScenario} />,
+            model: (
+              <ModelPage
+                data={data}
+                currentScenario={currentScenario}
+                toaster={toaster}
+                getNotification={getNotification}
+              />
+            ),
             details: <DetailsPage />,
             docs: <Documentation />,
             settings: <SettingsPage />, // only for admin user
