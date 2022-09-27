@@ -17,6 +17,16 @@ export const IRLModel = (props: any) => {
   const [innerContainerCHeight, setInnerContainerCHeight] = useState(0);
   const [endContainerHeight, setEndContainerHeight] = useState(0);
 
+  const [pump1A, setPump1A] = useState<Color>('red');
+  const [pump1B, setPump1B] = useState<Color>('red');
+  const [pump1C, setPump1C] = useState<Color>('red');
+
+  const [pump2A, setPump2A] = useState<Color>('red');
+  const [pump2B, setPump2B] = useState<Color>('red');
+  const [pump2C, setPump2C] = useState<Color>('red');
+
+  const [pump3, setPump3] = useState<Color>('red');
+
   const mapPompNames = [
     {
       model: 'pompa1A',
@@ -237,11 +247,26 @@ export const IRLModel = (props: any) => {
 
     const handleColorChange = useCallback(
       (event: MouseEvent) => {
-        const newColor = color === 'green' ? 'red' : 'green';
+        let newColor;
+
+        if (outputPumpName === 'pompa1A')
+          newColor = pump1A === 'green' ? 'red' : 'green';
+
+        if (outputPumpName === 'pompa1B')
+          newColor = pump1B === 'green' ? 'red' : 'green';
+
+        if (outputPumpName === 'pompa1C')
+          newColor = pump1C === 'green' ? 'red' : 'green';
+
         let countOn = 0;
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+          if (outputPumpName === 'pompa1A') setPump1A(newColor);
+
+          if (outputPumpName === 'pompa1B') setPump1B(newColor);
+
+          if (outputPumpName === 'pompa1C') setPump1C(newColor);
 
           if (
             localStorage.getItem('permission') === 'manage_users' ||
@@ -317,19 +342,6 @@ export const IRLModel = (props: any) => {
             }
           }
         }
-
-        // if (newColor === 'green') {
-        //   timer.current = window.setInterval(() => {
-        //     setHeight(h =>
-        //       handle1(h, pipesName, button.current?.getAttribute('id')),
-        //     );
-        //   }, 250);
-        // } else {
-        //   if (timer.current) {
-        //     clearInterval(timer.current);
-        //     timer.current = null;
-        //   }
-        // }
         setColor(newColor);
       },
       [color, setHeight],
@@ -467,10 +479,24 @@ export const IRLModel = (props: any) => {
 
     const handleColorChange = useCallback(
       (event: MouseEvent) => {
-        const newColor = color === 'green' ? 'red' : 'green';
+        let newColor;
+        if (outputPumpName === 'pompa2A')
+          newColor = pump2A === 'green' ? 'red' : 'green';
+
+        if (outputPumpName === 'pompa2B')
+          newColor = pump2B === 'green' ? 'red' : 'green';
+
+        if (outputPumpName === 'pompa2C')
+          newColor = pump2C === 'green' ? 'red' : 'green';
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+
+          if (outputPumpName === 'pompa2A') setPump2A(newColor);
+
+          if (outputPumpName === 'pompa2B') setPump2B(newColor);
+
+          if (outputPumpName === 'pompa2C') setPump2C(newColor);
 
           if (
             localStorage.getItem('permission') === 'manage_users' ||
@@ -491,17 +517,6 @@ export const IRLModel = (props: any) => {
             });
           }
         }
-
-        // if (newColor === 'green') {
-        //   timer.current = window.setInterval(() => {
-        //     setHeight(h => handle2(h, pipesName, containerName));
-        //   }, 250);
-        // } else {
-        //   if (timer.current) {
-        //     clearInterval(timer.current);
-        //     timer.current = null;
-        //   }
-        // }
         setColor(newColor);
       },
       [color, setHeight],
@@ -591,21 +606,17 @@ export const IRLModel = (props: any) => {
     outputPumpName: string,
     pipesName: Array<string>,
   ) {
-    const c = document.getElementById(outputPumpName)?.getAttribute('fill');
-    if (c?.toString() === '#FF0000') console.log('AA');
-
-    const [color, setColor] = useState<Color>(
-      c?.toString() === '#FF0000' ? 'red' : 'green',
-    );
+    const [color, setColor] = useState<Color>('red');
     const button = useRef<SVGSVGElement | null>(null);
     const timer = useRef<number | null>(null);
 
     const handleColorChange = useCallback(
       (event: MouseEvent) => {
-        const newColor = color === 'green' ? 'red' : 'green';
+        const newColor = pump3 === 'green' ? 'red' : 'green';
 
         if (button.current) {
           button.current.setAttribute('fill', newColor);
+          setPump3(newColor);
 
           if (
             localStorage.getItem('permission') === 'manage_users' ||
@@ -627,16 +638,6 @@ export const IRLModel = (props: any) => {
           }
         }
 
-        // if (newColor === 'green') {
-        //   timer.current = window.setInterval(() => {
-        //     setHeight(h => handle3(h, pipesName));
-        //   }, 250);
-        // } else {
-        //   if (timer.current) {
-        //     clearInterval(timer.current);
-        //     timer.current = null;
-        //   }
-        // }
         setColor(newColor);
       },
       [color, setHeight],
@@ -825,6 +826,7 @@ export const IRLModel = (props: any) => {
 
       //Pipes
       if (props.data.pumps.P1.is_on && props.data.tanks.C1.water_level > 0) {
+        setPump1A('green');
         for (let i = 0; i < 5; i++) {
           const pipe = document.getElementById(pipesNameStartA[i]);
           pipe?.setAttribute('fill', '#0AD3FF');
@@ -835,6 +837,7 @@ export const IRLModel = (props: any) => {
           pipe?.setAttribute('fill', '#0075FF');
         }
       } else {
+        setPump1A('red');
         for (let i = 5; i < 8; i++) {
           const pipe = document.getElementById(pipesNameStartA[i]);
           pipe?.setAttribute('fill', '#848484');
@@ -849,6 +852,7 @@ export const IRLModel = (props: any) => {
       }
 
       if (props.data.pumps.P2.is_on && props.data.tanks.C1.water_level > 0) {
+        setPump1B('green');
         for (let i = 0; i < 5; i++) {
           const pipe = document.getElementById(pipesNameStartB[i]);
           pipe?.setAttribute('fill', '#0AD3FF');
@@ -859,6 +863,7 @@ export const IRLModel = (props: any) => {
           pipe?.setAttribute('fill', '#00A3FF');
         }
       } else {
+        setPump1B('red');
         for (let i = 5; i < 8; i++) {
           const pipe = document.getElementById(pipesNameStartB[i]);
           pipe?.setAttribute('fill', '#B8B8B8');
@@ -873,11 +878,13 @@ export const IRLModel = (props: any) => {
       }
 
       if (props.data.pumps.P3.is_on && props.data.tanks.C1.water_level > 0) {
+        setPump1C('green');
         for (let i = 0; i < 8; i++) {
           const pipe = document.getElementById(pipesNameStartC[i]);
           pipe?.setAttribute('fill', '#0AD3FF');
         }
       } else {
+        setPump1C('red');
         for (let i = 5; i < 8; i++) {
           const pipe = document.getElementById(pipesNameStartC[i]);
           pipe?.setAttribute('fill', '#E1E1E1');
@@ -892,11 +899,13 @@ export const IRLModel = (props: any) => {
       }
 
       if (props.data.valves.V1.is_open && props.data.tanks.C2.water_level > 0) {
+        setPump2A('green');
         pipesNameA.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#0AD3FF');
         });
       } else {
+        setPump2A('red');
         pipesNameA.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#E1E1E1');
@@ -904,11 +913,13 @@ export const IRLModel = (props: any) => {
       }
 
       if (props.data.valves.V2.is_open && props.data.tanks.C3.water_level > 0) {
+        setPump2B('green');
         pipesNameB.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#0AD3FF');
         });
       } else {
+        setPump2B('red');
         pipesNameB.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#E1E1E1');
@@ -916,11 +927,13 @@ export const IRLModel = (props: any) => {
       }
 
       if (props.data.valves.V3.is_open && props.data.tanks.C4.water_level > 0) {
+        setPump2C('green');
         pipesNameC.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#0AD3FF');
         });
       } else {
+        setPump2C('red');
         pipesNameC.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#E1E1E1');
@@ -928,18 +941,19 @@ export const IRLModel = (props: any) => {
       }
 
       if (props.data.pumps.P4.is_on && props.data.tanks.C5.water_level > 0) {
+        setPump3('green');
         pipesNameEnd.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#0AD3FF');
         });
       } else {
+        setPump3('red');
         pipesNameEnd.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#E1E1E1');
         });
       }
     }
-    console.log('hej', props.data);
   }, [props.data, startContainerHeight]);
 
   return (
