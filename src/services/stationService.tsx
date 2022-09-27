@@ -1,7 +1,8 @@
 import axios from 'axios';
 
-const baseUrl = 'http://10.8.0.9:8000';
-const workstation = 'testworkstation';
+export const baseUrl = 'http://10.8.0.9:8000';
+export const workstation = 'testworkstation';
+export const websocketBaseAddress = 'ws://10.8.0.9:8000/';
 
 export const addTask = async (action: string, target: any, value: number) => {
   console.log({

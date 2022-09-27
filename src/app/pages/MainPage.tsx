@@ -9,7 +9,7 @@ import { w3cwebsocket as W3CWebSocket } from 'websocket';
 import { Notification, Container } from 'rsuite';
 import { useToaster } from 'rsuite/toaster';
 
-const websocketBaseAddress = 'ws://10.8.0.9:8000/';
+import { websocketBaseAddress } from 'services/stationService';
 
 function getNotification(status, header, message) {
   return (
@@ -46,32 +46,32 @@ export const MainPage = props => {
   const [activeKey, setActiveKey] = React.useState('model');
   const toaster = useToaster();
 
-  const notificationsclient = new W3CWebSocket(
-    websocketBaseAddress + 'subscribe/notifications',
-  );
-  const stateClient = new W3CWebSocket(
-    websocketBaseAddress + 'subscribe/state',
-  );
-
-  stateClient.onerror = () => {
-    toaster.push(
-      getNotification('error', 'Error', 'Error connecting to state socket'),
-      { placement: 'bottomEnd' },
-    );
-  };
-
-  notificationsclient.onerror = () => {
-    toaster.push(
-      getNotification(
-        'error',
-        'Error',
-        'Error connecting to notification socket',
-      ),
-      { placement: 'bottomEnd' },
-    );
-  };
-
   useEffect(() => {
+    const notificationsclient = new W3CWebSocket(
+      websocketBaseAddress + 'subscribe/notifications',
+    );
+    const stateClient = new W3CWebSocket(
+      websocketBaseAddress + 'subscribe/state',
+    );
+
+    stateClient.onerror = () => {
+      toaster.push(
+        getNotification('error', 'Error', 'Error connecting to state socket'),
+        { placement: 'bottomEnd' },
+      );
+    };
+
+    notificationsclient.onerror = () => {
+      toaster.push(
+        getNotification(
+          'error',
+          'Error',
+          'Error connecting to notification socket',
+        ),
+        { placement: 'bottomEnd' },
+      );
+    };
+
     stateClient.onopen = () => {
       console.log('WebSocket Client Connected');
       // TODO include cookie

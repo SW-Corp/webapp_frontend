@@ -172,13 +172,11 @@ export const IRLModel = (props: any) => {
   }
 
   async function formTask(color: string, name: string) {
-    // const target = mapPompNames.map(({ model, toBackend }) => {
-    //   if (model === name) {
-    //     return toBackend;
-    //   }
-    // });
-    // const isOpen = color === 'green' ? 1 : 0;
-    // const status = await addTask('is_open', target, isOpen);
+    const target = mapPompNames.filter(({ model, toBackend }) => {
+      return model === name;
+    })?.[0].toBackend;
+    const isOpen = color === 'green' ? 1 : 0;
+    const status = await addTask('is_open', target, isOpen);
     // handleStatus(status);
   }
 
