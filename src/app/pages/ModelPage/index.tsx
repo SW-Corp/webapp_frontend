@@ -53,25 +53,14 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       })
       .catch(err => {
         console.error(err);
-        if (err.response.status == 400) {
-          toaster.push(
-            getNotification(
-              'error',
-              'Błąd podczas wykonywania scenariusza',
-              'Warunki początkowe scenariusza nie zostały spełnione',
-            ),
-            { placement: 'bottomEnd' },
-          );
-        } else {
-          toaster.push(
-            getNotification(
-              'error',
-              'Błąd podczas wykonywania scenariusza',
-              err.response.data,
-            ),
-            { placement: 'bottomEnd' },
-          );
-        }
+        toaster.push(
+          getNotification(
+            'error',
+            'Błąd podczas wykonywania listowania scenariuszy',
+            err.response.data,
+          ),
+          { placement: 'bottomEnd' },
+        );
       });
   };
 
@@ -137,6 +126,25 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       })
       .catch(err => {
         console.error(err);
+        if (err.response.status == 400) {
+          toaster.push(
+            getNotification(
+              'error',
+              'Błąd podczas wykonywania scenariusza',
+              'Warunki początkowe scenariusza nie zostały spełnione',
+            ),
+            { placement: 'bottomEnd' },
+          );
+        } else {
+          toaster.push(
+            getNotification(
+              'error',
+              'Błąd podczas wykonywania scenariusza',
+              err.response.data,
+            ),
+            { placement: 'bottomEnd' },
+          );
+        }
       });
   };
 
