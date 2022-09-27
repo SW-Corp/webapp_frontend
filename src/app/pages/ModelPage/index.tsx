@@ -110,6 +110,12 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       mapMeasurements[3].height = props.data.tanks.C4.water_level.toString();
       mapMeasurements[4].height = props.data.tanks.C5.water_level.toString();
     }
+
+    for (let i = 0; i < 5; i++) {
+      mapMeasurements[i].height = parseFloat(mapMeasurements[i].height)
+        .toFixed(1)
+        .toString();
+    }
     return mapMeasurements;
   };
 
@@ -296,7 +302,7 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                   <StyledHeaderCell>Nazwa</StyledHeaderCell>
                   <Cell dataKey="name" />
                 </Column>
-                <Column flexGrow={3}>
+                <Column flexGrow={3} align="center">
                   <StyledHeaderCell>Wysokość wody [cm]</StyledHeaderCell>
                   <Cell dataKey="height"></Cell>
                 </Column>
