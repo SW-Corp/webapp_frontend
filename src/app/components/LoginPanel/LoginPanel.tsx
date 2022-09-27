@@ -86,7 +86,7 @@ export const LoginPanel = props => {
     <div style={styles.mainDiv}>
       <div style={styles.panel}>
         <img src={img} style={styles.icon} title={'logo'} />
-        <div style={styles.name}>SW Corp.</div>
+        <div style={styles.name}>Water Treatment Lab</div>
         <div style={styles.title}>Logowanie</div>
         <Form style={styles.form}>
           <Form.Group controlId="name" style={styles.group}>
@@ -123,11 +123,11 @@ export const LoginPanel = props => {
             Nie masz konta? Zarejestruj się!
           </Link>
         </div>
-        <div style={styles.linkDiv}>
+        {/* <div style={styles.linkDiv}>
           <Link to="/forgotPassword" style={styles.link}>
             Zapomniałeś hasła?
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
