@@ -40,6 +40,44 @@ export const ModelPage = ({ currentScenario, ...props }) => {
       });
   };
 
+  let data =
+    typeof props.data.tanks != 'undefined'
+      ? Object.values(props.data.tanks)
+      : props.data.tanks;
+
+  const loadMeasurements = () => {
+    const mapMeasurements = [
+      {
+        name: 'Zbiornik reakcji',
+        height: '0',
+      },
+      {
+        name: 'Zbiornik filtracyjny A',
+        height: '0',
+      },
+      {
+        name: 'Zbiornik filtracyjny B',
+        height: '0',
+      },
+      {
+        name: 'Zbiornik filtracyjny C',
+        height: '0',
+      },
+      {
+        name: 'Zbiornik wody czystej',
+        height: '0',
+      },
+    ];
+    if (typeof props.data.tanks != 'undefined') {
+      mapMeasurements[0].height = props.data.tanks.C1.water_level.toString();
+      mapMeasurements[1].height = props.data.tanks.C2.water_level.toString();
+      mapMeasurements[2].height = props.data.tanks.C3.water_level.toString();
+      mapMeasurements[3].height = props.data.tanks.C4.water_level.toString();
+      mapMeasurements[4].height = props.data.tanks.C5.water_level.toString();
+    }
+    return mapMeasurements;
+  };
+
   useEffect(() => {
     loadScenarios();
   }, []);
@@ -69,13 +107,6 @@ export const ModelPage = ({ currentScenario, ...props }) => {
       </Whisper>
     );
   };
-
-  const [measure, setMeasure] = useState('');
-
-  useEffect(() => {
-    setMeasure(props.data.tanks);
-  }, [measure]);
-  console.log('bb', measure);
 
   return (
     <>
@@ -187,54 +218,52 @@ export const ModelPage = ({ currentScenario, ...props }) => {
               </Table>
             </StyledPanel>
           </ContainerDiv>
-          {/* <ContainerDiv>
-          <StyledPanel
-            header={
-              <Whisper
-                placement="topStart"
-                speaker={
-                  <Popover>
+          <ContainerDiv>
+            <StyledPanel
+              header={
+                <Whisper
+                  placement="topStart"
+                  speaker={
+                    <Popover>
                       <p>
-                        Tabela przedstawiająca aktualną wysokość wody
-                        w poszczególnych zbiornikach.
+                        Tabela przedstawiająca aktualną wysokość wody w
+                        poszczególnych zbiornikach.
                       </p>
                     </Popover>
                   }
-              >
-                <div
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  <h5>Pomiary</h5>
-                  <Icon
-                    fill="green"
-                    width="30px"
-                    height="30px"
-                    as={HiQuestionMarkCircle}
-                    style={{ fontSize: '25px', cursor: 'pointer' }}
-                  />
-                </div>
-              </Whisper>
-            }
-            shaded
-          >
-            {console.log('eeeelo', typeof(props.data.tanks) != "undefined" ? Object.values(props.data.tanks) : props.data.tanks)}
-            <Table
-              data={props.data.tanks}
-              autoHeight={true}
-              wordWrap="break-word"
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    <h5>Pomiary</h5>
+                    <Icon
+                      fill="green"
+                      width="30px"
+                      height="30px"
+                      as={HiQuestionMarkCircle}
+                      style={{ fontSize: '25px', cursor: 'pointer' }}
+                    />
+                  </div>
+                </Whisper>
+              }
+              shaded
+            >
+              <Table
+                data={loadMeasurements()}
+                autoHeight={true}
+                wordWrap="break-word"
               >
-              <Column flexGrow={1}>
-                <StyledHeaderCell>Nazwa</StyledHeaderCell>
-                <Cell dataKey="offset" />
-              </Column>
-              <Column>
-                <StyledHeaderCell>Wysokość wody</StyledHeaderCell>
-                <Cell dataKey="water_level">
-                </Cell>
-              </Column>
-            </Table>
-          </StyledPanel>
-        </ContainerDiv> */}
+                <Column flexGrow={2}>
+                  <StyledHeaderCell>Nazwa</StyledHeaderCell>
+                  <Cell dataKey="name" />
+                </Column>
+                <Column flexGrow={3}>
+                  <StyledHeaderCell>Wysokość wody [cm]</StyledHeaderCell>
+                  <Cell dataKey="height"></Cell>
+                </Column>
+              </Table>
+            </StyledPanel>
+          </ContainerDiv>
         </div>
         {checkedToggle === false ? <Model /> : <IRLModel data={props.data} />}
       </div>
@@ -243,11 +272,11 @@ export const ModelPage = ({ currentScenario, ...props }) => {
 };
 
 const StyledPanel = styled(Panel)`
-  width: 20em;
+  width: 26em;
 `;
 
 const ContainerDiv = styled.div`
-  width: 90%;
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
   padding: 10px 10px 10px 20px;
@@ -260,4 +289,5 @@ const ContainerDiv = styled.div`
 const StyledHeaderCell = styled(HeaderCell)`
   color: #000;
   font-size: 13px;
+  height: auto;
 `;
