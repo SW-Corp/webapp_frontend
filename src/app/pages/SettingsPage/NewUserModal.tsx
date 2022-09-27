@@ -25,11 +25,12 @@ export const NewUserModal = ({ isOpen, handleClose, ...props }) => {
       })
       .catch(err => {
         console.log('err', err);
+        handleClose(false);
       });
   };
 
   return (
-    <Modal open={isOpen} onClose={handleClose}>
+    <Modal open={isOpen} onClose={() => handleClose(false)}>
       <Modal.Header>
         <Modal.Title>Dodaj nowego użytkownika</Modal.Title>
       </Modal.Header>

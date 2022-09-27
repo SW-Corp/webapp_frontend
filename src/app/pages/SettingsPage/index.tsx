@@ -178,7 +178,7 @@ export const SettingsPage = () => {
       </StyledContent>
       <NewUserModal
         isOpen={isModalOpen}
-        handleClose={(isAdded: boolean) => {
+        handleClose={(isAdded: boolean = false) => {
           setModalOpen(false);
           if (isAdded) {
             loadUsers();
