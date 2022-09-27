@@ -70,6 +70,13 @@ export const ModelPage = ({ currentScenario, ...props }) => {
     );
   };
 
+  const [measure, setMeasure] = useState('');
+
+  useEffect(() => {
+    setMeasure(props.data.tanks);
+  }, [measure]);
+  console.log('bb', measure);
+
   return (
     <>
       <div
@@ -98,25 +105,106 @@ export const ModelPage = ({ currentScenario, ...props }) => {
           justifyContent: 'space-evenly',
         }}
       >
-        <ContainerDiv>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          <ContainerDiv>
+            <StyledPanel
+              header={
+                <Whisper
+                  placement="topStart"
+                  speaker={
+                    <Popover>
+                      <p>
+                        Stacja umożliwia odegranie wybranego <i>scenariusza</i>,
+                        czyli sekwencji komend sterujących stacją w celu
+                        osiągnięcia określonego stanu.
+                      </p>
+                    </Popover>
+                  }
+                >
+                  <div
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    <h5>Scenariusze</h5>
+                    <Icon
+                      fill="green"
+                      width="30px"
+                      height="30px"
+                      as={HiQuestionMarkCircle}
+                      style={{ fontSize: '25px', cursor: 'pointer' }}
+                    />
+                  </div>
+                </Whisper>
+              }
+              shaded
+            >
+              <Table
+                data={scenarios}
+                autoHeight={true}
+                loading={isTableLoading}
+                wordWrap="break-word"
+              >
+                <Column flexGrow={1}>
+                  <StyledHeaderCell>Nazwa</StyledHeaderCell>
+                  <PopoverCell dataKey="name" />
+                </Column>
+                <Column>
+                  <StyledHeaderCell>Akcje</StyledHeaderCell>
+                  <Cell dataKey="user">
+                    {rowData => {
+                      if (currentScenario == rowData.name) {
+                        return (
+                          <Loader
+                            speed="slow"
+                            vertical
+                            content="W trakcie..."
+                          />
+                        );
+                      } else {
+                        return (
+                          <Button
+                            color="green"
+                            appearance="primary"
+                            disabled={
+                              perm == 'read' || currentScenario.length > 0
+                            }
+                            onClick={() => {
+                              playScenario(rowData.name);
+                            }}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            Rozpocznij
+                          </Button>
+                        );
+                      }
+                    }}
+                  </Cell>
+                </Column>
+              </Table>
+            </StyledPanel>
+          </ContainerDiv>
+          {/* <ContainerDiv>
           <StyledPanel
             header={
               <Whisper
                 placement="topStart"
                 speaker={
                   <Popover>
-                    <p>
-                      Stacja umożliwia odegranie wybranego <i>scenariusza</i>,
-                      czyli sekwencji komend sterujących stacją w celu
-                      osiągnięcia określonego stanu.
-                    </p>
-                  </Popover>
-                }
+                      <p>
+                        Tabela przedstawiająca aktualną wysokość wody
+                        w poszczególnych zbiornikach.
+                      </p>
+                    </Popover>
+                  }
               >
                 <div
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  <h5>Scenariusze</h5>
+                  <h5>Pomiary</h5>
                   <Icon
                     fill="green"
                     width="30px"
@@ -129,47 +217,25 @@ export const ModelPage = ({ currentScenario, ...props }) => {
             }
             shaded
           >
+            {console.log('eeeelo', typeof(props.data.tanks) != "undefined" ? Object.values(props.data.tanks) : props.data.tanks)}
             <Table
-              data={scenarios}
+              data={props.data.tanks}
               autoHeight={true}
-              loading={isTableLoading}
               wordWrap="break-word"
-            >
+              >
               <Column flexGrow={1}>
                 <StyledHeaderCell>Nazwa</StyledHeaderCell>
-                <PopoverCell dataKey="name" />
+                <Cell dataKey="offset" />
               </Column>
               <Column>
-                <StyledHeaderCell>Akcje</StyledHeaderCell>
-                <Cell dataKey="user">
-                  {rowData => {
-                    if (currentScenario == rowData.name) {
-                      return (
-                        <Loader speed="slow" vertical content="W trakcie..." />
-                      );
-                    } else {
-                      return (
-                        <Button
-                          color="green"
-                          appearance="primary"
-                          disabled={
-                            perm == 'read' || currentScenario.length > 0
-                          }
-                          onClick={() => {
-                            playScenario(rowData.name);
-                          }}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          Rozpocznij
-                        </Button>
-                      );
-                    }
-                  }}
+                <StyledHeaderCell>Wysokość wody</StyledHeaderCell>
+                <Cell dataKey="water_level">
                 </Cell>
               </Column>
             </Table>
           </StyledPanel>
-        </ContainerDiv>
+        </ContainerDiv> */}
+        </div>
         {checkedToggle === false ? <Model /> : <IRLModel data={props.data} />}
       </div>
     </>

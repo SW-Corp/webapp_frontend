@@ -349,60 +349,58 @@ export const IRLModel = (props: any) => {
     }, [handleColorChange]);
   }
 
-  {
-    useWater(startContainerHeight, 'startWater', 220.5);
-    //   //Start container
-    let pipesNameStartA: Array<string> = [];
-    pipesNameStartA.push('pipe1_1');
-    pipesNameStartA.push('pipe1_2');
-    pipesNameStartA.push('pipe1_3A');
-    pipesNameStartA.push('pipe1_3B');
-    pipesNameStartA.push('pipe1_3C');
-    pipesNameStartA.push('pipe1_4A');
-    pipesNameStartA.push('pipe1_5A');
-    pipesNameStartA.push('pipe1_6A');
+  useWater(startContainerHeight, 'startWater', 220.5);
+  //   //Start container
+  let pipesNameStartA: Array<string> = [];
+  pipesNameStartA.push('pipe1_1');
+  pipesNameStartA.push('pipe1_2');
+  pipesNameStartA.push('pipe1_3A');
+  pipesNameStartA.push('pipe1_3B');
+  pipesNameStartA.push('pipe1_3C');
+  pipesNameStartA.push('pipe1_4A');
+  pipesNameStartA.push('pipe1_5A');
+  pipesNameStartA.push('pipe1_6A');
 
-    useOutputButton1(
-      startContainerHeight,
-      num => setStartContainerHeight(num),
-      'pompa1A',
-      pipesNameStartA,
-    );
+  useOutputButton1(
+    startContainerHeight,
+    num => setStartContainerHeight(num),
+    'pompa1A',
+    pipesNameStartA,
+  );
 
-    let pipesNameStartB: Array<string> = [];
-    pipesNameStartB.push('pipe1_1');
-    pipesNameStartB.push('pipe1_2');
-    pipesNameStartB.push('pipe1_3A');
-    pipesNameStartB.push('pipe1_3B');
-    pipesNameStartB.push('pipe1_3C');
-    pipesNameStartB.push('pipe1_4B');
-    pipesNameStartB.push('pipe1_5B');
-    pipesNameStartB.push('pipe1_6B');
+  let pipesNameStartB: Array<string> = [];
+  pipesNameStartB.push('pipe1_1');
+  pipesNameStartB.push('pipe1_2');
+  pipesNameStartB.push('pipe1_3A');
+  pipesNameStartB.push('pipe1_3B');
+  pipesNameStartB.push('pipe1_3C');
+  pipesNameStartB.push('pipe1_4B');
+  pipesNameStartB.push('pipe1_5B');
+  pipesNameStartB.push('pipe1_6B');
 
-    useOutputButton1(
-      startContainerHeight,
-      num => setStartContainerHeight(num),
-      'pompa1B',
-      pipesNameStartB,
-    );
+  useOutputButton1(
+    startContainerHeight,
+    num => setStartContainerHeight(num),
+    'pompa1B',
+    pipesNameStartB,
+  );
 
-    let pipesNameStartC: Array<string> = [];
-    pipesNameStartC.push('pipe1_1');
-    pipesNameStartC.push('pipe1_2');
-    pipesNameStartC.push('pipe1_3A');
-    pipesNameStartC.push('pipe1_3B');
-    pipesNameStartC.push('pipe1_3C');
-    pipesNameStartC.push('pipe1_4C');
-    pipesNameStartC.push('pipe1_5C');
-    pipesNameStartC.push('pipe1_6C');
+  let pipesNameStartC: Array<string> = [];
+  pipesNameStartC.push('pipe1_1');
+  pipesNameStartC.push('pipe1_2');
+  pipesNameStartC.push('pipe1_3A');
+  pipesNameStartC.push('pipe1_3B');
+  pipesNameStartC.push('pipe1_3C');
+  pipesNameStartC.push('pipe1_4C');
+  pipesNameStartC.push('pipe1_5C');
+  pipesNameStartC.push('pipe1_6C');
 
-    useOutputButton1(
-      startContainerHeight,
-      num => setStartContainerHeight(num),
-      'pompa1C',
-      pipesNameStartC,
-    );
-  }
+  useOutputButton1(
+    startContainerHeight,
+    num => setStartContainerHeight(num),
+    'pompa1C',
+    pipesNameStartC,
+  );
 
   function handleFinalWater(h: number, name: string) {
     let total = 1;
@@ -826,10 +824,74 @@ export const IRLModel = (props: any) => {
         );
 
       //Pipes
-      if (
-        document.getElementById('pompa2A')?.getAttribute('fill') === 'green' &&
-        document.getElementById('startWater')?.getAttribute('height') !== '0'
-      ) {
+      if (props.data.pumps.P1.is_on && props.data.tanks.C1.water_level > 0) {
+        for (let i = 0; i < 5; i++) {
+          const pipe = document.getElementById(pipesNameStartA[i]);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        }
+
+        for (let i = 5; i < 8; i++) {
+          const pipe = document.getElementById(pipesNameStartA[i]);
+          pipe?.setAttribute('fill', '#0075FF');
+        }
+      } else {
+        for (let i = 5; i < 8; i++) {
+          const pipe = document.getElementById(pipesNameStartA[i]);
+          pipe?.setAttribute('fill', '#848484');
+        }
+
+        if (!props.data.pumps.P2.is_on && !props.data.pumps.P3.is_on) {
+          for (let i = 0; i < 5; i++) {
+            const pipe = document.getElementById(pipesNameStartA[i]);
+            pipe?.setAttribute('fill', '#E1E1E1');
+          }
+        }
+      }
+
+      if (props.data.pumps.P2.is_on && props.data.tanks.C1.water_level > 0) {
+        for (let i = 0; i < 5; i++) {
+          const pipe = document.getElementById(pipesNameStartB[i]);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        }
+
+        for (let i = 5; i < 8; i++) {
+          const pipe = document.getElementById(pipesNameStartB[i]);
+          pipe?.setAttribute('fill', '#00A3FF');
+        }
+      } else {
+        for (let i = 5; i < 8; i++) {
+          const pipe = document.getElementById(pipesNameStartB[i]);
+          pipe?.setAttribute('fill', '#B8B8B8');
+        }
+
+        if (!props.data.pumps.P1.is_on && !props.data.pumps.P3.is_on) {
+          for (let i = 0; i < 5; i++) {
+            const pipe = document.getElementById(pipesNameStartB[i]);
+            pipe?.setAttribute('fill', '#E1E1E1');
+          }
+        }
+      }
+
+      if (props.data.pumps.P3.is_on && props.data.tanks.C1.water_level > 0) {
+        for (let i = 0; i < 8; i++) {
+          const pipe = document.getElementById(pipesNameStartC[i]);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        }
+      } else {
+        for (let i = 5; i < 8; i++) {
+          const pipe = document.getElementById(pipesNameStartC[i]);
+          pipe?.setAttribute('fill', '#E1E1E1');
+        }
+
+        if (!props.data.pumps.P1.is_on && !props.data.pumps.P2.is_on) {
+          for (let i = 0; i < 5; i++) {
+            const pipe = document.getElementById(pipesNameStartC[i]);
+            pipe?.setAttribute('fill', '#E1E1E1');
+          }
+        }
+      }
+
+      if (props.data.valves.V1.is_open && props.data.tanks.C2.water_level > 0) {
         pipesNameA.forEach(pipeName => {
           const pipe = document.getElementById(pipeName);
           pipe?.setAttribute('fill', '#0AD3FF');
@@ -840,9 +902,45 @@ export const IRLModel = (props: any) => {
           pipe?.setAttribute('fill', '#E1E1E1');
         });
       }
+
+      if (props.data.valves.V2.is_open && props.data.tanks.C3.water_level > 0) {
+        pipesNameB.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        });
+      } else {
+        pipesNameB.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#E1E1E1');
+        });
+      }
+
+      if (props.data.valves.V3.is_open && props.data.tanks.C4.water_level > 0) {
+        pipesNameC.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        });
+      } else {
+        pipesNameC.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#E1E1E1');
+        });
+      }
+
+      if (props.data.pumps.P4.is_on && props.data.tanks.C5.water_level > 0) {
+        pipesNameEnd.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        });
+      } else {
+        pipesNameEnd.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#E1E1E1');
+        });
+      }
     }
     console.log('hej', props.data);
-  }, [props.data]);
+  }, [props.data, startContainerHeight]);
 
   return (
     <div style={styles.mainDiv}>

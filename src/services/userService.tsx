@@ -1,8 +1,8 @@
 // import fetch, { RequestInit } from 'node-fetch'
 import axios from 'axios';
 
-// const baseUrl = 'http://localhost:8000';
-const baseUrl = 'http://10.8.0.9:8000';
+const baseUrl = 'http://localhost:8000';
+// const baseUrl = 'http://10.8.0.9:8000';
 
 export const signUp = async (email: string, password: string) => {
   return await axios
