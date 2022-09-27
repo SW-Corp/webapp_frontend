@@ -23,7 +23,7 @@ const StyledFooter = styled(Footer)`
   display: flex;
   position: fixed;
   bottom: 0;
-  userselect: none;
+  user-select: none;
   transition: 0.8s ease;
 
   &:hover {
