@@ -912,7 +912,7 @@ export const Model = props => {
               d="M718.195 58.1896V58.1896C729.681 58.1896 738.993 67.5009 738.993 78.9868V98.2758H718.195V58.1896Z"
               fill="#E1E1E1"
             />
-            <g id="askMain">
+            <g id="askMain" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskMain"
                 cx="309.162"
@@ -927,7 +927,7 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askValve">
+            <g id="askValve" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskValve"
                 cx="770.132"
@@ -942,7 +942,7 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askFinalPomp">
+            <g id="askFinalPomp" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskFinalPomp"
                 cx="696.881"
@@ -957,7 +957,7 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askFinalContainer">
+            <g id="askFinalContainer" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskFinalContainer"
                 cx="787.868"
@@ -1030,14 +1030,16 @@ export const Model = props => {
               d="M598.589 283.504C598.589 293.738 589.837 302.078 578.985 302.078C568.133 302.078 559.381 293.738 559.381 283.504C559.381 273.271 568.133 264.931 578.985 264.931C589.837 264.931 598.589 273.271 598.589 283.504Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa2C"
               d="M748.719 283.504C748.719 293.738 739.967 302.078 729.115 302.078C718.263 302.078 709.511 293.738 709.511 283.504C709.511 273.271 718.263 264.931 729.115 264.931C739.967 264.931 748.719 273.271 748.719 283.504Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
-            <g id="askEngine">
+            <g id="askEngine" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskEngine"
                 cx="295.731"
@@ -1052,7 +1054,7 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askStop">
+            <g id="askStop" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskStop"
                 cx="84.2938"
@@ -1067,7 +1069,7 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askHelpContainer">
+            <g id="askHelpContainer" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskHelpContainer"
                 cx="787.868"
@@ -1082,7 +1084,7 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askPomp">
+            <g id="askPomp" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskPomp"
                 cx="378.163"
@@ -1102,24 +1104,28 @@ export const Model = props => {
               d="M674.413 540.75C674.413 550.983 665.661 559.323 654.809 559.323C643.957 559.323 635.205 550.983 635.205 540.75C635.205 530.517 643.957 522.177 654.809 522.177C665.661 522.177 674.413 530.517 674.413 540.75Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa1A"
               d="M364.144 471.013C364.144 481.246 355.393 489.586 344.54 489.586C333.688 489.586 324.937 481.246 324.937 471.013C324.937 460.78 333.688 452.44 344.54 452.44C355.393 452.44 364.144 460.78 364.144 471.013Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa1B"
               d="M432.081 472.306C432.081 482.539 423.329 490.879 412.477 490.879C401.625 490.879 392.873 482.539 392.873 472.306C392.873 462.073 401.625 453.733 412.477 453.733C423.329 453.733 432.081 462.073 432.081 472.306Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa1C"
               d="M499.325 471.013C499.325 481.246 490.573 489.586 479.721 489.586C468.869 489.586 460.117 481.246 460.117 471.013C460.117 460.78 468.869 452.44 479.721 452.44C490.573 452.44 499.325 460.78 499.325 471.013Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <g id="STOP">
               <rect
@@ -1224,6 +1230,7 @@ export const Model = props => {
               d="M674.413 283.504C674.413 293.738 665.661 302.078 654.809 302.078C643.957 302.078 635.205 293.738 635.205 283.504C635.205 273.271 643.957 264.931 654.809 264.931C665.661 264.931 674.413 273.271 674.413 283.504Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
           </g>
         </svg>
@@ -1240,7 +1247,7 @@ export const Model = props => {
 const styles = {
   mainDiv: {
     backgroundColor: colorConstants.white,
-    width: '75%',
+    width: '65%',
     height: '80vh',
     marginLeft: 'auto',
     marginRight: 'auto',

@@ -77,15 +77,15 @@ export const ModelPage = ({ currentScenario, ...props }) => {
           width: '100%',
           padding: '20px',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'center',
         }}
       >
         <Toggle
           checked={checkedToggle}
           checkedChildren="Na żywo"
           unCheckedChildren="Symulacja"
-          size="lg"
           onChange={() => setCheckedToggle(!checkedToggle)}
+          size="lg"
         />
       </div>
 
@@ -122,7 +122,7 @@ export const ModelPage = ({ currentScenario, ...props }) => {
                     width="30px"
                     height="30px"
                     as={HiQuestionMarkCircle}
-                    style={{ fontSize: '25px' }}
+                    style={{ fontSize: '25px', cursor: 'pointer' }}
                   />
                 </div>
               </Whisper>
@@ -158,6 +158,7 @@ export const ModelPage = ({ currentScenario, ...props }) => {
                           onClick={() => {
                             playScenario(rowData.name);
                           }}
+                          style={{ cursor: 'pointer' }}
                         >
                           Rozpocznij
                         </Button>
@@ -176,13 +177,18 @@ export const ModelPage = ({ currentScenario, ...props }) => {
 };
 
 const StyledPanel = styled(Panel)`
-  width: 100%;
+  width: 20em;
 `;
 
 const ContainerDiv = styled.div`
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
   padding: 10px 10px 10px 20px;
   max-width: 350px;
-  flex: 1;
+  display: flex;
+  row-direction: row;
+  justify-content: space-around;
 `;
 
 const StyledHeaderCell = styled(HeaderCell)`

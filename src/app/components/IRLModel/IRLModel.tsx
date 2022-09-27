@@ -53,104 +53,12 @@ export const IRLModel = (props: any) => {
     stopButton?.addEventListener('click', () => addTask('stop', 'stop', 1));
   }, []);
 
-  useEffect(() => {
-    if (Object.keys(props.data).length !== 0) {
-      document
-        .getElementById('pompa1A')
-        ?.setAttribute(
-          'fill',
-          props.data.pumps.P1.is_on === true ? 'green' : 'red',
-        );
-      document
-        .getElementById('pompa1B')
-        ?.setAttribute(
-          'fill',
-          props.data.pumps.P2.is_on === true ? 'green' : 'red',
-        );
-      document
-        .getElementById('pompa1C')
-        ?.setAttribute(
-          'fill',
-          props.data.pumps.P3.is_on === true ? 'green' : 'red',
-        );
-      document
-        .getElementById('pompa3')
-        ?.setAttribute(
-          'fill',
-          props.data.pumps.P4.is_on === true ? 'green' : 'red',
-        );
-
-      document
-        .getElementById('startWater')
-        ?.setAttribute(
-          'height',
-          props.data.tanks.C1.float_switch_up
-            ? '171'
-            : ((props.data.tanks.C1.water_level * 171) / 16.5).toString(),
-        );
-      document
-        .getElementById('helpWaterA')
-        ?.setAttribute(
-          'height',
-          props.data.tanks.C2.float_switch_up
-            ? '171'
-            : ((props.data.tanks.C2.water_level * 171) / 16.5).toString(),
-        );
-      document
-        .getElementById('helpWaterB')
-        ?.setAttribute(
-          'height',
-          props.data.tanks.C3.float_switch_up
-            ? '171'
-            : ((props.data.tanks.C3.water_level * 171) / 16.5).toString(),
-        );
-      document
-        .getElementById('helpWaterC')
-        ?.setAttribute(
-          'height',
-          props.data.tanks.C4.float_switch_up
-            ? '171'
-            : ((props.data.tanks.C4.water_level * 171) / 16.5).toString(),
-        );
-      document
-        .getElementById('finalWater')
-        ?.setAttribute(
-          'height',
-          props.data.tanks.C5.float_switch_up
-            ? '171'
-            : ((props.data.tanks.C5.water_level * 171) / 16.5).toString(),
-        );
-
-      document
-        .getElementById('pompa2A')
-        ?.setAttribute(
-          'fill',
-          props.data.valves.V1.is_open === true ? 'green' : 'red',
-        );
-      document
-        .getElementById('pompa2B')
-        ?.setAttribute(
-          'fill',
-          props.data.valves.V2.is_open === true ? 'green' : 'red',
-        );
-      document
-        .getElementById('pompa2C')
-        ?.setAttribute(
-          'fill',
-          props.data.valves.V3.is_open === true ? 'green' : 'red',
-        );
-    }
-    console.log('hej', props.data);
-  }, [props.data]);
-
   function handleStatus(status: number) {
     switch (status) {
       case 200:
-        window.alert('git');
         break;
 
       case 201:
-        window.alert('git');
         break;
 
       case 400:
@@ -442,7 +350,7 @@ export const IRLModel = (props: any) => {
   }
 
   {
-    // useWater(startContainerHeight, 'startWater', 220.5);
+    useWater(startContainerHeight, 'startWater', 220.5);
     //   //Start container
     let pipesNameStartA: Array<string> = [];
     pipesNameStartA.push('pipe1_1');
@@ -615,46 +523,44 @@ export const IRLModel = (props: any) => {
     }, [handleColorChange]);
   }
 
-  {
-    //Help container A
-    let pipesNameA: Array<string> = [];
-    pipesNameA.push('pipe2A');
+  //Help container A
+  let pipesNameA: Array<string> = [];
+  pipesNameA.push('pipe2A');
 
-    // useWater(innerContainerAHeight, 'helpWaterA', 98.5);
-    useOutputButton2(
-      innerContainerAHeight,
-      num => setInnerContainerAHeight(num),
-      'pompa2A',
-      pipesNameA,
-      'helpWaterA',
-    );
+  useWater(innerContainerAHeight, 'helpWaterA', 98.5);
+  useOutputButton2(
+    innerContainerAHeight,
+    num => setInnerContainerAHeight(num),
+    'pompa2A',
+    pipesNameA,
+    'helpWaterA',
+  );
 
-    //Help container B
-    let pipesNameB: Array<string> = [];
-    pipesNameB.push('pipe2B');
+  //Help container B
+  let pipesNameB: Array<string> = [];
+  pipesNameB.push('pipe2B');
 
-    // useWater(innerContainerBHeight, 'helpWaterB', 98.5);
-    useOutputButton2(
-      innerContainerBHeight,
-      num => setInnerContainerBHeight(num),
-      'pompa2B',
-      pipesNameB,
-      'helpWaterB',
-    );
+  useWater(innerContainerBHeight, 'helpWaterB', 98.5);
+  useOutputButton2(
+    innerContainerBHeight,
+    num => setInnerContainerBHeight(num),
+    'pompa2B',
+    pipesNameB,
+    'helpWaterB',
+  );
 
-    //Help container C
-    let pipesNameC: Array<string> = [];
-    pipesNameC.push('pipe2C');
+  //Help container C
+  let pipesNameC: Array<string> = [];
+  pipesNameC.push('pipe2C');
 
-    // useWater(innerContainerCHeight, 'helpWaterC', 98.5);
-    useOutputButton2(
-      innerContainerCHeight,
-      num => setInnerContainerCHeight(num),
-      'pompa2C',
-      pipesNameC,
-      'helpWaterC',
-    );
-  }
+  useWater(innerContainerCHeight, 'helpWaterC', 98.5);
+  useOutputButton2(
+    innerContainerCHeight,
+    num => setInnerContainerCHeight(num),
+    'pompa2C',
+    pipesNameC,
+    'helpWaterC',
+  );
 
   function handle3(h: number, pipesName: Array<string>) {
     if (h === 0) {
@@ -753,23 +659,21 @@ export const IRLModel = (props: any) => {
   }
 
   //Use button output
-  {
-    //End container
-    let pipesNameEnd: Array<string> = [];
-    pipesNameEnd.push('pipe3_1');
-    pipesNameEnd.push('pipe3_2');
-    pipesNameEnd.push('pipe3_3');
-    pipesNameEnd.push('pipe3_4');
-    pipesNameEnd.push('pipe3_5');
+  //End container
+  let pipesNameEnd: Array<string> = [];
+  pipesNameEnd.push('pipe3_1');
+  pipesNameEnd.push('pipe3_2');
+  pipesNameEnd.push('pipe3_3');
+  pipesNameEnd.push('pipe3_4');
+  pipesNameEnd.push('pipe3_5');
 
-    useWater(endContainerHeight, 'finalWater', 355.5);
-    useOutputButton3(
-      endContainerHeight,
-      num => setEndContainerHeight(num),
-      'pompa3',
-      pipesNameEnd,
-    );
-  }
+  useWater(endContainerHeight, 'finalWater', 355.5);
+  useOutputButton3(
+    endContainerHeight,
+    num => setEndContainerHeight(num),
+    'pompa3',
+    pipesNameEnd,
+  );
 
   const [title, setTitle] = useState('Tytuł');
   const [text, setText] = useState('Tekst');
@@ -848,6 +752,97 @@ export const IRLModel = (props: any) => {
   useAskButton('askEngine', 'EllipseAskEngine');
   useAskButton('askFinalPomp', 'EllipseAskFinalPomp');
   useAskButton('askStop', 'EllipseAskStop');
+
+  useEffect(() => {
+    if (Object.keys(props.data).length !== 0) {
+      document
+        .getElementById('pompa1A')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P1.is_on === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa1B')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P2.is_on === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa1C')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P3.is_on === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa3')
+        ?.setAttribute(
+          'fill',
+          props.data.pumps.P4.is_on === true ? 'green' : 'red',
+        );
+
+      setStartContainerHeight(
+        props.data.tanks.C1.float_switch_up
+          ? 171
+          : (props.data.tanks.C1.water_level * 171) / 16.5,
+      );
+      setInnerContainerAHeight(
+        props.data.tanks.C2.float_switch_up
+          ? 171
+          : (props.data.tanks.C2.water_level * 171) / 16.5,
+      );
+      setInnerContainerBHeight(
+        props.data.tanks.C3.float_switch_up
+          ? 171
+          : (props.data.tanks.C3.water_level * 171) / 16.5,
+      );
+      setInnerContainerCHeight(
+        props.data.tanks.C4.float_switch_up
+          ? 171
+          : (props.data.tanks.C4.water_level * 171) / 16.5,
+      );
+      setEndContainerHeight(
+        props.data.tanks.C5.float_switch_up
+          ? 171
+          : (props.data.tanks.C5.water_level * 171) / 16.5,
+      );
+
+      document
+        .getElementById('pompa2A')
+        ?.setAttribute(
+          'fill',
+          props.data.valves.V1.is_open === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa2B')
+        ?.setAttribute(
+          'fill',
+          props.data.valves.V2.is_open === true ? 'green' : 'red',
+        );
+      document
+        .getElementById('pompa2C')
+        ?.setAttribute(
+          'fill',
+          props.data.valves.V3.is_open === true ? 'green' : 'red',
+        );
+
+      //Pipes
+      if (
+        document.getElementById('pompa2A')?.getAttribute('fill') === 'green' &&
+        document.getElementById('startWater')?.getAttribute('height') !== '0'
+      ) {
+        pipesNameA.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#0AD3FF');
+        });
+      } else {
+        pipesNameA.forEach(pipeName => {
+          const pipe = document.getElementById(pipeName);
+          pipe?.setAttribute('fill', '#E1E1E1');
+        });
+      }
+    }
+    console.log('hej', props.data);
+  }, [props.data]);
 
   return (
     <div style={styles.mainDiv}>
@@ -1028,7 +1023,7 @@ export const IRLModel = (props: any) => {
               d="M718.195 58.1896V58.1896C729.681 58.1896 738.993 67.5009 738.993 78.9868V98.2758H718.195V58.1896Z"
               fill="#E1E1E1"
             />
-            <g id="askMain">
+            <g id="askMain" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskMain"
                 cx="309.162"
@@ -1043,7 +1038,7 @@ export const IRLModel = (props: any) => {
                 fill="white"
               />
             </g>
-            <g id="askValve">
+            <g id="askValve" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskValve"
                 cx="770.132"
@@ -1058,7 +1053,7 @@ export const IRLModel = (props: any) => {
                 fill="white"
               />
             </g>
-            <g id="askFinalPomp">
+            <g id="askFinalPomp" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskFinalPomp"
                 cx="696.881"
@@ -1073,7 +1068,7 @@ export const IRLModel = (props: any) => {
                 fill="white"
               />
             </g>
-            <g id="askFinalContainer">
+            <g id="askFinalContainer" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskFinalContainer"
                 cx="787.868"
@@ -1146,14 +1141,16 @@ export const IRLModel = (props: any) => {
               d="M598.589 283.504C598.589 293.738 589.837 302.078 578.985 302.078C568.133 302.078 559.381 293.738 559.381 283.504C559.381 273.271 568.133 264.931 578.985 264.931C589.837 264.931 598.589 273.271 598.589 283.504Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa2C"
               d="M748.719 283.504C748.719 293.738 739.967 302.078 729.115 302.078C718.263 302.078 709.511 293.738 709.511 283.504C709.511 273.271 718.263 264.931 729.115 264.931C739.967 264.931 748.719 273.271 748.719 283.504Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
-            <g id="askEngine">
+            <g id="askEngine" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskEngine"
                 cx="295.731"
@@ -1168,7 +1165,7 @@ export const IRLModel = (props: any) => {
                 fill="white"
               />
             </g>
-            <g id="askStop">
+            <g id="askStop" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskStop"
                 cx="84.2938"
@@ -1183,7 +1180,7 @@ export const IRLModel = (props: any) => {
                 fill="white"
               />
             </g>
-            <g id="askHelpContainer">
+            <g id="askHelpContainer" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskHelpContainer"
                 cx="787.868"
@@ -1198,7 +1195,7 @@ export const IRLModel = (props: any) => {
                 fill="white"
               />
             </g>
-            <g id="askPomp">
+            <g id="askPomp" cursor={'pointer'}>
               <ellipse
                 id="EllipseAskPomp"
                 cx="378.163"
@@ -1218,24 +1215,28 @@ export const IRLModel = (props: any) => {
               d="M674.413 540.75C674.413 550.983 665.661 559.323 654.809 559.323C643.957 559.323 635.205 550.983 635.205 540.75C635.205 530.517 643.957 522.177 654.809 522.177C665.661 522.177 674.413 530.517 674.413 540.75Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa1A"
               d="M364.144 471.013C364.144 481.246 355.393 489.586 344.54 489.586C333.688 489.586 324.937 481.246 324.937 471.013C324.937 460.78 333.688 452.44 344.54 452.44C355.393 452.44 364.144 460.78 364.144 471.013Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa1B"
               d="M432.081 472.306C432.081 482.539 423.329 490.879 412.477 490.879C401.625 490.879 392.873 482.539 392.873 472.306C392.873 462.073 401.625 453.733 412.477 453.733C423.329 453.733 432.081 462.073 432.081 472.306Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <path
               id="pompa1C"
               d="M499.325 471.013C499.325 481.246 490.573 489.586 479.721 489.586C468.869 489.586 460.117 481.246 460.117 471.013C460.117 460.78 468.869 452.44 479.721 452.44C490.573 452.44 499.325 460.78 499.325 471.013Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
             <g id="STOP">
               <rect
@@ -1340,6 +1341,7 @@ export const IRLModel = (props: any) => {
               d="M674.413 283.504C674.413 293.738 665.661 302.078 654.809 302.078C643.957 302.078 635.205 293.738 635.205 283.504C635.205 273.271 643.957 264.931 654.809 264.931C665.661 264.931 674.413 273.271 674.413 283.504Z"
               fill="#FF0000"
               stroke="black"
+              cursor={'pointer'}
             />
           </g>
         </svg>
@@ -1356,7 +1358,7 @@ export const IRLModel = (props: any) => {
 const styles = {
   mainDiv: {
     backgroundColor: colorConstants.white,
-    width: '75%',
+    width: '65%',
     height: '80vh',
     marginLeft: 'auto',
     marginRight: 'auto',
