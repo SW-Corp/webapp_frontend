@@ -12,12 +12,16 @@ export const addTask = async (action: string, target: any, value: number) => {
     // conditions: {},
   });
   return await axios
-    .post(`${baseUrl}/task/${workstation}`, {
-      action: action,
-      target: target,
-      value: value,
-      // conditions: {},
-    })
+    .post(
+      `${baseUrl}/task/${workstation}`,
+      {
+        action: action,
+        target: target,
+        value: value,
+        // conditions: {},
+      },
+      { withCredentials: true },
+    )
     .then(res => {
       return res.status;
     })
