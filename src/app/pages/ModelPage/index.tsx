@@ -25,7 +25,7 @@ export const ModelPage = ({ currentScenario, ...props }) => {
 
   const loadScenarios = () => {
     axios
-      .get('http://10.8.0.9:8000/scenarios', { withCredentials: true })
+      .get(`${baseUrl}/scenarios`, { withCredentials: true })
       .then(res => {
         console.log(res);
         setScenarios(

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Modal, Button, Placeholder } from 'rsuite';
 import axios from 'axios';
+import { baseUrl } from 'services/stationService';
 
 export const NewUserModal = ({ isOpen, handleClose, ...props }) => {
   const [formValue, setFormValue] = useState({
@@ -15,7 +16,7 @@ export const NewUserModal = ({ isOpen, handleClose, ...props }) => {
 
   const addUser = e => {
     axios
-      .post('http://10.8.0.9:8000/signup', formValue, {
+      .post(`${baseUrl}/signup`, formValue, {
         withCredentials: true,
       })
       .then(res => {
