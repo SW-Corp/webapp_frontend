@@ -5,6 +5,7 @@ import PlusIcon from '@rsuite/icons/Plus';
 import { useToaster } from 'rsuite/toaster';
 import { baseUrl } from 'services/stationService';
 import { NewUserModal } from './NewUserModal';
+import { ShutdownModal } from './ShutdownModal';
 
 import {
   IconButton,
@@ -32,6 +33,7 @@ export const SettingsPage = () => {
   const [isLoading, setLoading] = useState(true);
   const [loggedUser, setUser] = useState(localStorage.getItem('current_user'));
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isShutdownModalOpen, setShutdownModalOpen] = useState(false);
   const toaster = useToaster();
 
   const changePermission = (user, permission) => {
@@ -175,7 +177,33 @@ export const SettingsPage = () => {
         >
           Dodaj nowego użytkownika
         </IconButton>
+        <h3
+          style={{
+            textAlign: 'center',
+            paddingTop: '20px',
+            paddingBottom: '20px',
+          }}
+        >
+          Zarządzanie stanowiskiem
+        </h3>
+        <div style={{ textAlign: 'center' }}>
+          <Button
+            color="red"
+            appearance="primary"
+            onClick={() => {
+              setShutdownModalOpen(true);
+            }}
+          >
+            Wyłącz stanowisko
+          </Button>
+        </div>
       </StyledContent>
+      <ShutdownModal
+        isOpen={isShutdownModalOpen}
+        handleClose={() => {
+          setShutdownModalOpen(false);
+        }}
+      />
       <NewUserModal
         isOpen={isModalOpen}
         handleClose={(isAdded: boolean = false) => {

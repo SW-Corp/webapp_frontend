@@ -30,7 +30,11 @@ export const NewUserModal = ({ isOpen, handleClose, ...props }) => {
   };
 
   return (
-    <Modal open={isOpen} onClose={() => handleClose(false)}>
+    <Modal
+      open={isOpen}
+      onClose={() => handleClose(false)}
+      style={{ marginTop: '50px' }}
+    >
       <Modal.Header>
         <Modal.Title>Dodaj nowego użytkownika</Modal.Title>
       </Modal.Header>
