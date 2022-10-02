@@ -16,11 +16,14 @@ import {
 } from 'rsuite';
 import { Icon } from '@rsuite/icons';
 
+import Switch from 'react-switch';
+
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 
 import axios from 'axios';
 
 import { baseUrl, workstation } from 'services/stationService';
+import { colorConstants } from 'styles/colorConstants';
 
 const { Column, HeaderCell, Cell } = Table;
 function getNotification(status, header, message) {
@@ -72,23 +75,23 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const loadMeasurements = () => {
     const mapMeasurements = [
       {
-        name: 'Zbiornik reakcji',
+        name: 'Zbiornik reakcji - C1',
         height: '0',
       },
       {
-        name: 'Zbiornik filtracyjny A',
+        name: 'Zbiornik filtracyjny C2',
         height: '0',
       },
       {
-        name: 'Zbiornik filtracyjny B',
+        name: 'Zbiornik filtracyjny C3',
         height: '0',
       },
       {
-        name: 'Zbiornik filtracyjny C',
+        name: 'Zbiornik filtracyjny C4',
         height: '0',
       },
       {
-        name: 'Zbiornik wody czystej',
+        name: 'Zbiornik wody czystej - C5',
         height: '0',
       },
     ];
@@ -165,36 +168,65 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
     <>
       <div
         style={{
-          width: '100%',
-          padding: '20px',
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
-        <Toggle
-          checked={checkedToggle}
-          checkedChildren="Na żywo"
-          unCheckedChildren="Symulacja"
-          onChange={() => setCheckedToggle(!checkedToggle)}
-          size="lg"
-        />
-      </div>
-
-      <div
-        style={{
-          width: '100%',
           display: 'flex',
           flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-evenly',
+          /*alignItems: 'center',*/
+          justifyContent: 'flex-start',
         }}
       >
         <div
           style={{
+            flex: '1',
             display: 'flex',
             flexDirection: 'column',
+            maxWidth: '350px',
           }}
         >
+          <ContainerDiv>
+            <label htmlFor="small-radius-switch" style={{ paddingTop: '10px' }}>
+              <Switch
+                className="react-switch"
+                id="small-radius-switch"
+                checked={checkedToggle}
+                onChange={() => setCheckedToggle(!checkedToggle)}
+                height={40}
+                width={145}
+                onColor={colorConstants.green}
+                uncheckedIcon={
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                      height: '100%',
+                      width: '100%',
+                      fontSize: 20,
+                      paddingRight: '10px',
+                      color: '#eee',
+                    }}
+                  >
+                    Symulacja
+                  </div>
+                }
+                checkedIcon={
+                  <div
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '100%',
+                      width: '140px',
+                      fontSize: 20,
+                      paddingRight: '20px',
+                      color: 'white',
+                    }}
+                  >
+                    Na żywo
+                  </div>
+                }
+              />
+            </label>
+          </ContainerDiv>
           <ContainerDiv>
             <StyledPanel
               header={
@@ -325,22 +357,23 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
 };
 
 const StyledPanel = styled(Panel)`
-  width: 26em;
+  flex: 1;
 `;
 
 const ContainerDiv = styled.div`
-  width: 95%;
-  margin-left: auto;
-  margin-right: auto;
   padding: 10px 10px 10px 20px;
-  max-width: 350px;
   display: flex;
-  row-direction: row;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
 `;
 
 const StyledHeaderCell = styled(HeaderCell)`
   color: #000;
   font-size: 13px;
   height: auto;
+`;
+
+const StyledToggle = styled(Toggle)`
+  z-index: 0;
+  padding-top: 10px;
 `;
