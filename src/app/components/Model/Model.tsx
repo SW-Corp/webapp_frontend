@@ -770,6 +770,15 @@ export const Model = props => {
               fill="#0AD3FF"
               stroke="black"
             />
+            <text
+              style={{ userSelect: 'none' }}
+              x="697"
+              y="120"
+              fontSize="20px"
+              fill="black"
+            >
+              C4
+            </text>
             <rect
               id="helpCointainerB"
               x="616.5"
@@ -788,6 +797,15 @@ export const Model = props => {
               fill="#10C6EE"
               stroke="black"
             />
+            <text
+              style={{ userSelect: 'none' }}
+              x="621"
+              y="120"
+              fontSize="20px"
+              fill="black"
+            >
+              C3
+            </text>
             <rect
               id="finalContainer"
               x="540.534"
@@ -806,6 +824,15 @@ export const Model = props => {
               fill="#0AD3FF"
               stroke="black"
             />
+            <text
+              style={{ userSelect: 'none' }}
+              x="545"
+              y="377"
+              fontSize="20px"
+              fill="black"
+            >
+              C5
+            </text>
             <rect
               id="pipe2A"
               x="564.189"
@@ -869,6 +896,15 @@ export const Model = props => {
               fill="#0AD3FF"
               stroke="black"
             />
+            <text
+              style={{ userSelect: 'none' }}
+              x="65"
+              y="242"
+              fontSize="20px"
+              fill="black"
+            >
+              C1
+            </text>
             <rect
               id="helpContainerA"
               x="540.5"
@@ -887,6 +923,15 @@ export const Model = props => {
               fill="#0AD3FF"
               stroke="black"
             />
+            <text
+              style={{ userSelect: 'none' }}
+              x="545"
+              y="120"
+              fontSize="20px"
+              fill="black"
+            >
+              C2
+            </text>
             <path
               id="pipe3_2"
               d="M0 574.138H668.977V574.138C668.977 586.993 658.556 597.414 645.701 597.414H23.2759C10.421 597.414 0 586.993 0 574.138V574.138Z"
@@ -1127,7 +1172,7 @@ export const Model = props => {
               stroke="black"
               cursor={'pointer'}
             />
-            <g id="STOP">
+            <g id="STOP" cursor={'pointer'}>
               <rect
                 id="stopBox"
                 x="0.564453"
