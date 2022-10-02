@@ -350,7 +350,19 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
             </StyledPanel>
           </ContainerDiv>
         </div>
-        {checkedToggle === false ? <Model /> : <IRLModel data={props.data} />}
+        <div
+          style={{
+            flex: '1',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+          }}
+        >
+          {checkedToggle === false ? <Model /> : <IRLModel data={props.data} />}
+          <div style={{ flex: '0.5' }}>
+            <StyledPanel header={<p>Test</p>} shaded></StyledPanel>
+          </div>
+        </div>
       </div>
     </>
   );

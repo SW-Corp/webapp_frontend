@@ -3,6 +3,8 @@ import { addTask } from 'services/stationService';
 import { colorConstants } from 'styles/colorConstants';
 import data from './data.json';
 
+import styled from 'styled-components';
+
 type Color = 'red' | 'green';
 type askColor = '#298E33' | '#73C98E';
 
@@ -734,7 +736,7 @@ export const Model = props => {
   useAskButton('askStop', 'EllipseAskStop');
 
   return (
-    <div style={styles.mainDiv}>
+    <StyledMainDiv>
       <div style={styles.modelDiv}>
         <svg
           width="800"
@@ -1137,6 +1139,9 @@ export const Model = props => {
                 rx="12.1317"
                 ry="11.3147"
                 fill="#298E33"
+                onClick={() => {
+                  window.alert('siema');
+                }}
               />
               <path
                 id="?_7"
@@ -1285,25 +1290,23 @@ export const Model = props => {
         <div style={styles.title}>{title}</div>
         <div style={styles.text}>{text}</div>
       </div>
-    </div>
+    </StyledMainDiv>
   );
 };
 
-const styles = {
-  mainDiv: {
-    backgroundColor: colorConstants.white,
-    width: '65%',
-    height: '80vh',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginTop: '2%',
-    paddingBottom: '1%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  } as React.CSSProperties,
+const StyledMainDiv = styled.div`
+  background-color: ${colorConstants.white};
+  width: 65%;
+  height: 80vh;
+  margin-top: 2%;
+  padding-bottom: 1%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
 
+const styles = {
   modelDiv: {
     padding: '10px',
     borderRadius: '20px',
