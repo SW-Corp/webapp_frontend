@@ -15,8 +15,7 @@ export const MainFooter = () => {
 const StyledFooter = styled(Footer)`
   width: 100%;
   height: 50px;
-  background-color: ${colorConstants.white};
-  background-opacity: 0.3;
+  background-opacity: 0;
   color: ${colorConstants.darkGrey};
   justify-content: center;
   align-items: center;

@@ -1,26 +1,28 @@
 import * as React from 'react';
 import Button from 'rsuite/Button';
 import { colorConstants } from 'styles/colorConstants';
+import styled from 'styled-components';
 
 export const MainButton = props => {
-  return (
-    <Button style={styles} {...props}>
-      {props.children}
-    </Button>
-  );
+  return <StyledButton {...props}>{props.children}</StyledButton>;
 };
 
-const styles = {
-  backgroundColor: colorConstants.green,
-  color: colorConstants.black,
-  width: '100%',
-  height: '60px',
-  borderRadius: '20px',
-  border: 'none',
-  font: 'Roboto',
-  fontSize: '20px',
-  fontWeight: '400',
-  display: 'block',
-  marginTop: '30px',
-  marginBottom: '15px',
-};
+const StyledButton = styled(Button)`
+  background-color: ${colorConstants.green};
+  color: ${colorConstants.white};
+  width: 100%;
+  height: 60px;
+  border-radius: 20px;
+  border: none;
+  font: Roboto;
+  font-size: 20px;
+  font-weight: 400;
+  display: block;
+  margin-top: 30px;
+  margin-bottom: 15px;
+
+  &:hover {
+    background-color: #49c470;
+    color: ${colorConstants.white};
+  }
+`;

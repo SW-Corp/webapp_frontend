@@ -117,12 +117,14 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
 const styles = {
   nav: {
     height: '75px',
-    width: '100%',
     backgroundColor: colorConstants.green,
     boxShadow: '0 2px 2px 2px rgba(9, 9, 9, 0.23)',
     justifyContent: 'space-between',
     userSelect: 'none' /* Standard */,
-    margin: 0,
+    width: '100%',
+    top: '0',
+    position: 'sticky',
+    zIndex: '99999999',
   } as React.CSSProperties,
 
   title: {

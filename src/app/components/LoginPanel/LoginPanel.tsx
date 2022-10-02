@@ -118,16 +118,6 @@ export const LoginPanel = props => {
             <MainButton onClick={submit}>ZALOGUJ SIĘ</MainButton>
           </Form.Group>
         </Form>
-        <div style={styles.linkDiv}>
-          <Link to="/registration" style={styles.link}>
-            Nie masz konta? Zarejestruj się!
-          </Link>
-        </div>
-        {/* <div style={styles.linkDiv}>
-          <Link to="/forgotPassword" style={styles.link}>
-            Zapomniałeś hasła?
-          </Link>
-        </div> */}
       </div>
     </div>
   );
