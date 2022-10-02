@@ -17,7 +17,7 @@
   "infoValve": {
     "id": "EllipseAskValve",
     "title": "Zawory spustowe",
-    "text": "Zawory spustowe to urządzeniami służące do odcinania lub otwarcia przepływu cieczy opierająca się na oddziaływaniu pola magnetycznego."
+    "text": "Zawory spustowe to urządzenia służące do odcinania lub otwarcia przepływu cieczy opierające się na oddziaływaniu pola magnetycznego."
   },
   "infoEndContainer": {
     "id": "EllipseAskFinalContainer",

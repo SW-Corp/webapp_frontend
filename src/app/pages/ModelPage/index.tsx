@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import { Model } from 'app/components/Model';
 import { IRLModel } from 'app/components/IRLModel';
+import { InfoPanel } from './InfoPanel';
 
 import {
   Button,
@@ -37,9 +38,16 @@ function getNotification(status, header, message) {
 export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const [checkedToggle, setCheckedToggle] = useState(false);
   const [isTableLoading, setTableLoading] = useState(true);
+  const [currentInfoItem, setInfoItem] = useState('pumps');
+
+  const handleInfoItemChange = elem => {
+    elem != currentInfoItem ? setInfoItem(elem) : setInfoItem('');
+  };
+
   const [scenarios, setScenarios] = useState([
     { id: '1', name: 'Scenario #1' },
   ]);
+
   const [perm, setPerm] = useState(localStorage.getItem('permission'));
 
   const loadScenarios = () => {
@@ -355,12 +363,25 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
             flex: '1',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'center',
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+            maxHeight: '90vh',
           }}
         >
-          {checkedToggle === false ? <Model /> : <IRLModel data={props.data} />}
-          <div style={{ flex: '0.5' }}>
-            <StyledPanel header={<p>Test</p>} shaded></StyledPanel>
+          {checkedToggle === false ? (
+            <Model
+              currentInfoItem={currentInfoItem}
+              setInfoItem={handleInfoItemChange}
+            />
+          ) : (
+            <IRLModel data={props.data} />
+          )}
+          <div
+            style={{
+              flex: '0.5',
+            }}
+          >
+            <InfoPanel currentItem={currentInfoItem} />
           </div>
         </div>
       </div>

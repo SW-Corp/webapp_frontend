@@ -10,7 +10,10 @@ type askColor = '#298E33' | '#73C98E';
 
 const maxHeight = 171;
 
-export const Model = props => {
+const inactiveAskColor = '#298E33';
+const activeAskColor = '#73C98E';
+
+export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
   //States
   const [startContainerHeight, setStartContainerHeight] = useState(maxHeight);
   const [innerContainerAHeight, setInnerContainerAHeight] = useState(0);
@@ -348,15 +351,16 @@ export const Model = props => {
   {
     useWater(startContainerHeight, 'startWater', 220.5);
     //   //Start container
-    let pipesNameStartA: Array<string> = [];
-    pipesNameStartA.push('pipe1_1');
-    pipesNameStartA.push('pipe1_2');
-    pipesNameStartA.push('pipe1_3A');
-    pipesNameStartA.push('pipe1_3B');
-    pipesNameStartA.push('pipe1_3C');
-    pipesNameStartA.push('pipe1_4A');
-    pipesNameStartA.push('pipe1_5A');
-    pipesNameStartA.push('pipe1_6A');
+    const pipesNameStartA: Array<string> = [
+      'pipe1_1',
+      'pipe1_2',
+      'pipe1_3A',
+      'pipe1_3B',
+      'pipe1_3C',
+      'pipe1_4A',
+      'pipe1_5A',
+      'pipe1_6A',
+    ];
 
     useOutputButton1(
       startContainerHeight,
@@ -726,14 +730,14 @@ export const Model = props => {
     }, [handleColorChange]);
   }
 
-  useAskButton('askMain', 'EllipseAskMain');
-  useAskButton('askPomp', 'EllipseAskPomp');
-  useAskButton('askHelpContainer', 'EllipseAskHelpContainer');
-  useAskButton('askValve', 'EllipseAskValve');
-  useAskButton('askFinalContainer', 'EllipseAskFinalContainer');
-  useAskButton('askEngine', 'EllipseAskEngine');
-  useAskButton('askFinalPomp', 'EllipseAskFinalPomp');
-  useAskButton('askStop', 'EllipseAskStop');
+  //useAskButton('askMain', 'EllipseAskMain');
+  //useAskButton('askPomp', 'EllipseAskPomp');
+  //useAskButton('askHelpContainer', 'EllipseAskHelpContainer');
+  //useAskButton('askValve', 'EllipseAskValve');
+  //useAskButton('askFinalContainer', 'EllipseAskFinalContainer');
+  //useAskButton('askEngine', 'EllipseAskEngine');
+  //useAskButton('askFinalPomp', 'EllipseAskFinalPomp');
+  //useAskButton('askStop', 'EllipseAskStop');
 
   return (
     <StyledMainDiv>
@@ -959,14 +963,22 @@ export const Model = props => {
               d="M718.195 58.1896V58.1896C729.681 58.1896 738.993 67.5009 738.993 78.9868V98.2758H718.195V58.1896Z"
               fill="#E1E1E1"
             />
-            <g id="askMain" cursor={'pointer'}>
+            <g
+              id="askMain"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('C1');
+              }}
+            >
               <ellipse
                 id="EllipseAskMain"
                 cx="309.162"
                 cy="231.104"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'C1' ? activeAskColor : inactiveAskColor
+                }
               />
               <path
                 id="?"
@@ -974,14 +986,24 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askValve" cursor={'pointer'}>
+            <g
+              id="askValve"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('valves');
+              }}
+            >
               <ellipse
                 id="EllipseAskValve"
                 cx="770.132"
                 cy="293.315"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'valves'
+                    ? activeAskColor
+                    : inactiveAskColor
+                }
               />
               <path
                 id="?_4"
@@ -989,14 +1011,24 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askFinalPomp" cursor={'pointer'}>
+            <g
+              id="askFinalPomp"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('finalPump');
+              }}
+            >
               <ellipse
                 id="EllipseAskFinalPomp"
                 cx="696.881"
                 cy="545.207"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'finalPump'
+                    ? activeAskColor
+                    : inactiveAskColor
+                }
               />
               <path
                 id="?_2"
@@ -1004,14 +1036,22 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askFinalContainer" cursor={'pointer'}>
+            <g
+              id="askFinalContainer"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('C5');
+              }}
+            >
               <ellipse
                 id="EllipseAskFinalContainer"
                 cx="787.868"
                 cy="366.271"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'C5' ? activeAskColor : inactiveAskColor
+                }
               />
               <path
                 id="?_3"
@@ -1086,14 +1126,24 @@ export const Model = props => {
               stroke="black"
               cursor={'pointer'}
             />
-            <g id="askEngine" cursor={'pointer'}>
+            <g
+              id="askEngine"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('engine');
+              }}
+            >
               <ellipse
                 id="EllipseAskEngine"
                 cx="295.731"
                 cy="41.3502"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'engine'
+                    ? activeAskColor
+                    : inactiveAskColor
+                }
               />
               <path
                 id="?_4"
@@ -1101,14 +1151,22 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askStop" cursor={'pointer'}>
+            <g
+              id="askStop"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('stop');
+              }}
+            >
               <ellipse
                 id="EllipseAskStop"
                 cx="84.2938"
                 cy="41.3504"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'stop' ? activeAskColor : inactiveAskColor
+                }
               />
               <path
                 id="?_5"
@@ -1116,14 +1174,24 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askHelpContainer" cursor={'pointer'}>
+            <g
+              id="askHelpContainer"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('helpContainer');
+              }}
+            >
               <ellipse
                 id="EllipseAskHelpContainer"
                 cx="787.868"
                 cy="109.591"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
+                fill={
+                  currentInfoItem == 'helpContainer'
+                    ? activeAskColor
+                    : inactiveAskColor
+                }
               />
               <path
                 id="?_6"
@@ -1131,17 +1199,22 @@ export const Model = props => {
                 fill="white"
               />
             </g>
-            <g id="askPomp" cursor={'pointer'}>
+            <g
+              id="askPomp"
+              cursor={'pointer'}
+              onClick={() => {
+                setInfoItem('pumps');
+              }}
+            >
               <ellipse
                 id="EllipseAskPomp"
                 cx="378.163"
                 cy="440.625"
                 rx="12.1317"
                 ry="11.3147"
-                fill="#298E33"
-                onClick={() => {
-                  window.alert('siema');
-                }}
+                fill={
+                  currentInfoItem == 'pumps' ? activeAskColor : inactiveAskColor
+                }
               />
               <path
                 id="?_7"
@@ -1285,22 +1358,14 @@ export const Model = props => {
           </g>
         </svg>
       </div>
-
-      <div style={visible ? styles.infoDiv : styles.hiddenInfoDiv}>
-        <div style={styles.title}>{title}</div>
-        <div style={styles.text}>{text}</div>
-      </div>
     </StyledMainDiv>
   );
 };
 
 const StyledMainDiv = styled.div`
-  background-color: ${colorConstants.white};
-  width: 65%;
-  height: 80vh;
-  margin-top: 2%;
-  padding-bottom: 1%;
   display: flex;
+  background-color: ${colorConstants.white};
+  padding-bottom: 1%;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
