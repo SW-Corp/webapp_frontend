@@ -15,18 +15,18 @@ export const ShutdownModal = ({ isOpen, handleClose, ...props }) => {
       )
       .then(res => {
         console.log('res ', res);
-        handleClose(true);
+        handleClose();
       })
       .catch(err => {
         console.log('err', err);
-        handleClose(false);
+        handleClose();
       });
   };
 
   return (
     <Modal
       open={isOpen}
-      onClose={() => handleClose(false)}
+      onClose={() => handleClose()}
       style={{ marginTop: '50px' }}
     >
       <Modal.Header>
