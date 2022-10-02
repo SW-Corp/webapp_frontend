@@ -13,6 +13,37 @@ const maxHeight = 171;
 const inactiveAskColor = '#298E33';
 const activeAskColor = '#73C98E';
 
+const mapPompNames = [
+  {
+    model: 'pompa1A',
+    toBackend: 'P1',
+  },
+  {
+    model: 'pompa1B',
+    toBackend: 'P2',
+  },
+  {
+    model: 'pompa1C',
+    toBackend: 'P3',
+  },
+  {
+    model: 'pompa2A',
+    toBackend: 'V1',
+  },
+  {
+    model: 'pompa2B',
+    toBackend: 'V2',
+  },
+  {
+    model: 'pompa2C',
+    toBackend: 'V3',
+  },
+  {
+    model: 'pompa3',
+    toBackend: 'P4',
+  },
+];
+
 export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
   //States
   const [startContainerHeight, setStartContainerHeight] = useState(maxHeight);
@@ -26,72 +57,12 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
     stopButton?.addEventListener('click', () => addTask('stop', 'stop', 1));
   }, []);
 
-  const mapPompNames = [
-    {
-      model: 'pompa1A',
-      toBackend: 'P1',
-    },
-    {
-      model: 'pompa1B',
-      toBackend: 'P2',
-    },
-    {
-      model: 'pompa1C',
-      toBackend: 'P3',
-    },
-    {
-      model: 'pompa2A',
-      toBackend: 'V1',
-    },
-    {
-      model: 'pompa2B',
-      toBackend: 'V2',
-    },
-    {
-      model: 'pompa2C',
-      toBackend: 'V3',
-    },
-    {
-      model: 'pompa3',
-      toBackend: 'P4',
-    },
-  ];
-
-  function handleStatus(status: number) {
-    switch (status) {
-      case 200:
-        window.alert('git');
-        break;
-
-      case 201:
-        window.alert('git');
-        break;
-
-      case 400:
-        window.alert('Nieprawidłowe zadanie');
-        break;
-
-      case 403:
-        window.alert('Odmowa zadania');
-        break;
-
-      case 404:
-        window.alert('Nieprawidłowe zadanie');
-        break;
-
-      default:
-        window.alert('Nieznany błąd');
-        break;
-    }
-  }
-
   async function formTask(color: string, name: string) {
     const target = mapPompNames.filter(({ model, toBackend }) => {
       return model === name;
     });
     const isOpen = color === 'green' ? 1 : 0;
     const status = await addTask('is_open', target[0].toBackend, isOpen);
-    // handleStatus(status);
   }
 
   //Water
@@ -369,15 +340,16 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
       pipesNameStartA,
     );
 
-    let pipesNameStartB: Array<string> = [];
-    pipesNameStartB.push('pipe1_1');
-    pipesNameStartB.push('pipe1_2');
-    pipesNameStartB.push('pipe1_3A');
-    pipesNameStartB.push('pipe1_3B');
-    pipesNameStartB.push('pipe1_3C');
-    pipesNameStartB.push('pipe1_4B');
-    pipesNameStartB.push('pipe1_5B');
-    pipesNameStartB.push('pipe1_6B');
+    const pipesNameStartB: Array<string> = [
+      'pipe1_1',
+      'pipe1_2',
+      'pipe1_3A',
+      'pipe1_3B',
+      'pipe1_3C',
+      'pipe1_4B',
+      'pipe1_5B',
+      'pipe1_6B',
+    ];
 
     useOutputButton1(
       startContainerHeight,
@@ -386,15 +358,16 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
       pipesNameStartB,
     );
 
-    let pipesNameStartC: Array<string> = [];
-    pipesNameStartC.push('pipe1_1');
-    pipesNameStartC.push('pipe1_2');
-    pipesNameStartC.push('pipe1_3A');
-    pipesNameStartC.push('pipe1_3B');
-    pipesNameStartC.push('pipe1_3C');
-    pipesNameStartC.push('pipe1_4C');
-    pipesNameStartC.push('pipe1_5C');
-    pipesNameStartC.push('pipe1_6C');
+    const pipesNameStartC: Array<string> = [
+      'pipe1_1',
+      'pipe1_2',
+      'pipe1_3A',
+      'pipe1_3B',
+      'pipe1_3C',
+      'pipe1_4C',
+      'pipe1_5C',
+      'pipe1_6C',
+    ];
 
     useOutputButton1(
       startContainerHeight,
@@ -644,12 +617,13 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
   //Use button output
   {
     //End container
-    let pipesNameEnd: Array<string> = [];
-    pipesNameEnd.push('pipe3_1');
-    pipesNameEnd.push('pipe3_2');
-    pipesNameEnd.push('pipe3_3');
-    pipesNameEnd.push('pipe3_4');
-    pipesNameEnd.push('pipe3_5');
+    const pipesNameEnd: Array<string> = [
+      'pipe3_1',
+      'pipe3_2',
+      'pipe3_3',
+      'pipe3_4',
+      'pipe3_5',
+    ];
 
     useWater(endContainerHeight, 'finalWater', 355.5);
     useOutputButton3(
@@ -660,91 +634,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
     );
   }
 
-  const [title, setTitle] = useState('Tytuł');
-  const [text, setText] = useState('Tekst');
-
-  const [visible, setVisible] = useState(false);
-  const [active, setActive] = useState('');
-  const [newActive, setNewActive] = useState('');
-
-  useEffect(() => {
-    Object.values(data).map(item => {
-      if (item.id === active) {
-        setTitle(item.title);
-        setText(item.text);
-        return;
-      }
-    });
-  }, [active]);
-
-  useEffect(() => {
-    if (active !== newActive && active !== '') {
-      const elem = document.getElementById(active);
-      elem?.setAttribute('fill', '#298E33');
-      setActive(newActive);
-    } else {
-      setActive(newActive);
-    }
-
-    if (newActive === '') {
-      setVisible(false);
-    } else {
-      setVisible(true);
-    }
-  }, [newActive]);
-
-  function useAskButton(askButtonName: string, askBackground: string) {
-    const [color, setColor] = useState<askColor>('#298E33');
-    const askButton = useRef<SVGSVGElement | null>(null);
-
-    const handleColorChange = useCallback(
-      (event: MouseEvent) => {
-        const newColor = color === '#73C98E' ? '#298E33' : '#73C98E';
-
-        setColor(newColor);
-
-        if (askButton.current) {
-          const ask = document.getElementById(askBackground);
-          ask?.setAttribute('fill', newColor);
-          if (newColor === '#73C98E') {
-            setNewActive(askBackground);
-          } else {
-            setNewActive('');
-          }
-        }
-      },
-      [color],
-    );
-
-    useEffect(() => {
-      const elem = document.getElementById(
-        askButtonName,
-      ) as unknown as SVGSVGElement;
-      askButton.current = elem;
-
-      elem.addEventListener('click', handleColorChange);
-
-      return () => {
-        elem.removeEventListener('click', handleColorChange);
-      };
-    }, [handleColorChange]);
-  }
-
-  //useAskButton('askMain', 'EllipseAskMain');
-  //useAskButton('askPomp', 'EllipseAskPomp');
-  //useAskButton('askHelpContainer', 'EllipseAskHelpContainer');
-  //useAskButton('askValve', 'EllipseAskValve');
-  //useAskButton('askFinalContainer', 'EllipseAskFinalContainer');
-  //useAskButton('askEngine', 'EllipseAskEngine');
-  //useAskButton('askFinalPomp', 'EllipseAskFinalPomp');
-  //useAskButton('askStop', 'EllipseAskStop');
-
   return (
     <StyledMainDiv>
       <div style={styles.modelDiv}>
         <svg
           width="800"
-          height="600"
           viewBox="0 0 800 600"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -852,38 +746,18 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               d="M166.118 141.557H168.414C182.222 141.557 193.414 152.75 193.414 166.557V219.88H166.118V141.557Z"
               fill="#E1E1E1"
             />
-            <rect
-              id="pipe1_1"
-              x="163.843"
-              y="392.335"
-              width="27.2963"
-              height="134.371"
+            <path
+              id="pipe1_2"
+              d="
+                M163.843 521.677H493.673V521.677C493.673 534.773 483.057 545.389 469.961 545.389H187.555C174.459 545.389 163.843 534.773 163.843 521.677V521.677Z
+                M163.843 392.335h27.2963v134.371H163.843Z
+                M330.676 484.914h27.7296v42.0259H330.676Z
+                M398.613 484.914h27.7296v42.0259H398.613Z
+                M465.856 484.914h27.7296v42.0259H465.856Z
+              "
               fill="#E1E1E1"
             />
-            <rect
-              id="pipe1_3A"
-              x="330.676"
-              y="484.914"
-              width="27.7296"
-              height="42.0259"
-              fill="#E1E1E1"
-            />
-            <rect
-              id="pipe1_3B"
-              x="398.613"
-              y="484.914"
-              width="27.7296"
-              height="42.0259"
-              fill="#E1E1E1"
-            />
-            <rect
-              id="pipe1_3C"
-              x="465.856"
-              y="484.914"
-              width="27.7296"
-              height="42.0259"
-              fill="#E1E1E1"
-            />
+
             <rect
               id="startContainer"
               x="60.4658"
@@ -943,11 +817,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               d="M0 574.138H668.977V574.138C668.977 586.993 658.556 597.414 645.701 597.414H23.2759C10.421 597.414 0 586.993 0 574.138V574.138Z"
               fill="#E1E1E1"
             />
-            <path
-              id="pipe1_2"
-              d="M163.843 521.677H493.673V521.677C493.673 534.773 483.057 545.389 469.961 545.389H187.555C174.459 545.389 163.843 534.773 163.843 521.677V521.677Z"
-              fill="#E1E1E1"
-            />
+
             <path
               id="pipe1_5B"
               d="M402.077 48.4914C402.077 37.779 410.761 29.0948 421.474 29.0948H643.325V48.4914H402.077V48.4914Z"
@@ -1059,14 +929,18 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 fill="white"
               />
             </g>
-            <path
+            {/* <path
               id="pipe1_6A"
               d="M567.764 0V0C579.25 0 588.561 9.31122 588.561 20.7972V98.2759H567.764V0Z"
               fill="#848484"
-            />
+            /> */}
             <path
               id="pipe1_4A"
-              d="M334.141 19.3965H354.938V454.526H334.141V19.3965Z"
+              d="
+                M334.141 19.3965H354.938V454.526H334.141V19.3965Z
+                M567.764 0V0C579.25 0 588.561 9.31122 588.561 20.7972V98.2759H567.764V0Z 
+                M334.141 19.3966C334.141 8.68414 342.825 0 353.537 0H567.762V19.3966H334.141V19.3966Z
+              "
               fill="#848484"
             />
             <rect
@@ -1107,11 +981,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               d="M28.1201 141.557H97.1191H166.118V164.551H28.1201V141.557Z"
               fill="#E1E1E1"
             />
-            <path
+            {/* <path
               id="pipe1_5A"
               d="M334.141 19.3966C334.141 8.68414 342.825 0 353.537 0H567.762V19.3966H334.141V19.3966Z"
               fill="#848484"
-            />
+            /> */}
             <path
               id="pompa2A"
               d="M598.589 283.504C598.589 293.738 589.837 302.078 578.985 302.078C568.133 302.078 559.381 293.738 559.381 283.504C559.381 273.271 568.133 264.931 578.985 264.931C589.837 264.931 598.589 273.271 598.589 283.504Z"
