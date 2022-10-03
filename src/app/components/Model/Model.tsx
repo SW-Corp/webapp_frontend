@@ -1,17 +1,64 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { addTask } from 'services/stationService';
 import { colorConstants } from 'styles/colorConstants';
-import data from './data.json';
+
+import { Checkbox } from 'rsuite';
 
 import styled from 'styled-components';
-
-type Color = 'red' | 'green';
-type askColor = '#298E33' | '#73C98E';
 
 const maxHeight = 171;
 
 const inactiveAskColor = '#298E33';
 const activeAskColor = '#73C98E';
+
+function useInterval(callback, delay) {
+  const savedCallback = useRef();
+
+  // Remember the latest function.
+  useEffect(() => {
+    savedCallback.current = callback;
+  }, [callback]);
+
+  // Set up the interval.
+  useEffect(() => {
+    function tick() {
+      // @ts-ignore
+      savedCallback.current();
+    }
+    if (delay !== null) {
+      let id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
+}
+
+const StyledText = ({ x, y, children }) => {
+  return (
+    <text
+      style={{ userSelect: 'none' }}
+      x={x}
+      y={y}
+      fontSize="20px"
+      fill="black"
+    >
+      {children}
+    </text>
+  );
+};
+
+const StyledSmallText = ({ x, y, children }) => {
+  return (
+    <text
+      style={{ userSelect: 'none' }}
+      x={x}
+      y={y}
+      fontSize="16px"
+      fill="#555"
+    >
+      {children}
+    </text>
+  );
+};
 
 const mapPompNames = [
   {
@@ -44,18 +91,126 @@ const mapPompNames = [
   },
 ];
 
+const careas = {
+  C1: 11 * 18,
+  C2: 100,
+  C3: 100,
+  C4: 100,
+  C5: 11 * 18,
+};
+
+const pumpEfficiency = 2 / 60; // litry na sekundę, w rzeczywistosci około 4 litry na minutę
+const valveFlowRate = 1 / 60; // litry na sekundę, zakładamy 2x wolniej niż pompa mimo iż w rzeczywistości zawory są bardzo wolne
+
 export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
   //States
   const [startContainerHeight, setStartContainerHeight] = useState(maxHeight);
-  const [innerContainerAHeight, setInnerContainerAHeight] = useState(0);
-  const [innerContainerBHeight, setInnerContainerBHeight] = useState(0);
-  const [innerContainerCHeight, setInnerContainerCHeight] = useState(0);
-  const [endContainerHeight, setEndContainerHeight] = useState(0);
 
-  useEffect(() => {
-    const stopButton = document.getElementById('stopButton');
-    stopButton?.addEventListener('click', () => addTask('stop', 'stop', 1));
-  }, []);
+  const [lastUpdateTime, setLastUpdateTime] = useState({
+    P1: 0,
+    P2: 0,
+    P3: 0,
+    P4: 0,
+    V1: 0,
+    V2: 0,
+    V3: 0,
+  });
+
+  const [volumes, setVolumes] = useState({
+    // objetosc w litrach
+    C1: 1,
+    C2: 1,
+    C3: 0.8,
+    C4: 0.1,
+    C5: 1,
+  });
+
+  const [activeComponents, setActiveComponents] = useState({
+    P1: 0,
+    P2: 0,
+    P3: 0,
+    P4: 0,
+    V1: 0,
+    V2: 0,
+    V3: 0,
+  });
+
+  const toFixedFloat = (num: number) => {
+    return Number.parseFloat(num.toFixed(2));
+  };
+
+  useInterval(() => {
+    if (!Object.values(activeComponents).some(el => el > 0)) {
+      return;
+    }
+
+    console.log('ok');
+
+    // setVolumes((prev) => { return {...prev, C1: prev.C1+0.1}})
+    const currentTimestamp = Date.now();
+
+    const deltas = {
+      // TODO: opracować i przetestować zabezpieczenia przed przepompowaniem nieistniejącej wody dla P1, P2 i P3
+      P1:
+        ((currentTimestamp - lastUpdateTime.P1) / 1000) *
+        pumpEfficiency *
+        activeComponents.P1,
+      P2:
+        ((currentTimestamp - lastUpdateTime.P2) / 1000) *
+        pumpEfficiency *
+        activeComponents.P2,
+      P3:
+        ((currentTimestamp - lastUpdateTime.P3) / 1000) *
+        pumpEfficiency *
+        activeComponents.P3,
+      P4: Math.min(
+        volumes.C5,
+        ((currentTimestamp - lastUpdateTime.P4) / 1000) *
+          pumpEfficiency *
+          activeComponents.P4,
+      ),
+      V1: Math.min(
+        volumes.C2,
+        ((currentTimestamp - lastUpdateTime.V1) / 1000) *
+          pumpEfficiency *
+          activeComponents.V1,
+      ),
+      V2: Math.min(
+        volumes.C3,
+        ((currentTimestamp - lastUpdateTime.V2) / 1000) *
+          pumpEfficiency *
+          activeComponents.V2,
+      ),
+      V3: Math.min(
+        volumes.C4,
+        ((currentTimestamp - lastUpdateTime.V3) / 1000) *
+          pumpEfficiency *
+          activeComponents.V3,
+      ),
+    };
+
+    setVolumes({
+      C1: toFixedFloat(
+        volumes.C1 + deltas.P4 - deltas.P1 - deltas.P2 - deltas.P3,
+      ),
+      C2: toFixedFloat(volumes.C2 + deltas.P1 - deltas.V1),
+      C3: toFixedFloat(volumes.C3 + deltas.P2 - deltas.V2),
+      C4: toFixedFloat(volumes.C4 + deltas.P3 - deltas.V3),
+      C5: toFixedFloat(
+        volumes.C5 + deltas.V1 + deltas.V2 + deltas.V3 - deltas.P4,
+      ),
+    });
+
+    setLastUpdateTime(prev => {
+      const newDict = prev;
+      for (const el of Object.keys(prev)) {
+        newDict[el] = activeComponents[el]
+          ? currentTimestamp
+          : lastUpdateTime[el];
+      }
+      return newDict;
+    });
+  }, 250);
 
   async function formTask(color: string, name: string) {
     const target = mapPompNames.filter(({ model, toBackend }) => {
@@ -65,578 +220,18 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
     const status = await addTask('is_open', target[0].toBackend, isOpen);
   }
 
-  //Water
-  function useWater(height: number, waterName: string, containerY: number) {
-    const water = useRef<SVGSVGElement | null>(null);
-
-    useEffect(() => {
-      water.current = document.getElementById(
-        waterName,
-      ) as unknown as SVGSVGElement;
-    }, []);
-
-    useEffect(() => {
-      const y = containerY + maxHeight - height;
-
-      if (water.current) {
-        water.current.setAttribute('y', y.toString());
-        water.current.setAttribute('height', height.toString());
-      }
-    }, [height]);
-  }
-
-  function handle1(h: number, pipesName: Array<string>, name: any) {
-    let totalOpen = 0;
-    let fillUp = 0;
-
-    if (h === 0) {
-      let colorOn;
-
-      if (name === 'pompa1A') colorOn = '#848484';
-
-      if (name === 'pompa1B') colorOn = '#B8B8B8';
-
-      if (name === 'pompa1C') colorOn = '#E1E1E1';
-
-      for (let i = 0; i < 5; i++) {
-        const pipe = document.getElementById(pipesName[i]);
-        pipe?.setAttribute('fill', '#E1E1E1');
-      }
-
-      for (let i = 5; i < 8; i++) {
-        const pipe = document.getElementById(pipesName[i]);
-        pipe?.setAttribute('fill', colorOn);
-      }
-    } else {
-      let colorAfter;
-
-      if (name === 'pompa1A') colorAfter = '#0075FF';
-
-      if (name === 'pompa1B') colorAfter = '#00A3FF';
-
-      if (name === 'pompa1C') colorAfter = '#0AD3FF';
-
-      for (let i = 0; i < 5; i++) {
-        const pipe = document.getElementById(pipesName[i]);
-        pipe?.setAttribute('fill', '#0AD3FF');
-      }
-
-      for (let i = 5; i < 8; i++) {
-        const pipe = document.getElementById(pipesName[i]);
-        pipe?.setAttribute('fill', colorAfter);
-      }
-
-      if (
-        document.getElementById('pompa1A')?.getAttribute('fill') === 'green' &&
-        h > 0
-      ) {
-        totalOpen++;
-
-        if (
-          document.getElementById('helpWaterA')?.getAttribute('height') ===
-          '171'
-        ) {
-          fillUp++;
-        }
-      }
-
-      if (
-        document.getElementById('pompa1B')?.getAttribute('fill') === 'green' &&
-        h > 0
-      ) {
-        totalOpen++;
-
-        if (
-          document.getElementById('helpWaterB')?.getAttribute('height') ===
-          '171'
-        ) {
-          fillUp++;
-        }
-      }
-
-      if (
-        document.getElementById('pompa1C')?.getAttribute('fill') === 'green' &&
-        h > 0
-      ) {
-        totalOpen++;
-
-        if (
-          document.getElementById('helpWaterC')?.getAttribute('height') ===
-          '171'
-        ) {
-          fillUp++;
-        }
-      }
-
-      const value = totalOpen - fillUp;
-
-      if (
-        document.getElementById('pompa1A')?.getAttribute('fill') === 'green' &&
-        document.getElementById('helpWaterA')?.getAttribute('height') !==
-          '171' &&
-        h > 0
-      )
-        setInnerContainerAHeight(h => Math.min(h + 6 / totalOpen, maxHeight));
-
-      if (
-        document.getElementById('pompa1B')?.getAttribute('fill') === 'green' &&
-        document.getElementById('helpWaterB')?.getAttribute('height') !==
-          '171' &&
-        h > 0
-      )
-        setInnerContainerBHeight(h => Math.min(h + 6 / totalOpen, maxHeight));
-
-      if (
-        document.getElementById('pompa1C')?.getAttribute('fill') === 'green' &&
-        document.getElementById('helpWaterC')?.getAttribute('height') !==
-          '171' &&
-        h > 0
-      )
-        setInnerContainerCHeight(h => Math.min(h + 6 / totalOpen, maxHeight));
-    }
-
-    if (totalOpen - fillUp > 0) {
-      return Math.max(h - 2, 0);
-    }
-
-    return h;
-  }
-
-  function useOutputButton1(
-    height: number,
-    setHeight: (updateHeight: (oldHeight: number) => number) => void,
-    outputPumpName: string,
-    pipesName: Array<string>,
-  ) {
-    const [color, setColor] = useState<Color>('red');
-    const button = useRef<SVGSVGElement | null>(null);
-    const timer = useRef<number | null>(null);
-
-    const handleColorChange = useCallback(
-      (event: MouseEvent) => {
-        const newColor = color === 'green' ? 'red' : 'green';
-        let countOn = 0;
-
-        if (button.current) {
-          button.current.setAttribute('fill', newColor);
-
-          if (newColor === 'green' && height > 0) {
-            let colorAfter;
-
-            if (button.current.getAttribute('id') === 'pompa1A')
-              colorAfter = '#0075FF';
-
-            if (button.current.getAttribute('id') === 'pompa1B')
-              colorAfter = '#00A3FF';
-
-            if (button.current.getAttribute('id') === 'pompa1C')
-              colorAfter = '#0AD3FF';
-
-            for (let i = 0; i < 5; i++) {
-              const pipe = document.getElementById(pipesName[i]);
-              pipe?.setAttribute('fill', '#0AD3FF');
-            }
-
-            for (let i = 5; i < 8; i++) {
-              const pipe = document.getElementById(pipesName[i]);
-              pipe?.setAttribute('fill', colorAfter);
-            }
-          } else {
-            if (
-              document.getElementById('pompa1A')?.getAttribute('fill') ===
-              'green'
-            ) {
-              countOn++;
-            }
-
-            if (
-              document.getElementById('pompa1B')?.getAttribute('fill') ===
-              'green'
-            ) {
-              countOn++;
-            }
-
-            if (
-              document.getElementById('pompa1C')?.getAttribute('fill') ===
-              'green'
-            ) {
-              countOn++;
-            }
-
-            let colorOn;
-
-            if (button.current.getAttribute('id') === 'pompa1A')
-              colorOn = '#848484';
-
-            if (button.current.getAttribute('id') === 'pompa1B')
-              colorOn = '#B8B8B8';
-
-            if (button.current.getAttribute('id') === 'pompa1C')
-              colorOn = '#E1E1E1';
-
-            if (countOn === 0) {
-              for (let i = 0; i < 5; i++) {
-                const pipe = document.getElementById(pipesName[i]);
-                pipe?.setAttribute('fill', '#E1E1E1');
-              }
-            }
-
-            for (let i = 5; i < 8; i++) {
-              const pipe = document.getElementById(pipesName[i]);
-              pipe?.setAttribute('fill', colorOn);
-            }
-          }
-        }
-
-        if (newColor === 'green') {
-          timer.current = window.setInterval(() => {
-            setHeight(h =>
-              handle1(h, pipesName, button.current?.getAttribute('id')),
-            );
-          }, 250);
-        } else {
-          if (timer.current) {
-            clearInterval(timer.current);
-            timer.current = null;
-          }
-        }
-        setColor(newColor);
-      },
-      [color, setHeight],
-    );
-
-    useEffect(() => {
-      const elem = document.getElementById(
-        outputPumpName,
-      ) as unknown as SVGSVGElement;
-      button.current = elem;
-
-      elem.addEventListener('click', handleColorChange);
-
-      return () => {
-        elem.removeEventListener('click', handleColorChange);
-      };
-    }, [handleColorChange]);
-  }
-
-  {
-    useWater(startContainerHeight, 'startWater', 220.5);
-    //   //Start container
-    const pipesNameStartA: Array<string> = [
-      'pipe1_1',
-      'pipe1_2',
-      'pipe1_3A',
-      'pipe1_3B',
-      'pipe1_3C',
-      'pipe1_4A',
-      'pipe1_5A',
-      'pipe1_6A',
-    ];
-
-    useOutputButton1(
-      startContainerHeight,
-      num => setStartContainerHeight(num),
-      'pompa1A',
-      pipesNameStartA,
-    );
-
-    const pipesNameStartB: Array<string> = [
-      'pipe1_1',
-      'pipe1_2',
-      'pipe1_3A',
-      'pipe1_3B',
-      'pipe1_3C',
-      'pipe1_4B',
-      'pipe1_5B',
-      'pipe1_6B',
-    ];
-
-    useOutputButton1(
-      startContainerHeight,
-      num => setStartContainerHeight(num),
-      'pompa1B',
-      pipesNameStartB,
-    );
-
-    const pipesNameStartC: Array<string> = [
-      'pipe1_1',
-      'pipe1_2',
-      'pipe1_3A',
-      'pipe1_3B',
-      'pipe1_3C',
-      'pipe1_4C',
-      'pipe1_5C',
-      'pipe1_6C',
-    ];
-
-    useOutputButton1(
-      startContainerHeight,
-      num => setStartContainerHeight(num),
-      'pompa1C',
-      pipesNameStartC,
-    );
-  }
-
-  function handleFinalWater(h: number, name: string) {
-    let total = 1;
-
-    if (
-      document.getElementById('pompa2A')?.getAttribute('fill') === 'green' &&
-      document.getElementById('helpWaterA')?.getAttribute('height') === '0' &&
-      name !== 'helpWaterA'
-    )
-      total++;
-
-    if (
-      document.getElementById('pompa2B')?.getAttribute('fill') === 'green' &&
-      document.getElementById('helpWaterB')?.getAttribute('height') === '0' &&
-      name !== 'helpWaterB'
-    )
-      total++;
-
-    if (
-      document.getElementById('pompa2C')?.getAttribute('fill') === 'green' &&
-      document.getElementById('helpWaterC')?.getAttribute('height') === '0' &&
-      name !== 'helpWaterC'
-    )
-      total++;
-
-    const value = 2 / total;
-
-    return Math.min(h + value, maxHeight);
-  }
-
-  function handle2(h: number, pipesName: Array<string>, name: string) {
-    if (h === 0) {
-      pipesName.forEach(pipeName => {
-        const pipe = document.getElementById(pipeName);
-        pipe?.setAttribute('fill', '#E1E1E1');
-      });
-
-      return 0;
-    } else {
-      pipesName.forEach(pipeName => {
-        const pipe = document.getElementById(pipeName);
-        pipe?.setAttribute('fill', '#0AD3FF');
-      });
-
-      if (
-        document.getElementById('finalWater')?.getAttribute('height') !== '171'
-      ) {
-        setEndContainerHeight(height => handleFinalWater(height, name));
-        return Math.max(h - 6, 0);
-      } else return h;
-    }
-  }
-
-  function useOutputButton2(
-    height: number,
-    setHeight: (updateHeight: (oldHeight: number) => number) => void,
-    outputPumpName: string,
-    pipesName: Array<string>,
-    containerName: string,
-  ) {
-    const [color, setColor] = useState<Color>('red');
-    const button = useRef<SVGSVGElement | null>(null);
-    const timer = useRef<number | null>(null);
-
-    const handleColorChange = useCallback(
-      (event: MouseEvent) => {
-        const newColor = color === 'green' ? 'red' : 'green';
-
-        if (button.current) {
-          button.current.setAttribute('fill', newColor);
-
-          if (newColor === 'green' && height > 0) {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
-              pipe?.setAttribute('fill', '#0AD3FF');
-            });
-          } else {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
-              pipe?.setAttribute('fill', '#E1E1E1');
-            });
-          }
-        }
-
-        if (newColor === 'green') {
-          timer.current = window.setInterval(() => {
-            setHeight(h => handle2(h, pipesName, containerName));
-          }, 250);
-        } else {
-          if (timer.current) {
-            clearInterval(timer.current);
-            timer.current = null;
-          }
-        }
-        setColor(newColor);
-      },
-      [color, setHeight],
-    );
-
-    useEffect(() => {
-      const elem = document.getElementById(
-        outputPumpName,
-      ) as unknown as SVGSVGElement;
-      button.current = elem;
-
-      elem.addEventListener('click', handleColorChange);
-
-      return () => {
-        elem.removeEventListener('click', handleColorChange);
-      };
-    }, [handleColorChange]);
-  }
-
-  {
-    //Help container A
-    let pipesNameA: Array<string> = [];
-    pipesNameA.push('pipe2A');
-
-    useWater(innerContainerAHeight, 'helpWaterA', 98.5);
-    useOutputButton2(
-      innerContainerAHeight,
-      num => setInnerContainerAHeight(num),
-      'pompa2A',
-      pipesNameA,
-      'helpWaterA',
-    );
-
-    //Help container B
-    let pipesNameB: Array<string> = [];
-    pipesNameB.push('pipe2B');
-
-    useWater(innerContainerBHeight, 'helpWaterB', 98.5);
-    useOutputButton2(
-      innerContainerBHeight,
-      num => setInnerContainerBHeight(num),
-      'pompa2B',
-      pipesNameB,
-      'helpWaterB',
-    );
-
-    //Help container C
-    let pipesNameC: Array<string> = [];
-    pipesNameC.push('pipe2C');
-
-    useWater(innerContainerCHeight, 'helpWaterC', 98.5);
-    useOutputButton2(
-      innerContainerCHeight,
-      num => setInnerContainerCHeight(num),
-      'pompa2C',
-      pipesNameC,
-      'helpWaterC',
-    );
-  }
-
-  function handle3(h: number, pipesName: Array<string>) {
-    if (h === 0) {
-      pipesName.forEach(pipeName => {
-        const pipe = document.getElementById(pipeName);
-        pipe?.setAttribute('fill', '#E1E1E1');
-      });
-    } else {
-      pipesName.forEach(pipeName => {
-        const pipe = document.getElementById(pipeName);
-        pipe?.setAttribute('fill', '#0AD3FF');
-      });
-
-      if (
-        document.getElementById('startWater')?.getAttribute('height') !== '171'
-      )
-        setStartContainerHeight(h => Math.min(h + 2, maxHeight));
-    }
-
-    if (document.getElementById('startWater')?.getAttribute('height') !== '171')
-      return Math.max(h - 2, 0);
-
-    return h;
-  }
-
-  //Button output
-  function useOutputButton3(
-    height: number,
-    setHeight: (updateHeight: (oldHeight: number) => number) => void,
-    outputPumpName: string,
-    pipesName: Array<string>,
-  ) {
-    const [color, setColor] = useState<Color>('red');
-    const button = useRef<SVGSVGElement | null>(null);
-    const timer = useRef<number | null>(null);
-
-    const handleColorChange = useCallback(
-      (event: MouseEvent) => {
-        const newColor = color === 'green' ? 'red' : 'green';
-
-        if (button.current) {
-          button.current.setAttribute('fill', newColor);
-
-          if (newColor === 'green' && height > 0) {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
-              pipe?.setAttribute('fill', '#0AD3FF');
-            });
-          } else {
-            pipesName.forEach(pipeName => {
-              const pipe = document.getElementById(pipeName);
-              pipe?.setAttribute('fill', '#E1E1E1');
-            });
-          }
-        }
-
-        if (newColor === 'green') {
-          timer.current = window.setInterval(() => {
-            setHeight(h => handle3(h, pipesName));
-          }, 250);
-        } else {
-          if (timer.current) {
-            clearInterval(timer.current);
-            timer.current = null;
-          }
-        }
-        setColor(newColor);
-      },
-      [color, setHeight],
-    );
-
-    useEffect(() => {
-      const elem = document.getElementById(
-        outputPumpName,
-      ) as unknown as SVGSVGElement;
-      button.current = elem;
-
-      elem.addEventListener('click', handleColorChange);
-
-      return () => {
-        elem.removeEventListener('click', handleColorChange);
-      };
-    }, [handleColorChange]);
-  }
-
-  //Use button output
-  {
-    //End container
-    const pipesNameEnd: Array<string> = [
-      'pipe3_1',
-      'pipe3_2',
-      'pipe3_3',
-      'pipe3_4',
-      'pipe3_5',
-    ];
-
-    useWater(endContainerHeight, 'finalWater', 355.5);
-    useOutputButton3(
-      endContainerHeight,
-      num => setEndContainerHeight(num),
-      'pompa3',
-      pipesNameEnd,
-    );
-  }
+  const updateComponent = compId => {
+    setActiveComponents(prev => {
+      return { ...prev, [compId]: Math.abs(prev[compId] - 1) };
+    });
+    setLastUpdateTime(prev => {
+      return { ...prev, [compId]: Date.now() };
+    });
+  };
 
   return (
     <StyledMainDiv>
-      <div style={styles.modelDiv}>
+      <StyledModelDiv>
         <svg
           width="800"
           viewBox="0 0 800 600"
@@ -644,14 +239,6 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
           xmlns="http://www.w3.org/2000/svg"
         >
           <g id="Makieta">
-            <rect
-              id="pipe1_5C"
-              x="490.121"
-              y="58.1896"
-              width="228.076"
-              height="19.3966"
-              fill="#E1E1E1"
-            />
             <rect
               id="helpContainerC"
               x="692.5"
@@ -661,91 +248,25 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               fill="white"
               stroke="black"
             />
+
             <rect
-              id="helpWaterC"
-              x="692.25"
-              y="269.25"
-              width="75.5"
-              height="0.5"
-              fill="#0AD3FF"
-              stroke="black"
-            />
-            <text
-              style={{ userSelect: 'none' }}
-              x="697"
-              y="120"
-              fontSize="20px"
-              fill="black"
-            >
-              C4
-            </text>
-            <rect
-              id="helpCointainerB"
+              id="helpContainerB"
               x="616.5"
               y="98.5"
               width="75"
               height="171"
-              fill="white"
               stroke="black"
             />
-            <rect
-              id="helpWaterB"
-              x="616.25"
-              y="269.25"
-              width="75.5"
-              height="0.5"
-              fill="#10C6EE"
-              stroke="black"
-            />
-            <text
-              style={{ userSelect: 'none' }}
-              x="621"
-              y="120"
-              fontSize="20px"
-              fill="black"
-            >
-              C3
-            </text>
+
             <rect
               id="finalContainer"
-              x="540.534"
-              y="355.457"
+              x="540.5"
+              y="355.5"
               width="227"
               height="171"
-              fill="white"
               stroke="black"
             />
-            <rect
-              id="finalWater"
-              x="540.534"
-              y="526.457"
-              width="227"
-              height="0.5"
-              fill="#0AD3FF"
-              stroke="black"
-            />
-            <text
-              style={{ userSelect: 'none' }}
-              x="545"
-              y="377"
-              fontSize="20px"
-              fill="black"
-            >
-              C5
-            </text>
-            <rect
-              id="pipe2A"
-              x="564.189"
-              y="270.898"
-              width="28.0546"
-              height="84.0719"
-              fill="#E1E1E1"
-            />
-            <path
-              id="pipe3_5"
-              d="M166.118 141.557H168.414C182.222 141.557 193.414 152.75 193.414 166.557V219.88H166.118V141.557Z"
-              fill="#E1E1E1"
-            />
+
             <path
               id="pipe1_2"
               d="
@@ -755,36 +276,24 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 M398.613 484.914h27.7296v42.0259H398.613Z
                 M465.856 484.914h27.7296v42.0259H465.856Z
               "
-              fill="#E1E1E1"
+              fill={
+                ['P1', 'P2', 'P3'].some(el => activeComponents[el]) &&
+                volumes.C1 > 0
+                  ? '#0AD3FF'
+                  : '#E1E1E1'
+              }
             />
 
             <rect
               id="startContainer"
-              x="60.4658"
+              x="60"
               y="220.38"
               width="227"
               height="171"
               fill="white"
               stroke="black"
             />
-            <rect
-              id="startWater"
-              x="60.4658"
-              y="391.38"
-              width="227"
-              height="0.5"
-              fill="#0AD3FF"
-              stroke="black"
-            />
-            <text
-              style={{ userSelect: 'none' }}
-              x="65"
-              y="242"
-              fontSize="20px"
-              fill="black"
-            >
-              C1
-            </text>
+
             <rect
               id="helpContainerA"
               x="540.5"
@@ -797,42 +306,74 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <rect
               id="helpWaterA"
               x="540.25"
-              y="269.25"
+              y={Math.min(
+                269.25,
+                269.25 - (volumes.C2 * 1000 * 11.4) / careas.C2,
+              )} // "269.25"
               width="75.5"
-              height="0.5"
+              height={Math.abs(
+                269.25 - (269.25 - (volumes.C2 * 1000 * 11.4) / careas.C2),
+              )} // {-1*volumes.C2*1000/careas.C2}
               fill="#0AD3FF"
               stroke="black"
             />
-            <text
-              style={{ userSelect: 'none' }}
-              x="545"
-              y="120"
-              fontSize="20px"
-              fill="black"
-            >
-              C2
-            </text>
-            <path
-              id="pipe3_2"
-              d="M0 574.138H668.977V574.138C668.977 586.993 658.556 597.414 645.701 597.414H23.2759C10.421 597.414 0 586.993 0 574.138V574.138Z"
-              fill="#E1E1E1"
+            <rect
+              id="helpWaterB"
+              x="616.25"
+              y={Math.min(
+                269.25,
+                269.25 - (volumes.C3 * 1000 * 11.4) / careas.C3,
+              )} // "269.25"
+              width="75.5"
+              height={Math.abs(
+                269.25 - (269.25 - (volumes.C3 * 1000 * 11.4) / careas.C3),
+              )} // {-1*volumes.C2*1000/careas.C2}
+              fill="#10C6EE"
+              stroke="black"
+            />
+            <rect
+              id="helpWaterC"
+              x="692.25"
+              y={Math.min(
+                269.25,
+                269.25 - (volumes.C4 * 1000 * 11.4) / careas.C4,
+              )} // "269.25"
+              width="75.5"
+              height={Math.abs(
+                269.25 - (269.25 - (volumes.C4 * 1000 * 11.4) / careas.C4),
+              )} // {-1*volumes.C2*1000/careas.C2}
+              fill="#0AD3FF"
+              stroke="black"
+            />
+            <rect
+              id="startWater"
+              x="60"
+              y={Math.min(
+                391.38,
+                391.38 - (volumes.C1 * 1000 * 6.84) / careas.C1,
+              )} // "269.25"
+              width="227"
+              height={Math.abs(
+                391.38 - (391.38 - (volumes.C1 * 1000 * 6.84) / careas.C1),
+              )} // {-1*volumes.C2*1000/careas.C2}
+              fill="#0AD3FF"
+              stroke="black"
+            />
+            <rect
+              id="finalWater"
+              x="540.5"
+              y={Math.min(
+                526.5,
+                526.5 - (volumes.C5 * 1000 * 6.84) / careas.C5,
+              )} // "269.25"
+              width="227"
+              height={Math.abs(
+                526.5 - (526.5 - (volumes.C5 * 1000 * 6.84) / careas.C5),
+              )} // {-1*volumes.C2*1000/careas.C2}
+              fill="#0AD3FF"
+              stroke="black"
             />
 
-            <path
-              id="pipe1_5B"
-              d="M402.077 48.4914C402.077 37.779 410.761 29.0948 421.474 29.0948H643.325V48.4914H402.077V48.4914Z"
-              fill="#B8B8B8"
-            />
-            <path
-              id="pipe1_6B"
-              d="M643.326 29.0948V29.0948C654.812 29.0948 664.123 38.4061 664.123 49.892V98.2759H643.326V29.0948Z"
-              fill="#B8B8B8"
-            />
-            <path
-              id="pipe1_6C"
-              d="M718.195 58.1896V58.1896C729.681 58.1896 738.993 67.5009 738.993 78.9868V98.2758H718.195V58.1896Z"
-              fill="#E1E1E1"
-            />
             <g
               id="askMain"
               cursor={'pointer'}
@@ -852,7 +393,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               />
               <path
                 id="?"
-                d="M309.962 233.732H307.628C307.634 233.14 307.683 232.632 307.774 232.209C307.872 231.786 308.031 231.405 308.253 231.066C308.474 230.721 308.774 230.37 309.151 230.012C309.451 229.732 309.718 229.468 309.952 229.221C310.193 228.967 310.382 228.703 310.518 228.43C310.655 228.15 310.723 227.834 310.723 227.482C310.723 227.085 310.658 226.753 310.528 226.486C310.404 226.219 310.219 226.018 309.972 225.881C309.731 225.738 309.428 225.666 309.063 225.666C308.764 225.666 308.481 225.728 308.214 225.852C307.947 225.975 307.732 226.167 307.569 226.428C307.406 226.682 307.319 227.014 307.306 227.424H304.718C304.737 226.571 304.939 225.861 305.323 225.295C305.707 224.722 306.225 224.296 306.876 224.016C307.527 223.729 308.256 223.586 309.063 223.586C309.955 223.586 310.717 223.736 311.348 224.035C311.987 224.328 312.472 224.758 312.804 225.324C313.142 225.891 313.311 226.574 313.311 227.375C313.311 227.948 313.201 228.462 312.979 228.918C312.758 229.367 312.465 229.787 312.1 230.178C311.736 230.568 311.342 230.962 310.919 231.359C310.548 231.691 310.297 232.046 310.167 232.424C310.037 232.801 309.968 233.238 309.962 233.732ZM307.384 236.77C307.384 236.379 307.514 236.053 307.774 235.793C308.041 235.533 308.399 235.402 308.848 235.402C309.298 235.402 309.653 235.533 309.913 235.793C310.18 236.053 310.313 236.379 310.313 236.77C310.313 237.147 310.18 237.466 309.913 237.727C309.653 237.987 309.298 238.117 308.848 238.117C308.399 238.117 308.041 237.987 307.774 237.727C307.514 237.466 307.384 237.147 307.384 236.77Z"
+                d="m 309.962 233.732 h -2.334 c 0.006 -0.592 0.055 -1.1 0.146 -1.523 c 0.098 -0.423 0.257 -0.804 0.479 -1.143 c 0.221 -0.345 0.521 -0.696 0.898 -1.054 c 0.3 -0.28 0.567 -0.544 0.801 -0.791 c 0.241 -0.254 0.43 -0.518 0.566 -0.791 c 0.137 -0.28 0.205 -0.596 0.205 -0.948 c 0 -0.397 -0.065 -0.729 -0.195 -0.996 c -0.124 -0.267 -0.309 -0.468 -0.556 -0.605 c -0.241 -0.143 -0.544 -0.215 -0.909 -0.215 c -0.299 0 -0.582 0.062 -0.849 0.186 c -0.267 0.123 -0.482 0.315 -0.645 0.576 c -0.163 0.254 -0.25 0.586 -0.263 0.996 h -2.588 c 0.019 -0.853 0.221 -1.563 0.605 -2.129 c 0.384 -0.573 0.902 -0.999 1.553 -1.279 c 0.651 -0.287 1.38 -0.43 2.187 -0.43 c 0.892 0 1.654 0.15 2.285 0.449 c 0.639 0.293 1.124 0.723 1.456 1.289 c 0.338 0.567 0.507 1.25 0.507 2.051 c 0 0.573 -0.11 1.087 -0.332 1.543 c -0.221 0.449 -0.514 0.869 -0.879 1.26 c -0.364 0.39 -0.758 0.784 -1.181 1.181 c -0.371 0.332 -0.622 0.687 -0.752 1.065 c -0.13 0.377 -0.199 0.814 -0.205 1.308 z m -2.578 3.038 c 0 -0.391 0.13 -0.717 0.39 -0.977 c 0.267 -0.26 0.625 -0.391 1.074 -0.391 c 0.45 0 0.805 0.131 1.065 0.391 c 0.267 0.26 0.4 0.586 0.4 0.977 c 0 0.377 -0.133 0.696 -0.4 0.957 c -0.26 0.26 -0.615 0.39 -1.065 0.39 c -0.449 0 -0.807 -0.13 -1.074 -0.39 c -0.26 -0.261 -0.39 -0.58 -0.39 -0.957 z"
                 fill="white"
               />
             </g>
@@ -929,11 +470,28 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 fill="white"
               />
             </g>
-            {/* <path
-              id="pipe1_6A"
-              d="M567.764 0V0C579.25 0 588.561 9.31122 588.561 20.7972V98.2759H567.764V0Z"
-              fill="#848484"
-            /> */}
+            <path
+              id="pipe1_4C"
+              d="
+                M469.324 78.9868C469.324 67.5009 478.635 58.1896 490.121 58.1896V58.1896V459.052H469.324V78.9868Z
+                M490.121 58.1896h228.076v19.3966H490.121Z
+                M718.195 58.1896V58.1896C729.681 58.1896 738.993 67.5009 738.993 78.9868V98.2758H718.195V58.1896Z
+              "
+              fill={
+                activeComponents.P3 && volumes.C1 > 0 ? '#0AD3FF' : '#E1E1E1'
+              }
+            />
+            <path
+              id="pipe1_4B"
+              fill={
+                activeComponents.P2 && volumes.C1 > 0 ? '#00A3FF' : '#B8B8B8'
+              }
+              d="
+                M402.077 48.4913h20.7972v415.086H402.077Z
+                M402.077 48.4914C402.077 37.779 410.761 29.0948 421.474 29.0948H643.325V48.4914H402.077V48.4914Z
+                M643.326 29.0948V29.0948C654.812 29.0948 664.123 38.4061 664.123 49.892V98.2759H643.326V29.0948Z
+              "
+            />
             <path
               id="pipe1_4A"
               d="
@@ -941,64 +499,77 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 M567.764 0V0C579.25 0 588.561 9.31122 588.561 20.7972V98.2759H567.764V0Z 
                 M334.141 19.3966C334.141 8.68414 342.825 0 353.537 0H567.762V19.3966H334.141V19.3966Z
               "
-              fill="#848484"
-            />
-            <rect
-              id="pipe1_4B"
-              x="402.077"
-              y="48.4913"
-              width="20.7972"
-              height="415.086"
-              fill="#B8B8B8"
-            />
-            <path
-              id="pipe1_4C"
-              d="M469.324 78.9868C469.324 67.5009 478.635 58.1896 490.121 58.1896V58.1896V459.052H469.324V78.9868Z"
-              fill="#E1E1E1"
-            />
-            <path
-              id="pipe3_3"
-              d="M0.0644531 166.557C0.0644531 152.75 11.2573 141.557 25.0644 141.557H28.119V574.132H0.0644531V166.557Z"
-              fill="#E1E1E1"
+              fill={
+                activeComponents.P1 && volumes.C1 > 0 ? '#0075FF' : '#848484'
+              }
             />
             <path
               id="pipe3_1"
-              d="M641.247 526.94H668.977V574.138H641.247V526.94Z"
-              fill="#E1E1E1"
+              d="
+                M641.247 526.94H668.977V574.138H641.247V526.94Z
+                M0 574.138H668.977V574.138C668.977 586.993 658.556 597.414 645.701 597.414H23.2759C10.421 597.414 0 586.993 0 574.138V574.138Z
+                M0.0644531 166.557C0.0644531 152.75 11.2573 141.557 25.0644 141.557H28.119V574.132H0.0644531V166.557Z
+                M28.1201 141.557H97.1191H166.118V164.551H28.1201V141.557Z
+                M166.118 141.557H168.414C182.222 141.557 193.414 152.75 193.414 166.557V219.88H166.118V141.557Z
+              "
+              fill={
+                activeComponents.P4 && volumes.C5 > 0 ? '#0AD3FF' : '#E1E1E1'
+              }
+            />
+            <rect
+              id="pipe2A"
+              x="564.189"
+              y="270.898"
+              width="28.0546"
+              height="84.0719"
+              fill={
+                activeComponents.V1 && volumes.C2 > 0 ? '#0AD3FF' : '#E1E1E1'
+              }
             />
             <path
               id="pipe2B"
               d="M639.254 270.898H666.55V354.97H639.254V270.898Z"
-              fill="#E1E1E1"
+              fill={
+                activeComponents.V2 && volumes.C3 > 0 ? '#0AD3FF' : '#E1E1E1'
+              }
             />
             <path
               id="pipe2C"
               d="M715.078 270.898H743.133V354.97H715.078V270.898Z"
-              fill="#E1E1E1"
+              fill={
+                activeComponents.V3 && volumes.C4 > 0 ? '#0AD3FF' : '#E1E1E1'
+              }
             />
-            <path
-              id="pipe3_4"
-              d="M28.1201 141.557H97.1191H166.118V164.551H28.1201V141.557Z"
-              fill="#E1E1E1"
-            />
-            {/* <path
-              id="pipe1_5A"
-              d="M334.141 19.3966C334.141 8.68414 342.825 0 353.537 0H567.762V19.3966H334.141V19.3966Z"
-              fill="#848484"
-            /> */}
+
             <path
               id="pompa2A"
               d="M598.589 283.504C598.589 293.738 589.837 302.078 578.985 302.078C568.133 302.078 559.381 293.738 559.381 283.504C559.381 273.271 568.133 264.931 578.985 264.931C589.837 264.931 598.589 273.271 598.589 283.504Z"
-              fill="#FF0000"
+              fill={activeComponents['V1'] ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
+              onClick={() => {
+                updateComponent('V1');
+              }}
+            />
+            <path
+              id="pompa2B"
+              d="M674.413 283.504C674.413 293.738 665.661 302.078 654.809 302.078C643.957 302.078 635.205 293.738 635.205 283.504C635.205 273.271 643.957 264.931 654.809 264.931C665.661 264.931 674.413 273.271 674.413 283.504Z"
+              fill={activeComponents['V2'] ? 'green' : '#FF0000'}
+              stroke="black"
+              cursor={'pointer'}
+              onClick={() => {
+                updateComponent('V2');
+              }}
             />
             <path
               id="pompa2C"
               d="M748.719 283.504C748.719 293.738 739.967 302.078 729.115 302.078C718.263 302.078 709.511 293.738 709.511 283.504C709.511 273.271 718.263 264.931 729.115 264.931C739.967 264.931 748.719 273.271 748.719 283.504Z"
-              fill="#FF0000"
+              fill={activeComponents['V3'] ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
+              onClick={() => {
+                updateComponent('V3');
+              }}
             />
             <g
               id="askEngine"
@@ -1099,32 +670,50 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa3"
               d="M674.413 540.75C674.413 550.983 665.661 559.323 654.809 559.323C643.957 559.323 635.205 550.983 635.205 540.75C635.205 530.517 643.957 522.177 654.809 522.177C665.661 522.177 674.413 530.517 674.413 540.75Z"
-              fill="#FF0000"
+              fill={activeComponents['P4'] ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
+              onClick={() => {
+                updateComponent('P4');
+              }}
             />
             <path
               id="pompa1A"
               d="M364.144 471.013C364.144 481.246 355.393 489.586 344.54 489.586C333.688 489.586 324.937 481.246 324.937 471.013C324.937 460.78 333.688 452.44 344.54 452.44C355.393 452.44 364.144 460.78 364.144 471.013Z"
-              fill="#FF0000"
+              fill={activeComponents['P1'] ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
+              onClick={() => {
+                updateComponent('P1');
+              }}
             />
             <path
               id="pompa1B"
               d="M432.081 472.306C432.081 482.539 423.329 490.879 412.477 490.879C401.625 490.879 392.873 482.539 392.873 472.306C392.873 462.073 401.625 453.733 412.477 453.733C423.329 453.733 432.081 462.073 432.081 472.306Z"
-              fill="#FF0000"
+              fill={activeComponents['P2'] ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
+              onClick={() => {
+                updateComponent('P2');
+              }}
             />
             <path
               id="pompa1C"
               d="M499.325 471.013C499.325 481.246 490.573 489.586 479.721 489.586C468.869 489.586 460.117 481.246 460.117 471.013C460.117 460.78 468.869 452.44 479.721 452.44C490.573 452.44 499.325 460.78 499.325 471.013Z"
-              fill="#FF0000"
+              fill={activeComponents['P3'] ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
+              onClick={() => {
+                updateComponent('P3');
+              }}
             />
-            <g id="STOP" cursor={'pointer'}>
+            <g
+              id="STOP"
+              cursor={'pointer'}
+              onClick={() => {
+                addTask('stop', 'stop', 1);
+              }}
+            >
               <rect
                 id="stopBox"
                 x="0.564453"
@@ -1158,80 +747,58 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 fill="#A76D16"
                 stroke="black"
               />
-              <rect
-                id="switch7"
+              <path
                 x="135.031"
                 y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
-                fill="#D9D9D9"
-              />
-              <rect
-                id="switch6"
-                x="152.471"
-                y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
-                fill="#D9D9D9"
-              />
-              <rect
-                id="switch5"
-                x="169.91"
-                y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
-                fill="#D9D9D9"
-              />
-              <rect
-                id="switch4"
-                x="187.35"
-                y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
-                fill="#D9D9D9"
-              />
-              <rect
-                id="switch3"
-                x="214.646"
-                y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
-                fill="#D9D9D9"
-              />
-              <rect
-                id="switch2"
-                x="232.085"
-                y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
-                fill="#D9D9D9"
-              />
-              <rect
-                id="switch1"
-                x="249.524"
-                y="43.1138"
-                width="14.4064"
-                height="30.8982"
-                rx="5"
+                d="
+                  M140.031 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                  M157.471 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                  M174.91 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                  M192.35 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                  M219.646 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                  M237.085 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                  M254.524 43.1138h4.4064s5 0 5 5v20.8982s0 5 -5 5h-4.4064s-5 0 -5 -5v-20.8982s0 -5 5 -5
+                "
                 fill="#D9D9D9"
               />
             </g>
-            <path
-              id="pompa2B"
-              d="M674.413 283.504C674.413 293.738 665.661 302.078 654.809 302.078C643.957 302.078 635.205 293.738 635.205 283.504C635.205 273.271 643.957 264.931 654.809 264.931C665.661 264.931 674.413 273.271 674.413 283.504Z"
-              fill="#FF0000"
-              stroke="black"
-              cursor={'pointer'}
-            />
           </g>
+          <StyledText x="65" y="242">
+            C1
+          </StyledText>
+          <StyledSmallText x="95" y="242">
+            {volumes.C1}L
+          </StyledSmallText>
+
+          <StyledText x="545" y="120">
+            C2
+          </StyledText>
+          <StyledSmallText x="572" y="120">
+            {volumes.C2}L
+          </StyledSmallText>
+
+          <StyledText x="621" y="120">
+            C3
+          </StyledText>
+          <StyledSmallText x="648" y="120">
+            {volumes.C3}L
+          </StyledSmallText>
+
+          <StyledText x="697" y="120">
+            C4
+          </StyledText>
+          <StyledSmallText x="724" y="120">
+            {volumes.C4}L
+          </StyledSmallText>
+
+          <StyledText x="545" y="377">
+            C5
+          </StyledText>
+          <StyledSmallText x="575" y="377">
+            {volumes.C5}L
+          </StyledSmallText>
         </svg>
-      </div>
+      </StyledModelDiv>
     </StyledMainDiv>
   );
 };
@@ -1245,13 +812,17 @@ const StyledMainDiv = styled.div`
   align-items: center;
 `;
 
+const StyledModelDiv = styled.div`
+  padding: 10px;
+  border-radius: 20px;
+  border: solid;
+  display: flex;
+  flex-direction: column;
+  border-color: ${colorConstants.lightGrey};
+`;
+
 const styles = {
-  modelDiv: {
-    padding: '10px',
-    borderRadius: '20px',
-    border: 'solid',
-    borderColor: colorConstants.lightGrey,
-  },
+  modelDiv: {},
 
   hiddenInfoDiv: {
     width: '25%',
