@@ -268,15 +268,15 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
             >
               <Table
                 data={scenarios}
-                autoHeight={true}
+                autoHeight={false}
                 loading={isTableLoading}
                 wordWrap="break-word"
               >
-                <Column flexGrow={1}>
+                <Column flexGrow={0.55}>
                   <StyledHeaderCell>Nazwa</StyledHeaderCell>
                   <PopoverCell dataKey="name" />
                 </Column>
-                <Column>
+                <Column flexGrow={0.45}>
                   <StyledHeaderCell>Akcje</StyledHeaderCell>
                   <Cell dataKey="user">
                     {rowData => {
