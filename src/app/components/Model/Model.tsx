@@ -123,23 +123,14 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
 
     console.log('ok');
 
-    // setVolumes((prev) => { return {...prev, C1: prev.C1+0.1}})
     const currentTimestamp = Date.now();
 
     const deltas = {
       // TODO: opracować i przetestować zabezpieczenia przed przepompowaniem nieistniejącej wody dla P1, P2 i P3
-      P1:
-        ((currentTimestamp - lastUpdateTime.P1) / 1000) *
-        pumpEfficiency *
-        activeComponents.P1,
-      P2:
-        ((currentTimestamp - lastUpdateTime.P2) / 1000) *
-        pumpEfficiency *
-        activeComponents.P2,
-      P3:
-        ((currentTimestamp - lastUpdateTime.P3) / 1000) *
-        pumpEfficiency *
-        activeComponents.P3,
+      // calculated later
+      P1: 0,
+      P2: 0,
+      P3: 0,
       P4: Math.min(
         volumes.C5,
         ((currentTimestamp - lastUpdateTime.P4) / 1000) *
@@ -165,6 +156,27 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
           activeComponents.V3,
       ),
     };
+
+    deltas['P1'] = Math.min(
+      volumes.C1,
+      ((currentTimestamp - lastUpdateTime.P1) / 1000) *
+        pumpEfficiency *
+        activeComponents.P1,
+    );
+
+    deltas['P2'] = Math.min(
+      Math.max(0, volumes.C1 - deltas['P1']),
+      ((currentTimestamp - lastUpdateTime.P2) / 1000) *
+        pumpEfficiency *
+        activeComponents.P2,
+    );
+
+    deltas['P3'] = Math.min(
+      Math.max(0, volumes.C1 - deltas['P1'] - deltas['P2']),
+      ((currentTimestamp - lastUpdateTime.P3) / 1000) *
+        pumpEfficiency *
+        activeComponents.P3,
+    );
 
     setVolumes({
       C1: toFixedFloat(

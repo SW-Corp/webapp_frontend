@@ -87,7 +87,6 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   };
 
   const loadMeasurements = () => {
-    console.log(volumes);
     const mapMeasurements = [
       {
         name: 'Zbiornik reakcji - C1',
