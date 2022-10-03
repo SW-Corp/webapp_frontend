@@ -11,6 +11,7 @@ import { Notification, Container } from 'rsuite';
 import { useToaster } from 'rsuite/toaster';
 
 import { websocketBaseAddress } from 'services/stationService';
+import { useStore } from 'store/configureStore';
 
 function getNotification(status, header, message) {
   return (
@@ -42,7 +43,7 @@ function getNotificationContent(notification) {
 
 export const MainPage = props => {
   const [activeTab, setActiveTab] = useState(true);
-  const [data, setData] = useState({});
+  const { realState, setRealState } = useStore();
   const [currentScenario, setCurrentScenario] = useState('');
   const [activeKey, setActiveKey] = React.useState('model');
   const toaster = useToaster();
@@ -85,7 +86,7 @@ export const MainPage = props => {
     stateClient.onmessage = message => {
       console.log('Otrzymano stan stacji');
       const state = JSON.parse(JSON.parse(message.data));
-      setData(state);
+      setRealState(state);
       setCurrentScenario(state.currentScenario);
       console.log(state);
     };
@@ -165,7 +166,6 @@ export const MainPage = props => {
           {
             model: (
               <ModelPage
-                data={data}
                 currentScenario={currentScenario}
                 toaster={toaster}
                 getNotification={getNotification}

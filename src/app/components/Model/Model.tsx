@@ -80,7 +80,7 @@ const careas = {
 };
 
 const pumpEfficiency = 2 / 60; // litry na sekundę, w rzeczywistosci około 4 litry na minutę
-const valveFlowRate = 1 / 60; // litry na sekundę, zakładamy 2x wolniej niż pompa mimo iż w rzeczywistości zawory są bardzo wolne
+const valveFlowRate = 2 / 60; // litry na sekundę, zakładamy 2x wolniej niż pompa mimo iż w rzeczywistości zawory są bardzo wolne
 
 export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
   const [lastUpdateTime, setLastUpdateTime] = useState({
@@ -149,19 +149,19 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
       V1: Math.min(
         volumes.C2,
         ((currentTimestamp - lastUpdateTime.V1) / 1000) *
-          pumpEfficiency *
+          valveFlowRate *
           activeComponents.V1,
       ),
       V2: Math.min(
         volumes.C3,
         ((currentTimestamp - lastUpdateTime.V2) / 1000) *
-          pumpEfficiency *
+          valveFlowRate *
           activeComponents.V2,
       ),
       V3: Math.min(
         volumes.C4,
         ((currentTimestamp - lastUpdateTime.V3) / 1000) *
-          pumpEfficiency *
+          valveFlowRate *
           activeComponents.V3,
       ),
     };
@@ -285,11 +285,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               x="540.25"
               y={Math.min(
                 269.25,
-                269.25 - (volumes.C2 * 1000 * 11.4) / careas.C2,
+                269.25 - ((volumes.C2 * 1000) / careas.C2) * 11.4,
               )} // "269.25"
               width="75.5"
               height={Math.abs(
-                269.25 - (269.25 - (volumes.C2 * 1000 * 11.4) / careas.C2),
+                269.25 - (269.25 - ((volumes.C2 * 1000) / careas.C2) * 11.4),
               )} // {-1*volumes.C2*1000/careas.C2}
               fill="#0AD3FF"
               stroke="black"
@@ -299,11 +299,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               x="616.25"
               y={Math.min(
                 269.25,
-                269.25 - (volumes.C3 * 1000 * 11.4) / careas.C3,
+                269.25 - ((volumes.C3 * 1000) / careas.C3) * 11.4,
               )} // "269.25"
               width="75.5"
               height={Math.abs(
-                269.25 - (269.25 - (volumes.C3 * 1000 * 11.4) / careas.C3),
+                269.25 - (269.25 - ((volumes.C3 * 1000) / careas.C3) * 11.4),
               )} // {-1*volumes.C2*1000/careas.C2}
               fill="#10C6EE"
               stroke="black"
@@ -313,11 +313,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               x="692.25"
               y={Math.min(
                 269.25,
-                269.25 - (volumes.C4 * 1000 * 11.4) / careas.C4,
+                269.25 - ((volumes.C4 * 1000) / careas.C4) * 11.4,
               )} // "269.25"
               width="75.5"
               height={Math.abs(
-                269.25 - (269.25 - (volumes.C4 * 1000 * 11.4) / careas.C4),
+                269.25 - (269.25 - ((volumes.C4 * 1000) / careas.C4) * 11.4),
               )} // {-1*volumes.C2*1000/careas.C2}
               fill="#0AD3FF"
               stroke="black"
@@ -327,11 +327,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               x="60"
               y={Math.min(
                 391.38,
-                391.38 - (volumes.C1 * 1000 * 6.84) / careas.C1,
+                391.38 - ((volumes.C1 * 1000) / careas.C1) * 6.84,
               )} // "269.25"
               width="227"
               height={Math.abs(
-                391.38 - (391.38 - (volumes.C1 * 1000 * 6.84) / careas.C1),
+                391.38 - (391.38 - ((volumes.C1 * 1000) / careas.C1) * 6.84),
               )} // {-1*volumes.C2*1000/careas.C2}
               fill="#0AD3FF"
               stroke="black"
@@ -341,11 +341,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               x="540.5"
               y={Math.min(
                 526.5,
-                526.5 - (volumes.C5 * 1000 * 6.84) / careas.C5,
+                526.5 - ((volumes.C5 * 1000) / careas.C5) * 6.84,
               )} // "269.25"
               width="227"
               height={Math.abs(
-                526.5 - (526.5 - (volumes.C5 * 1000 * 6.84) / careas.C5),
+                526.5 - (526.5 - ((volumes.C5 * 1000) / careas.C5) * 6.84),
               )} // {-1*volumes.C2*1000/careas.C2}
               fill="#0AD3FF"
               stroke="black"

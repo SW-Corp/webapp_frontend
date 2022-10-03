@@ -6,8 +6,20 @@ import create from 'zustand';
 
 import { Mode } from 'utils/types';
 
-export const useStore = create(set => ({
+interface GlobalState {
+  currentMode: Mode;
+  realState: any;
+  setRealState: (param: object) => void;
+  switchMode: () => void;
+}
+
+export const useStore = create<GlobalState>()(set => ({
   currentMode: Mode.simulation,
+  realState: {},
+  setRealState: newRealState =>
+    set(() => ({
+      realState: newRealState,
+    })),
   switchMode: () =>
     set(state => ({
       currentMode:

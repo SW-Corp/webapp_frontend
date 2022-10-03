@@ -26,6 +26,9 @@ import axios from 'axios';
 import { baseUrl, workstation } from 'services/stationService';
 import { colorConstants } from 'styles/colorConstants';
 
+import { useStore } from 'store/configureStore';
+import { Mode } from 'utils/types';
+
 const { Column, HeaderCell, Cell } = Table;
 function getNotification(status, header, message) {
   return (
@@ -36,9 +39,11 @@ function getNotification(status, header, message) {
 }
 
 export const ModelPage = ({ currentScenario, toaster, ...props }) => {
-  const [checkedToggle, setCheckedToggle] = useState(false);
   const [isTableLoading, setTableLoading] = useState(true);
   const [currentInfoItem, setInfoItem] = useState('');
+
+  const { currentMode, switchMode } = useStore();
+  const { realState } = useStore();
 
   const handleInfoItemChange = elem => {
     elem != currentInfoItem ? setInfoItem(elem) : setInfoItem('');
@@ -75,11 +80,6 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       });
   };
 
-  let data =
-    typeof props.data.tanks != 'undefined'
-      ? Object.values(props.data.tanks)
-      : props.data.tanks;
-
   const loadMeasurements = () => {
     const mapMeasurements = [
       {
@@ -103,12 +103,12 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
         height: '0',
       },
     ];
-    if (typeof props.data.tanks != 'undefined') {
-      mapMeasurements[0].height = props.data.tanks.C1.water_level.toString();
-      mapMeasurements[1].height = props.data.tanks.C2.water_level.toString();
-      mapMeasurements[2].height = props.data.tanks.C3.water_level.toString();
-      mapMeasurements[3].height = props.data.tanks.C4.water_level.toString();
-      mapMeasurements[4].height = props.data.tanks.C5.water_level.toString();
+    if (realState.tanks) {
+      mapMeasurements[0].height = realState.tanks.C1.water_level.toString();
+      mapMeasurements[1].height = realState.tanks.C2.water_level.toString();
+      mapMeasurements[2].height = realState.tanks.C3.water_level.toString();
+      mapMeasurements[3].height = realState.tanks.C4.water_level.toString();
+      mapMeasurements[4].height = realState.tanks.C5.water_level.toString();
     }
 
     for (let i = 0; i < 5; i++) {
@@ -159,19 +159,6 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       });
   };
 
-  const PopoverCell = props => {
-    const speaker = (
-      <Popover title="Opis">
-        <p>{props.rowData.description}</p>
-      </Popover>
-    );
-    return (
-      <Whisper placement="topStart" speaker={speaker}>
-        <Cell {...props} dataKey={props.dataKey} className="link-group"></Cell>
-      </Whisper>
-    );
-  };
-
   return (
     <>
       <div
@@ -195,8 +182,8 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
               <Switch
                 className="react-switch"
                 id="small-radius-switch"
-                checked={checkedToggle}
-                onChange={() => setCheckedToggle(!checkedToggle)}
+                checked={currentMode == Mode.real}
+                onChange={switchMode}
                 height={40}
                 width={145}
                 onColor={colorConstants.green}
@@ -368,13 +355,13 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
             maxHeight: '90vh',
           }}
         >
-          {checkedToggle === false ? (
+          {currentMode == Mode.simulation ? (
             <Model
               currentInfoItem={currentInfoItem}
               setInfoItem={handleInfoItemChange}
             />
           ) : (
-            <IRLModel data={props.data} />
+            <IRLModel data={realState} />
           )}
           <div
             style={{
@@ -386,6 +373,19 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
         </div>
       </div>
     </>
+  );
+};
+
+const PopoverCell = props => {
+  const speaker = (
+    <Popover title="Opis">
+      <p>{props.rowData.description}</p>
+    </Popover>
+  );
+  return (
+    <Whisper placement="topStart" speaker={speaker}>
+      <Cell {...props} dataKey={props.dataKey} className="link-group"></Cell>
+    </Whisper>
   );
 };
 
