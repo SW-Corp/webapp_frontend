@@ -5,6 +5,8 @@ import { colorConstants } from 'styles/colorConstants';
 import { useInterval } from 'utils/intervalHook';
 
 import styled from 'styled-components';
+import { useStore } from 'store/configureStore';
+import { Mode } from 'utils/types';
 
 const maxHeight = 171;
 
@@ -71,7 +73,7 @@ const mapPompNames = [
 ];
 
 // Dane obecne w bazie danych. Rzeczywiste wymiary zbiorników do przeliczania objętości.
-const careas = {
+export const careas = {
   C1: 11 * 18,
   C2: 100,
   C3: 100,
@@ -93,14 +95,10 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
     V3: 0,
   });
 
-  const [volumes, setVolumes] = useState({
-    // objetosc w litrach
-    C1: 1,
-    C2: 1,
-    C3: 0.8,
-    C4: 0.1,
-    C5: 1,
-  });
+  const {
+    simulationState: { volumes },
+    setVolumes,
+  } = useStore();
 
   const [activeComponents, setActiveComponents] = useState({
     P1: 0,
@@ -111,6 +109,8 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
     V2: 0,
     V3: 0,
   });
+
+  const { currentMode, realState } = useStore();
 
   const toFixedFloat = (num: number) => {
     return Number.parseFloat(num.toFixed(2));
@@ -198,12 +198,36 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
   }
 
   const updateComponent = compId => {
-    setActiveComponents(prev => {
-      return { ...prev, [compId]: Math.abs(prev[compId] - 1) };
-    });
-    setLastUpdateTime(prev => {
-      return { ...prev, [compId]: Date.now() };
-    });
+    if (currentMode == Mode.simulation) {
+      setActiveComponents(prev => {
+        return { ...prev, [compId]: Math.abs(prev[compId] - 1) };
+      });
+      setLastUpdateTime(prev => {
+        return { ...prev, [compId]: Date.now() };
+      });
+    } else {
+      addTask(
+        'is_open',
+        compId,
+        realState[`${compId[0] == 'V' ? 'valves' : 'pumps'}`][compId] ? 0 : 1,
+      );
+    }
+  };
+
+  const isComponentActive = (comp, cont: string | null = null) => {
+    if (currentMode == Mode.simulation) {
+      return activeComponents[comp] && (cont ? volumes[cont] : 1) > 0;
+    } else {
+      return realState[`${comp[0] == 'P' ? 'pumps' : 'valves'}`][comp][
+        `${comp[0] == 'P' ? 'is_on' : 'is_open'}`
+      ];
+    }
+  };
+
+  const getCentimeters = container => {
+    return currentMode == Mode.simulation
+      ? (volumes[container] * 1000) / careas[container]
+      : realState.tanks[container].water_level;
   };
 
   return (
@@ -254,8 +278,9 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 M465.856 484.914h27.7296v42.0259H465.856Z
               "
               fill={
-                ['P1', 'P2', 'P3'].some(el => activeComponents[el]) &&
-                volumes.C1 > 0
+                ['P1', 'P2', 'P3'].some(el => isComponentActive(el)) &&
+                ((volumes.C1 > 0 && currentMode == Mode.simulation) ||
+                  currentMode == Mode.real)
                   ? '#0AD3FF'
                   : '#E1E1E1'
               }
@@ -283,70 +308,45 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <rect
               id="helpWaterA"
               x="540.25"
-              y={Math.min(
-                269.25,
-                269.25 - ((volumes.C2 * 1000) / careas.C2) * 11.4,
-              )} // "269.25"
+              y={Math.min(269.25, 269.25 - getCentimeters('C2') * 11.4)} // "269.25"
               width="75.5"
-              height={Math.abs(
-                269.25 - (269.25 - ((volumes.C2 * 1000) / careas.C2) * 11.4),
-              )} // {-1*volumes.C2*1000/careas.C2}
+              height={Math.abs(269.25 - (269.25 - getCentimeters('C2') * 11.4))}
               fill="#0AD3FF"
               stroke="black"
             />
             <rect
               id="helpWaterB"
               x="616.25"
-              y={Math.min(
-                269.25,
-                269.25 - ((volumes.C3 * 1000) / careas.C3) * 11.4,
-              )} // "269.25"
+              y={Math.min(269.25, 269.25 - getCentimeters('C3') * 11.4)} // "269.25"
               width="75.5"
-              height={Math.abs(
-                269.25 - (269.25 - ((volumes.C3 * 1000) / careas.C3) * 11.4),
-              )} // {-1*volumes.C2*1000/careas.C2}
+              height={Math.abs(269.25 - (269.25 - getCentimeters('C3') * 11.4))}
               fill="#10C6EE"
               stroke="black"
             />
             <rect
               id="helpWaterC"
               x="692.25"
-              y={Math.min(
-                269.25,
-                269.25 - ((volumes.C4 * 1000) / careas.C4) * 11.4,
-              )} // "269.25"
+              y={Math.min(269.25, 269.25 - getCentimeters('C4') * 11.4)} // "269.25"
               width="75.5"
-              height={Math.abs(
-                269.25 - (269.25 - ((volumes.C4 * 1000) / careas.C4) * 11.4),
-              )} // {-1*volumes.C2*1000/careas.C2}
+              height={Math.abs(269.25 - (269.25 - getCentimeters('C4') * 11.4))}
               fill="#0AD3FF"
               stroke="black"
             />
             <rect
               id="startWater"
               x="60"
-              y={Math.min(
-                391.38,
-                391.38 - ((volumes.C1 * 1000) / careas.C1) * 6.84,
-              )} // "269.25"
+              y={Math.min(391.38, 391.38 - getCentimeters('C1') * 6.84)} // "269.25"
               width="227"
-              height={Math.abs(
-                391.38 - (391.38 - ((volumes.C1 * 1000) / careas.C1) * 6.84),
-              )} // {-1*volumes.C2*1000/careas.C2}
+              height={Math.abs(391.38 - (391.38 - getCentimeters('C1') * 6.84))}
               fill="#0AD3FF"
               stroke="black"
             />
             <rect
               id="finalWater"
               x="540.5"
-              y={Math.min(
-                526.5,
-                526.5 - ((volumes.C5 * 1000) / careas.C5) * 6.84,
-              )} // "269.25"
+              y={Math.min(526.5, 526.5 - getCentimeters('C5') * 6.84)} // "269.25"
               width="227"
-              height={Math.abs(
-                526.5 - (526.5 - ((volumes.C5 * 1000) / careas.C5) * 6.84),
-              )} // {-1*volumes.C2*1000/careas.C2}
+              height={Math.abs(526.5 - (526.5 - getCentimeters('C5') * 6.84))}
               fill="#0AD3FF"
               stroke="black"
             />
@@ -454,15 +454,11 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 M490.121 58.1896h228.076v19.3966H490.121Z
                 M718.195 58.1896V58.1896C729.681 58.1896 738.993 67.5009 738.993 78.9868V98.2758H718.195V58.1896Z
               "
-              fill={
-                activeComponents.P3 && volumes.C1 > 0 ? '#0AD3FF' : '#E1E1E1'
-              }
+              fill={isComponentActive('P3', 'C1') ? '#0AD3FF' : '#E1E1E1'}
             />
             <path
               id="pipe1_4B"
-              fill={
-                activeComponents.P2 && volumes.C1 > 0 ? '#00A3FF' : '#B8B8B8'
-              }
+              fill={isComponentActive('P2', 'C1') ? '#00A3FF' : '#B8B8B8'}
               d="
                 M402.077 48.4913h20.7972v415.086H402.077Z
                 M402.077 48.4914C402.077 37.779 410.761 29.0948 421.474 29.0948H643.325V48.4914H402.077V48.4914Z
@@ -476,9 +472,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 M567.764 0V0C579.25 0 588.561 9.31122 588.561 20.7972V98.2759H567.764V0Z 
                 M334.141 19.3966C334.141 8.68414 342.825 0 353.537 0H567.762V19.3966H334.141V19.3966Z
               "
-              fill={
-                activeComponents.P1 && volumes.C1 > 0 ? '#0075FF' : '#848484'
-              }
+              fill={isComponentActive('P1', 'C1') ? '#0075FF' : '#848484'}
             />
             <path
               id="pipe3_1"
@@ -489,9 +483,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
                 M28.1201 141.557H97.1191H166.118V164.551H28.1201V141.557Z
                 M166.118 141.557H168.414C182.222 141.557 193.414 152.75 193.414 166.557V219.88H166.118V141.557Z
               "
-              fill={
-                activeComponents.P4 && volumes.C5 > 0 ? '#0AD3FF' : '#E1E1E1'
-              }
+              fill={isComponentActive('P4', 'C5') ? '#0AD3FF' : '#E1E1E1'}
             />
             <rect
               id="pipe2A"
@@ -499,29 +491,23 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
               y="270.898"
               width="28.0546"
               height="84.0719"
-              fill={
-                activeComponents.V1 && volumes.C2 > 0 ? '#0AD3FF' : '#E1E1E1'
-              }
+              fill={isComponentActive('V1', 'C2') ? '#0AD3FF' : '#E1E1E1'}
             />
             <path
               id="pipe2B"
               d="M639.254 270.898H666.55V354.97H639.254V270.898Z"
-              fill={
-                activeComponents.V2 && volumes.C3 > 0 ? '#0AD3FF' : '#E1E1E1'
-              }
+              fill={isComponentActive('V2', 'C3') ? '#0AD3FF' : '#E1E1E1'}
             />
             <path
               id="pipe2C"
               d="M715.078 270.898H743.133V354.97H715.078V270.898Z"
-              fill={
-                activeComponents.V3 && volumes.C4 > 0 ? '#0AD3FF' : '#E1E1E1'
-              }
+              fill={isComponentActive('V3', 'C4') ? '#0AD3FF' : '#E1E1E1'}
             />
 
             <path
               id="pompa2A"
               d="M598.589 283.504C598.589 293.738 589.837 302.078 578.985 302.078C568.133 302.078 559.381 293.738 559.381 283.504C559.381 273.271 568.133 264.931 578.985 264.931C589.837 264.931 598.589 273.271 598.589 283.504Z"
-              fill={activeComponents['V1'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('V1') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {
@@ -531,7 +517,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa2B"
               d="M674.413 283.504C674.413 293.738 665.661 302.078 654.809 302.078C643.957 302.078 635.205 293.738 635.205 283.504C635.205 273.271 643.957 264.931 654.809 264.931C665.661 264.931 674.413 273.271 674.413 283.504Z"
-              fill={activeComponents['V2'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('V2') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {
@@ -541,7 +527,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa2C"
               d="M748.719 283.504C748.719 293.738 739.967 302.078 729.115 302.078C718.263 302.078 709.511 293.738 709.511 283.504C709.511 273.271 718.263 264.931 729.115 264.931C739.967 264.931 748.719 273.271 748.719 283.504Z"
-              fill={activeComponents['V3'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('V3') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {
@@ -647,7 +633,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa3"
               d="M674.413 540.75C674.413 550.983 665.661 559.323 654.809 559.323C643.957 559.323 635.205 550.983 635.205 540.75C635.205 530.517 643.957 522.177 654.809 522.177C665.661 522.177 674.413 530.517 674.413 540.75Z"
-              fill={activeComponents['P4'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('P4') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {
@@ -657,7 +643,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa1A"
               d="M364.144 471.013C364.144 481.246 355.393 489.586 344.54 489.586C333.688 489.586 324.937 481.246 324.937 471.013C324.937 460.78 333.688 452.44 344.54 452.44C355.393 452.44 364.144 460.78 364.144 471.013Z"
-              fill={activeComponents['P1'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('P1') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {
@@ -667,7 +653,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa1B"
               d="M432.081 472.306C432.081 482.539 423.329 490.879 412.477 490.879C401.625 490.879 392.873 482.539 392.873 472.306C392.873 462.073 401.625 453.733 412.477 453.733C423.329 453.733 432.081 462.073 432.081 472.306Z"
-              fill={activeComponents['P2'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('P2') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {
@@ -677,7 +663,7 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
             <path
               id="pompa1C"
               d="M499.325 471.013C499.325 481.246 490.573 489.586 479.721 489.586C468.869 489.586 460.117 481.246 460.117 471.013C460.117 460.78 468.869 452.44 479.721 452.44C490.573 452.44 499.325 460.78 499.325 471.013Z"
-              fill={activeComponents['P3'] ? 'green' : '#FF0000'}
+              fill={isComponentActive('P3') ? 'green' : '#FF0000'}
               stroke="black"
               cursor={'pointer'}
               onClick={() => {

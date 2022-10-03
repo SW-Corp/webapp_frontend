@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import { Model } from 'app/components/Model';
-import { IRLModel } from 'app/components/IRLModel';
+import { careas, Model } from 'app/components/Model';
 import { InfoPanel } from './InfoPanel';
 
 import {
@@ -42,8 +41,15 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const [isTableLoading, setTableLoading] = useState(true);
   const [currentInfoItem, setInfoItem] = useState('');
 
-  const { currentMode, switchMode } = useStore();
-  const { realState } = useStore();
+  const {
+    simulationState: { volumes },
+    currentMode,
+    switchMode,
+    realState,
+  } = useStore();
+
+  const [measurements, setMeasurements] =
+    useState<{ name: string; height: string }[]>();
 
   const handleInfoItemChange = elem => {
     elem != currentInfoItem ? setInfoItem(elem) : setInfoItem('');
@@ -81,6 +87,7 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   };
 
   const loadMeasurements = () => {
+    console.log(volumes);
     const mapMeasurements = [
       {
         name: 'Zbiornik reakcji - C1',
@@ -103,25 +110,43 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
         height: '0',
       },
     ];
-    if (realState.tanks) {
-      mapMeasurements[0].height = realState.tanks.C1.water_level.toString();
-      mapMeasurements[1].height = realState.tanks.C2.water_level.toString();
-      mapMeasurements[2].height = realState.tanks.C3.water_level.toString();
-      mapMeasurements[3].height = realState.tanks.C4.water_level.toString();
-      mapMeasurements[4].height = realState.tanks.C5.water_level.toString();
-    }
+    mapMeasurements[0].height = (
+      currentMode == Mode.real
+        ? realState.tanks.C1.water_level
+        : (volumes[`C${1}`] * 1000) / careas[`C${1}`]
+    ).toFixed(1);
+    mapMeasurements[1].height = (
+      currentMode == Mode.real
+        ? realState.tanks.C2.water_level
+        : (volumes[`C${2}`] * 1000) / careas[`C${2}`]
+    ).toFixed(1);
+    mapMeasurements[2].height = (
+      currentMode == Mode.real
+        ? realState.tanks.C3.water_level
+        : (volumes[`C${3}`] * 1000) / careas[`C${3}`]
+    ).toFixed(1);
+    mapMeasurements[3].height = (
+      currentMode == Mode.real
+        ? realState.tanks.C4.water_level
+        : (volumes[`C${4}`] * 1000) / careas[`C${4}`]
+    ).toFixed(1);
+    mapMeasurements[4].height = (
+      currentMode == Mode.real
+        ? realState.tanks.C5.water_level
+        : (volumes[`C${5}`] * 1000) / careas[`C${5}`]
+    ).toFixed(1);
 
-    for (let i = 0; i < 5; i++) {
-      mapMeasurements[i].height = parseFloat(mapMeasurements[i].height)
-        .toFixed(1)
-        .toString();
-    }
-    return mapMeasurements;
+    setMeasurements(mapMeasurements);
   };
 
   useEffect(() => {
     loadScenarios();
+    loadMeasurements();
   }, []);
+
+  useEffect(() => {
+    loadMeasurements();
+  }, [currentMode, realState, volumes]);
 
   const playScenario = name => {
     axios
@@ -315,7 +340,9 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                   <div
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                   >
-                    <h5>Pomiary</h5>
+                    <h5>
+                      Pomiary {currentMode == Mode.simulation && '- symulacja'}
+                    </h5>
                     <Icon
                       fill="green"
                       width="30px"
@@ -329,7 +356,7 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
               shaded
             >
               <Table
-                data={loadMeasurements()}
+                data={measurements}
                 autoHeight={true}
                 wordWrap="break-word"
               >
@@ -355,14 +382,11 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
             maxHeight: '90vh',
           }}
         >
-          {currentMode == Mode.simulation ? (
-            <Model
-              currentInfoItem={currentInfoItem}
-              setInfoItem={handleInfoItemChange}
-            />
-          ) : (
-            <IRLModel data={realState} />
-          )}
+          <Model
+            currentInfoItem={currentInfoItem}
+            setInfoItem={handleInfoItemChange}
+          />
+
           <div
             style={{
               flex: '0.5',
