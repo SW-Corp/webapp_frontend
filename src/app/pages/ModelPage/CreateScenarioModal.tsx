@@ -71,7 +71,7 @@ export const CreateScenarioModal = ({
     axios
       .post(
         `${baseUrl}/addscenario/${name}`,
-        { scenario },
+        { sampleScenario },
         { withCredentials: true },
       )
       .then(res => {

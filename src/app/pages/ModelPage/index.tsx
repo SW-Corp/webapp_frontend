@@ -13,8 +13,9 @@ import {
   Loader,
   Toggle,
   Notification,
+  IconButton,
 } from 'rsuite';
-import { Icon } from '@rsuite/icons';
+import { Icon, Trash } from '@rsuite/icons';
 
 import Switch from 'react-switch';
 
@@ -28,6 +29,8 @@ import { colorConstants } from 'styles/colorConstants';
 import { useStore } from 'store/configureStore';
 import { Mode } from 'utils/types';
 
+import { CreateScenarioModal } from './CreateScenarioModal';
+
 const { Column, HeaderCell, Cell } = Table;
 function getNotification(status, header, message) {
   return (
@@ -40,6 +43,7 @@ function getNotification(status, header, message) {
 export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const [isTableLoading, setTableLoading] = useState(true);
   const [currentInfoItem, setInfoItem] = useState('');
+  const [isScenarioModalOpen, setScenarioModalOpen] = useState(false);
 
   const {
     simulationState: { volumes },
@@ -183,8 +187,40 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       });
   };
 
+  const deleteScenario = scenario => {
+    axios
+      .delete(`${baseUrl}/scenario/${scenario}`, {
+        withCredentials: true,
+      })
+      .then(res => {
+        setScenarios(scenarios.filter(x => x.name != scenario));
+      })
+      .catch(err => {
+        console.error(err);
+        toaster.push(
+          getNotification(
+            'error',
+            'Błąd podczas usuwania scenariusza',
+            err.response,
+          ),
+          { placement: 'bottomEnd' },
+        );
+      });
+  };
+
+  const addScenario = () => {
+    setScenarioModalOpen(true);
+  };
+
   return (
     <>
+      <CreateScenarioModal
+        isModalOpen={isScenarioModalOpen}
+        setModalOpen={setScenarioModalOpen}
+        toaster={toaster}
+      >
+        {' '}
+      </CreateScenarioModal>
       <div
         style={{
           display: 'flex',
@@ -249,33 +285,39 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
           <ContainerDiv>
             <StyledPanel
               header={
-                <Whisper
-                  placement="topStart"
-                  speaker={
-                    <Popover>
-                      <p>
-                        Stacja umożliwia odegranie wybranego <i>scenariusza</i>,
-                        czyli sekwencji komend sterujących stacją w celu
-                        osiągnięcia określonego stanu.
-                        <br />
-                        Obecnie scenariusze w trybie symulacji nie są dostępne.
-                      </p>
-                    </Popover>
-                  }
+                <div
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  <div
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                  <Whisper
+                    placement="topStart"
+                    speaker={
+                      <Popover>
+                        <p>
+                          Stacja umożliwia odegranie wybranego{' '}
+                          <i>scenariusza</i>, czyli sekwencji komend sterujących
+                          stacją w celu osiągnięcia określonego stanu.
+                        </p>
+                      </Popover>
+                    }
                   >
                     <h5>Scenariusze</h5>
-                    <Icon
-                      fill="green"
-                      width="30px"
-                      height="30px"
-                      as={HiQuestionMarkCircle}
-                      style={{ fontSize: '25px', cursor: 'pointer' }}
-                    />
-                  </div>
-                </Whisper>
+                  </Whisper>
+                  <Button
+                    color="green"
+                    appearance="primary"
+                    onClick={addScenario}
+                  >
+                    {' '}
+                    Dodaj
+                  </Button>
+                  <Icon
+                    fill="green"
+                    width="30px"
+                    height="30px"
+                    as={HiQuestionMarkCircle}
+                    style={{ fontSize: '25px', cursor: 'pointer' }}
+                  />
+                </div>
               }
               shaded
             >
@@ -285,13 +327,13 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                 loading={isTableLoading}
                 wordWrap="break-word"
               >
-                <Column flexGrow={0.55}>
+                <Column flexGrow={2}>
                   <StyledHeaderCell>Nazwa</StyledHeaderCell>
                   <PopoverCell dataKey="name" />
                 </Column>
-                <Column flexGrow={0.45}>
+                <Column flexGrow={1}>
                   <StyledHeaderCell>Akcje</StyledHeaderCell>
-                  <Cell dataKey="user">
+                  <Cell>
                     {rowData => {
                       if (currentScenario == rowData.name) {
                         return (
@@ -316,11 +358,22 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                             }}
                             style={{ cursor: 'pointer' }}
                           >
-                            Rozpocznij
+                            Start
                           </Button>
                         );
                       }
                     }}
+                  </Cell>
+                </Column>
+                <Column flexGrow={1}>
+                  <StyledHeaderCell> </StyledHeaderCell>
+                  <Cell>
+                    {rowData => (
+                      <IconButton
+                        icon={<Trash color="red" />}
+                        onClick={() => deleteScenario(rowData.name)}
+                      />
+                    )}
                   </Cell>
                 </Column>
               </Table>
