@@ -10,7 +10,6 @@ import 'react-app-polyfill/stable';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
 
 // Use consistent styling
 import 'sanitize.css/sanitize.css';
@@ -20,26 +19,14 @@ import { App } from 'app';
 
 import 'rsuite/dist/rsuite.min.css';
 
-import { configureAppStore } from 'store/configureStore';
-
 import reportWebVitals from 'reportWebVitals';
 
 // Initialize languages
 import './locales/i18n';
 
-const store = configureAppStore();
 const MOUNT_NODE = document.getElementById('root') as HTMLElement;
 
-ReactDOM.render(
-  <Provider store={store}>
-    <App />
-
-    {/* <React.StrictMode>
-        <App />
-      </React.StrictMode> */}
-  </Provider>,
-  MOUNT_NODE,
-);
+ReactDOM.render(<App />, MOUNT_NODE);
 
 // Hot reloadable translation json files
 if (module.hot) {

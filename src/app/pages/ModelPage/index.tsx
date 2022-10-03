@@ -38,7 +38,7 @@ function getNotification(status, header, message) {
 export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const [checkedToggle, setCheckedToggle] = useState(false);
   const [isTableLoading, setTableLoading] = useState(true);
-  const [currentInfoItem, setInfoItem] = useState('pumps');
+  const [currentInfoItem, setInfoItem] = useState('');
 
   const handleInfoItemChange = elem => {
     elem != currentInfoItem ? setInfoItem(elem) : setInfoItem('');

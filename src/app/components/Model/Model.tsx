@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { addTask } from 'services/stationService';
 import { colorConstants } from 'styles/colorConstants';
 
-import { Checkbox } from 'rsuite';
+import { useInterval } from 'utils/intervalHook';
 
 import styled from 'styled-components';
 
@@ -10,27 +10,6 @@ const maxHeight = 171;
 
 const inactiveAskColor = '#298E33';
 const activeAskColor = '#73C98E';
-
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
-
-  // Remember the latest function.
-  useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
-
-  // Set up the interval.
-  useEffect(() => {
-    function tick() {
-      // @ts-ignore
-      savedCallback.current();
-    }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
-  }, [delay]);
-}
 
 const StyledText = ({ x, y, children }) => {
   return (
@@ -104,9 +83,6 @@ const pumpEfficiency = 2 / 60; // litry na sekundę, w rzeczywistosci około 4 l
 const valveFlowRate = 1 / 60; // litry na sekundę, zakładamy 2x wolniej niż pompa mimo iż w rzeczywistości zawory są bardzo wolne
 
 export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
-  //States
-  const [startContainerHeight, setStartContainerHeight] = useState(maxHeight);
-
   const [lastUpdateTime, setLastUpdateTime] = useState({
     P1: 0,
     P2: 0,
