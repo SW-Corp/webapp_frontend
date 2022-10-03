@@ -257,6 +257,8 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                         Stacja umożliwia odegranie wybranego <i>scenariusza</i>,
                         czyli sekwencji komend sterujących stacją w celu
                         osiągnięcia określonego stanu.
+                        <br />
+                        Obecnie scenariusze w trybie symulacji nie są dostępne.
                       </p>
                     </Popover>
                   }
@@ -305,7 +307,9 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                             color="green"
                             appearance="primary"
                             disabled={
-                              perm == 'read' || currentScenario.length > 0
+                              perm == 'read' ||
+                              currentScenario.length > 0 ||
+                              currentMode == Mode.simulation
                             }
                             onClick={() => {
                               playScenario(rowData.name);
@@ -332,6 +336,11 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                       <p>
                         Tabela przedstawiająca aktualną wysokość wody w
                         poszczególnych zbiornikach.
+                        <br />
+                        Tabela pokazuje dane zarówno ze zbiorników w symulacji
+                        oraz tych
+                        <br /> w rzeczywistości, zgodnie z informacjami
+                        dostarczonymi przez stację.
                       </p>
                     </Popover>
                   }
