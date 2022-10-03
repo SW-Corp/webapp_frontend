@@ -91,6 +91,7 @@ const mapPompNames = [
   },
 ];
 
+// Dane obecne w bazie danych. Rzeczywiste wymiary zbiorników do przeliczania objętości.
 const careas = {
   C1: 11 * 18,
   C2: 100,

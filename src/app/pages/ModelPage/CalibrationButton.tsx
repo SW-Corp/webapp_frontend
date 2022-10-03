@@ -9,6 +9,9 @@ export const CalibrationButton = ({ container, ...props }) => {
         disabled={localStorage.getItem('permission') == 'read'}
         color="green"
         appearance="primary"
+        onClick={() => {
+          props.toggleModal(container);
+        }}
       >
         Kalibruj czujnik w zbiorniku {container}
       </Button>
