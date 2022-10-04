@@ -63,17 +63,16 @@ export const CreateScenarioModal = ({
   ...props
 }) => {
   const [name, setName] = useState('');
+  const [jsonContent, setJsonContent] = useState(sampleScenario);
   const addScenario = () => {
     if (!name) {
       return;
     }
-    const scenario = ''; //TODO get scenario from editor
+    console.log(jsonContent);
     axios
-      .post(
-        `${baseUrl}/addscenario/${name}`,
-        { sampleScenario },
-        { withCredentials: true },
-      )
+      .post(`${baseUrl}/addscenario/${name}`, jsonContent, {
+        withCredentials: true,
+      })
       .then(res => {
         toaster.push(
           getNotification(
@@ -119,6 +118,7 @@ export const CreateScenarioModal = ({
           placeholder="Nazwa Scenariusza"
         ></Input>
         <JSONInput
+          onChange={setJsonContent}
           id="a_unique_id"
           placeholder={sampleScenario}
           theme="light_mitsuketa_tribute"
