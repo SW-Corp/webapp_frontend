@@ -15,7 +15,7 @@ import {
   Notification,
   IconButton,
 } from 'rsuite';
-import { Icon, Trash } from '@rsuite/icons';
+import { Icon, Trash, Edit } from '@rsuite/icons';
 
 import Switch from 'react-switch';
 
@@ -212,6 +212,8 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
     setScenarioModalOpen(true);
   };
 
+  const editScenario = name => {};
+
   return (
     <>
       <CreateScenarioModal
@@ -234,7 +236,7 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
             flex: '1',
             display: 'flex',
             flexDirection: 'column',
-            maxWidth: '350px',
+            maxWidth: '450px',
           }}
         >
           <ContainerDiv>
@@ -327,11 +329,11 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                 loading={isTableLoading}
                 wordWrap="break-word"
               >
-                <Column flexGrow={2}>
+                <Column flexGrow={2.5}>
                   <StyledHeaderCell>Nazwa</StyledHeaderCell>
                   <PopoverCell dataKey="name" />
                 </Column>
-                <Column flexGrow={1}>
+                <Column flexGrow={1.5}>
                   <StyledHeaderCell>Akcje</StyledHeaderCell>
                   <Cell>
                     {rowData => {
@@ -372,6 +374,17 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
                       <IconButton
                         icon={<Trash color="red" />}
                         onClick={() => deleteScenario(rowData.name)}
+                      />
+                    )}
+                  </Cell>
+                </Column>
+                <Column flexGrow={1}>
+                  <StyledHeaderCell> </StyledHeaderCell>
+                  <Cell>
+                    {rowData => (
+                      <IconButton
+                        icon={<Edit color="black" />}
+                        onClick={() => editScenario(rowData.name)}
                       />
                     )}
                   </Cell>
