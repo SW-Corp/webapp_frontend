@@ -218,10 +218,16 @@ export const Model = ({ currentInfoItem, setInfoItem, ...props }) => {
         return { ...prev, [compId]: Date.now() };
       });
     } else {
+      console.log(realState.pumps);
+      console.log(realState.valves);
       addTask(
         'is_open',
         compId,
-        realState[`${compId[0] == 'V' ? 'valves' : 'pumps'}`][compId] ? 0 : 1,
+        realState[`${compId[0] == 'V' ? 'valves' : 'pumps'}`][compId][
+          `${compId[0] == 'P' ? 'is_on' : 'is_open'}`
+        ]
+          ? 0
+          : 1,
       );
     }
   };
