@@ -34,6 +34,7 @@ export const NewUserModal = ({ isOpen, handleClose, ...props }) => {
       open={isOpen}
       onClose={() => handleClose(false)}
       style={{ marginTop: '50px' }}
+      backdrop="static"
     >
       <Modal.Header>
         <Modal.Title>Dodaj nowego użytkownika</Modal.Title>

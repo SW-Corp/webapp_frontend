@@ -40,10 +40,58 @@ function getNotification(status, header, message) {
   );
 }
 
+const sampleScenario = {
+  initial_conditions: {
+    operator: 'and',
+    conditionlist: [
+      {
+        type: 'more',
+        measurement: 'water_level',
+        field: 'C1',
+        value: 5,
+      },
+      {
+        type: 'less',
+        measurement: 'water_level',
+        field: 'C2',
+        value: 5,
+      },
+    ],
+  },
+  description: 'Desc',
+  tasks: [
+    {
+      action: 'is_on',
+      target: 'P1',
+      value: 1,
+    },
+    {
+      action: 'is_on',
+      target: 'P1',
+      value: 0,
+      ttl: 30,
+      conditions: {
+        operator: 'and',
+        conditionlist: [
+          {
+            type: 'more',
+            measurement: 'water_level',
+            field: 'C2',
+            value: 5,
+          },
+        ],
+      },
+    },
+  ],
+};
+
 export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   const [isTableLoading, setTableLoading] = useState(true);
   const [currentInfoItem, setInfoItem] = useState('');
   const [isScenarioModalOpen, setScenarioModalOpen] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [name, setName] = useState('');
+  const [jsonContent, setJsonContent] = useState(sampleScenario);
 
   const {
     simulationState: { volumes },
@@ -194,6 +242,14 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
       })
       .then(res => {
         setScenarios(scenarios.filter(x => x.name != scenario));
+        toaster.push(
+          getNotification(
+            'success',
+            'Usunięto scenariusz',
+            `Scenariusz: ${scenario}`,
+          ),
+          { placement: 'bottomEnd' },
+        );
       })
       .catch(err => {
         console.error(err);
@@ -209,10 +265,37 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
   };
 
   const addScenario = () => {
+    setName('');
+    setJsonContent(sampleScenario);
+    setEdit(false);
     setScenarioModalOpen(true);
   };
 
-  const editScenario = name => {};
+  const editScenario = name => {
+    axios
+      .get(`${baseUrl}/scenario/${name}`, {
+        withCredentials: true,
+      })
+      .then(res => {
+        const scenarioJson = res.data;
+        console.log(res.data);
+        setName(name);
+        setJsonContent(scenarioJson);
+        setEdit(true);
+        setScenarioModalOpen(true);
+      })
+      .catch(err => {
+        console.error(err);
+        toaster.push(
+          getNotification(
+            'error',
+            'Błąd podczas pobierania scenariusza',
+            err.response,
+          ),
+          { placement: 'bottomEnd' },
+        );
+      });
+  };
 
   return (
     <>
@@ -220,6 +303,12 @@ export const ModelPage = ({ currentScenario, toaster, ...props }) => {
         isModalOpen={isScenarioModalOpen}
         setModalOpen={setScenarioModalOpen}
         toaster={toaster}
+        name={name}
+        setName={setName}
+        jsonContent={jsonContent}
+        setJsonContent={setJsonContent}
+        editMode={edit}
+        loadScenarios={loadScenarios}
       >
         {' '}
       </CreateScenarioModal>
