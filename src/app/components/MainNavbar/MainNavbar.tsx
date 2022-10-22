@@ -5,10 +5,10 @@ import img from '../../../icons/logout.png';
 
 import { Nav, Navbar } from 'rsuite';
 
-import HomeIcon from '@rsuite/icons/legacy/Home';
 import CogIcon from '@rsuite/icons/legacy/Cog';
 import UserIcon from '@rsuite/icons/legacy/User';
 import OffRound from '@rsuite/icons/OffRound';
+import { ShutdownButton } from 'app/pages/SettingsPage/ShutdownButton';
 
 export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
   function handleStatus(status: number) {
@@ -90,18 +90,29 @@ export const MainNavbar = ({ onSelect, activeKey, ...props }) => {
         <Nav.Item icon={<UserIcon />} disabled style={styles.navItem}>
           {localStorage.getItem('current_user')}
         </Nav.Item>
-        {localStorage.getItem('permission') === 'manage_users' && (
-          <Nav.Item
-            icon={<CogIcon />}
-            eventKey="settings"
-            style={
-              activeKey === 'settings' ? styles.navItemActive : styles.navItem
-            }
-          >
-            Ustawienia
-          </Nav.Item>
-        )}
-
+        {
+          {
+            manage_users: (
+              <Nav.Item
+                icon={<CogIcon />}
+                eventKey="settings"
+                style={
+                  activeKey === 'settings'
+                    ? styles.navItemActive
+                    : styles.navItem
+                }
+              >
+                Ustawienia
+              </Nav.Item>
+            ),
+            write: (
+              <Nav.Item style={styles.navItem} eventKey="shutButton">
+                <ShutdownButton />
+              </Nav.Item>
+            ),
+            read: <></>,
+          }[localStorage.getItem('permission') || 'read']
+        }
         <Nav.Item
           icon={<OffRound />}
           onClick={handleLogOut}

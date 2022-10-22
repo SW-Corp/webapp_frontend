@@ -159,7 +159,9 @@ export const MainPage = props => {
       <Container>
         <MainNavbar
           activeKey={activeKey}
-          onSelect={setActiveKey}
+          onSelect={ke => {
+            ke != 'shutButton' && setActiveKey(ke);
+          }}
           setIsLoggedIn={props.setIsLoggedIn}
         />
         {

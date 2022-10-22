@@ -5,7 +5,7 @@ import PlusIcon from '@rsuite/icons/Plus';
 import { useToaster } from 'rsuite/toaster';
 import { baseUrl } from 'services/stationService';
 import { NewUserModal } from './NewUserModal';
-import { ShutdownModal } from './ShutdownModal';
+import { ShutdownButton } from './ShutdownButton';
 
 import {
   IconButton,
@@ -187,23 +187,9 @@ export const SettingsPage = () => {
           Zarządzanie stanowiskiem
         </h3>
         <div style={{ textAlign: 'center' }}>
-          <Button
-            color="red"
-            appearance="primary"
-            onClick={() => {
-              setShutdownModalOpen(true);
-            }}
-          >
-            Wyłącz stanowisko
-          </Button>
+          <ShutdownButton />
         </div>
       </StyledContent>
-      <ShutdownModal
-        isOpen={isShutdownModalOpen}
-        handleClose={() => {
-          setShutdownModalOpen(false);
-        }}
-      />
       <NewUserModal
         isOpen={isModalOpen}
         handleClose={(isAdded: boolean = false) => {
