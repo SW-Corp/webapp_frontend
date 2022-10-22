@@ -70,7 +70,7 @@ export const LoginPanel = props => {
       window.alert('Uzupełnij wszystkie dane!');
     } else {
       const response = await logIn(data.mail, data.password);
-      if (response.status == 200) {
+      if (response.status === 200) {
         console.log('Logged in.', response);
         localStorage.setItem('islogged', '1');
         localStorage.setItem('current_user', response.data.email);
@@ -115,7 +115,9 @@ export const LoginPanel = props => {
             />
           </Form.Group>
           <Form.Group>
-            <MainButton onClick={submit}>ZALOGUJ SIĘ</MainButton>
+            <MainButton type="submit" onClick={submit}>
+              ZALOGUJ SIĘ
+            </MainButton>
           </Form.Group>
         </Form>
       </div>

@@ -1,6 +1,5 @@
 import { MainFooter } from 'app/components/MainFooter';
 import { MainNavbar } from 'app/components/MainNavbar';
-import { colorConstants } from 'styles/colorConstants';
 import { ModelPage } from 'app/pages/ModelPage';
 import { SettingsPage } from 'app/pages/SettingsPage';
 import { Documentation } from 'app/pages/Documentation';
@@ -42,7 +41,6 @@ function getNotificationContent(notification) {
 }
 
 export const MainPage = props => {
-  const [activeTab, setActiveTab] = useState(true);
   const { realState, setRealState } = useStore();
   const [currentScenario, setCurrentScenario] = useState('');
   const [activeKey, setActiveKey] = React.useState('model');
@@ -183,30 +181,3 @@ export const MainPage = props => {
     </>
   );
 };
-
-const styles = {
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column' as 'column',
-  justifyContent: 'space-around',
-};
-
-const tableStyles = {
-  borderSpacing: '0',
-  width: '90%',
-  marginLeft: 'auto',
-  marginRight: 'auto',
-  marginTop: '40px',
-  border: '1px solid #ddd',
-};
-
-const rowStyle = {
-  textAlign: 'left',
-  padding: '16px',
-} as React.CSSProperties;
-
-const moreStyle = {
-  textAlign: 'left',
-  padding: '16px',
-  backgroundColor: colorConstants.lightGrey,
-} as React.CSSProperties;
