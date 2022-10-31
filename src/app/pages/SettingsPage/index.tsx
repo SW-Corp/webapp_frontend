@@ -70,7 +70,7 @@ export const SettingsPage = () => {
 
   const deleteUser = userToDelete => {
     axios
-      .delete(`${baseUrl}:8000/user`, {
+      .delete(`${baseUrl}/user`, {
         data: { email: userToDelete },
         withCredentials: true,
       })
